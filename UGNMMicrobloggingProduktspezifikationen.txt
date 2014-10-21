@@ -1,0 +1,31 @@
+Das Projekt ist ein anonymer Microblog zum Stellen und Beantworten von Fragen.
+Da sich wahrscheinlich jeder bereits in der Lage befand eine Frage nicht stellen zu wollen,
+da er diese für schlecht bzw. unpassend hielt.
+Wir wollen mit unserem Service eine Plattform bieten
+auf der dies anonym möglich ist.
+Ein Benutzer soll seine Kompetenzen eintragen und wird damit als möglicher Kandidat eingestuft
+um auf Fragen, die seinen Kompetenzen entsprechen, zu antworten.
+Durch ein Belohnungssystem werden Nutzer dazu angehalten Fragen zu beantworten.
+
+
+#1 Ein Benutzer kann sich anmelden/abmelden/löschen
+#2 Ein Benutzer kann Kompetenzen eintragen/angeben
+#3 Ein Benutzer bekommt Fragen von anderen Benutzern gestellt die sich auf seine Kompetenzen beziehen
+#4 Ein Benutzer hat eine aktuelle Bewertung/Elowert (vgl. Schach)
+#5 Ein Benutzer soll Fragen stellen, in Form eines kleines Eintrags ( ähnlich eines "Tweets")
+#6 Das Stellen einer Frage kostet Credits/Punkte
+#7 Fragen können von Benutzern mit Hashtags versehen werden (semantischer Bezug)
+#8 Eine Frage wird anonym gestellt
+#9 Ein Benutzer kann Antworten bewerten
+#10 Ein Benutzer soll Fragen beantworten
+#11 Ein Benutzer kann Kontaktdaten hinterlegen
+#12 Ein Benutzer kann Kontaktdaten von anderen Benutzer anfragen
+#13 Ein Benutzer kann Alle Fragen die er gestellt, oder auf die er geantwortet hat einsehen
+#14 Ein Benutzer kann Fragen favorisieren
+#15 Für das Beantworten von Fragen erhält der Benutzer Credits/Punkte
+#16 Ein Benutzer erhält ein Startguthaben von Credits
+#17 Eine Antwort wird anonym gestellt
+#18 Ein Benutzer kann sein Profil einsehen
+#19 Ein Benutzer kann sein Profil bearbeiten
+#20 Ein Benutzer kann ein Profilbild hinterlegen
+#21 Der Service ist von verschiedenen Endgeräten (Tablet, Handy, PC) erreichbar
