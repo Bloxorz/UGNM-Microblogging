@@ -1,3 +1,5 @@
+USE ugnm1415g2;
+
 -- entities
 CREATE TABLE User
 (

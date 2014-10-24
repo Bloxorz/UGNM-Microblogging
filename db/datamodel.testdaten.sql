@@ -1,3 +1,5 @@
+USE ugnm1415g2;
+
 INSERT INTO User (rating, image, contact, email, pass)
 VALUES 
 	(0, 'http://link/to/frank/celler.jpg', 'http://cont/frank/celler.html', 'f.celler@gmail.com', '4fd5ab'),
