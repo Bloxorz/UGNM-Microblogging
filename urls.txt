@@ -1,0 +1,46 @@
+/user/{id}
+Get bekommt Profil
+Put erstellt neuen User
+Delet löscht User
+
+/user/{id}/setmail
+Post setzt / ändert mailadresse         marvin
+Delet löscht mailadresse
+
+/user/id/setPrfilbild
+Post userbild ändern 
+Delet userbild löschen
+----------------------------------------------------------------
+/user/id/setPassword
+Post password ändern
+
+/user/id/setKontaktlink
+post fügt kontaktlink hinzu         adam
+delet löscht kontaktlink
+
+/user/id/setElo
+post setzt elo
+------------------------------------------------------------------
+/user/id/kompetenz
+Post fügt kompetenz hinzu
+Delet kompetenz löschen
+
+user/id/kompetenz/hastag
+post fügt hashtag zu kompetenz hinzu        Jan
+delet löscht hasttag von kompetenz
+
+user/id/Frage
+Post frage stelle
+Delet Frage löschen
+-----------------------------------------------------------------
+user/id/Frage/Antwort
+Post frage beantworten
+Delet frage löschen
+
+User/id/Frage/Antwort/bewertung           igor
+post frage bewerten
+
+User/id/frage/favorisieren
+post favorisiert frage
+delet löscht favoriesierung
+
