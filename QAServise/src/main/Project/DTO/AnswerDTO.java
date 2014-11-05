@@ -7,7 +7,7 @@ import Project.General.Rating;
  */
 public class AnswerDTO {
 
-     private Rating rating;
+    private Rating rating;
 
     public Rating getRating() {
         return rating;
