@@ -86,5 +86,11 @@ CREATE TABLE QuestionToHashtag (
 	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion),
 	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag)
 );
+CREATE TABLE FavoriteQuestionsToUser (
+	idQuestion int NOT NULL,
+	idUser int NOT NULL,
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion),
+	FOREIGN KEY (idUser) REFERENCES User(idUser)
+);
 
 -- delete all:  DROP TABLE QuestionToHashtag,HashtagToExpertise,UserToExpertise,UserToQuestion; DROP TABLE Expertise,Hashtag,Answer; DROP TABLE Question,Post; DROP TABLE User
