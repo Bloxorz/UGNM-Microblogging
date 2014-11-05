@@ -8,11 +8,6 @@ public class AbstractDTO implements IDTO {
     private long id;
 
     @Override
-    public void setId() {
-
-    }
-
-    @Override
     public long getId() {
         return id;
     }
