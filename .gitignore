@@ -10,6 +10,7 @@ service\
 etc/startup\
 *.iml
 *.eml
+.DS_Store
 .idea
 restMapping.xml
 out\
