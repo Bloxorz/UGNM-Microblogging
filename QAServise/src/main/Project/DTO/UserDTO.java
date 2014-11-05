@@ -4,14 +4,14 @@ package Project.DTO;
  * Created by Marv on 05.11.2014.
  */
 public class UserDTO extends AbstractDTO {
-    private int rating;
+    private Rating rating;
     private String imagePath, contactInfo,email, pass;
 
-    public int getRating() {
+    public Rating getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Rating rating) {
         this.rating = rating;
     }
 
