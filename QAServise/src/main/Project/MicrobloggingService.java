@@ -86,20 +86,72 @@ public class MicrobloggingService extends Service {
 	}
     
     @GET
-    @Path("getUser/{userId}")
-    public HttpResponse getUser(final @PathParam("userId") long userId) {
+    @Path("getUser/{id}")
+    public HttpResponse getUser(final @PathParam("id") long id) {
         return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
-            return mf.getUser(getConnection(), userId);
+            return mf.getUser(getConnection(), id);
         } } );
     }
     @PUT
-    @Path("editUser/{userId}")
-    public HttpResponse getUser(final @PathParam("userId") long userId, final @ContentParam String content) {
- System.out.println(content);
+    @Path("editUser/{id}")
+    public HttpResponse editUser(final @PathParam("id") long id, final @ContentParam String content) {
         return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
-            return mf.editUser(getConnection(), userId, content);
+            return mf.editUser(getConnection(), id, content);
         } } );
     }    
+    /*@DELETE
+    @Path("deleteUser/{id}")
+    public HttpResponse deleteUser(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.deleteUser(getConnection(), id);
+        } } );
+    } *//*
+    @GET
+    @Path("hashtag/{id}")
+    public HttpResponse getHashtag(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.getHashtag(getConnection(), id);
+        } } );
+    }
+    @POST
+    @Path("createHashtag")
+    public HttpResponse createHashtag(final @PathParam("id") long id, final @ContentParam String content) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.createHashtag(getConnection(), id, content);
+        } } );
+    }  
+    @DELETE
+    @Path("deleteHashtag")
+    public HttpResponse deleteHashtag(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.deleteHashtag(getConnection(), id);
+        } } );
+    }  
+    @POST
+    @Path("hashtag/{idH}/referToExpertise/{idE}")
+    @DELETE
+    @Path("hashtag/{idH}/deleteReferenceTo/{idE}")
+    @GET
+    @Path("answer/{questionId}")
+    @POST
+    @Path("answer/{questionId}")
+    @GET
+    @Path("question/{id}")
+    @POST
+    @Path("question/{id}")
+    @PUT
+    @Path("question/{id}")
+    @DELETE
+    @Path("question/{id}")
+    @GET
+    @Path("question/user/detail/{id}")
+    @GET
+    @Path("question/user/{id}")
+    @GET
+    @Path("question/hashtag/detail/{id}")
+    @GET
+    @Path("question/hashtag/{id}")
+    */
 
 	/**
 	 * Method for debugging purposes.
