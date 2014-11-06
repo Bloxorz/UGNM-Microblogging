@@ -2,12 +2,14 @@ package Project.Manager;
 
 import Project.DTO.UserDTO;
 import Project.General.Rating;
-import Project.Resources.RestResource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 /**
  * Created by Marv on 05.11.2014.
@@ -15,7 +17,7 @@ import java.sql.SQLException;
 public class UserManager {
 
 
-    public UserDTO getUser(Connection conn, long userId) throws SQLException {
+    public String getUser(Connection conn, long userId) throws SQLException {
 
         UserDTO user = new UserDTO();
         user.setId(userId);
@@ -40,9 +42,28 @@ public class UserManager {
             }
         }
 
-        return user;
+        return new Gson().toJson(user);
     }
 
+    public String editUser(Connection conn, long userId, String content) throws SQLException, JsonParseException {
+    
+        UserDTO user = (UserDTO) new Gson().fromJson(content, UserDTO.class);
+        
+        final String sql = "UPDATE User SET rating = ?, image = ?, contact = ?, email = ?, pass = ? " +
+                "WHERE User.idUser = ?";
 
+        /* language level 7, ensures that preparedstatement will be closed, and throws exception, if fails */
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, user.getRating().getValue());
+            pstmt.setString(2, user.getImagePath());
+            pstmt.setString(3, user.getContactInfo());
+            pstmt.setString(4, user.getEmail());
+            pstmt.setString(5, user.getPass());
+            pstmt.setLong(6, userId);
+
+            int rows = pstmt.executeUpdate();
+            return "Database updated. " + rows + " rows affected";
+        }
+    }
 
 }
