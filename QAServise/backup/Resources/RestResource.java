@@ -1,6 +1,6 @@
 package Project.Resources;
 
-import Project.Manager.ManagerFacade;
+import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.RESTMapper;
 import i5.las2peer.restMapper.tools.ValidationResult;

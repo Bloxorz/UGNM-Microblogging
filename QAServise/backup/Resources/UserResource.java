@@ -1,13 +1,9 @@
 package Project.Resources;
 
-import Project.DTO.UserDTO;
-import Project.Manager.UserManager;
+import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import com.google.gson.Gson;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.annotations.*;
-import i5.las2peer.services.servicePackage.database.DatabaseManager;
-import net.minidev.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.logging.Level;

@@ -1,23 +1,26 @@
 package i5.las2peer.services.servicePackage;
 
+import com.google.gson.JsonParseException;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
-import i5.las2peer.restMapper.annotations.GET;
-import i5.las2peer.restMapper.annotations.POST;
-import i5.las2peer.restMapper.annotations.Path;
-import i5.las2peer.restMapper.annotations.PathParam;
-import i5.las2peer.restMapper.annotations.Version;
+import i5.las2peer.restMapper.annotations.*;
 import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
+import i5.las2peer.services.servicePackage.Manager.GenericServiceRequest;
+import i5.las2peer.services.servicePackage.Manager.GenericServiceResponse;
+import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.minidev.json.JSONObject;
 
@@ -38,16 +41,117 @@ public class ServiceClass extends Service {
 	private String jdbcUrl;
 	private String jdbcSchema;
 	private DatabaseManager dbm;
+    private Connection conn;
+    private ManagerFacade mf;
 
-	public ServiceClass() {
+
+    public ServiceClass() {
 		// read and set properties values
 		// IF THE SERVICE CLASS NAME IS CHANGED, THE PROPERTIES FILE NAME NEED TO BE CHANGED TOO!
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
-	}
+        mf = new ManagerFacade(null);
 
-	/**
+    }
+
+    /**
+     * A {@link java.util.logging.Logger} for this class with name for
+     * {@link Class#getSimpleName()}.
+     */
+    private final Logger LOGGER;
+    {
+        LOGGER = Logger
+                .getLogger(getClass().getSimpleName());
+    }
+
+    /**
+     * Returns a connection to the database. If there is not already a connection, one is established.
+     */
+    private Connection getConnection() {
+        try {
+            if(conn != null)
+                return conn;
+            else
+                return dbm.getConnection();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "dbm connection lost");
+            return null;
+        }
+    }
+
+    @GET
+    @Path("getUser/{id}")
+    public HttpResponse getUser(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest(new GenericServiceRequest() {
+            public String toJson() throws SQLException {
+                return mf.getUser(getConnection(), id);
+            }
+        });
+    }
+    @PUT
+    @Path("editUser/{id}")
+    public HttpResponse editUser(final @PathParam("id") long id, final @ContentParam String content) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException, JsonParseException {
+            return mf.editUser(getConnection(), id, content);
+        } } );
+    }
+    /*@DELETE
+    @Path("deleteUser/{id}")
+    public HttpResponse deleteUser(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.deleteUser(getConnection(), id);
+        } } );
+    } */
+    @GET
+    @Path("hashtag/{id}")
+    public HttpResponse getHashtag(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.getHashtag(getConnection(), id);
+        } } );
+    }
+    @POST
+    @Path("createHashtag")
+    public HttpResponse createHashtag(final @ContentParam String content) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException, JsonParseException {
+            return mf.createHashtag(getConnection(), content);
+        } } );
+    }  /*
+    @DELETE
+    @Path("deleteHashtag")
+    public HttpResponse deleteHashtag(final @PathParam("id") long id) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+            return mf.deleteHashtag(getConnection(), id);
+        } } );
+    }
+    @POST
+    @Path("hashtag/{idH}/referToExpertise/{idE}")
+    @DELETE
+    @Path("hashtag/{idH}/deleteReferenceTo/{idE}")
+    @GET
+    @Path("answer/{questionId}")
+    @POST
+    @Path("answer/{questionId}")
+    @GET
+    @Path("question/{id}")
+    @POST
+    @Path("question/{id}")
+    @PUT
+    @Path("question/{id}")
+    @DELETE
+    @Path("question/{id}")
+    @GET
+    @Path("question/user/detail/{id}")
+    @GET
+    @Path("question/user/{id}")
+    @GET
+    @Path("question/hashtag/detail/{id}")
+    @GET
+    @Path("question/hashtag/{id}")
+    */
+
+
+    /**
 	 * Simple function to validate a user login.
 	 * Basically it only serves as a "calling point" and does not really validate a user
 	 * (since this is done previously by LAS2peer itself, the user does not reach this method
