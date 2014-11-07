@@ -95,7 +95,7 @@ public class MicrobloggingService extends Service {
     @PUT
     @Path("editUser/{id}")
     public HttpResponse editUser(final @PathParam("id") long id, final @ContentParam String content) {
-        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException, JsonParseException {
             return mf.editUser(getConnection(), id, content);
         } } );
     }    
@@ -105,7 +105,7 @@ public class MicrobloggingService extends Service {
         return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
             return mf.deleteUser(getConnection(), id);
         } } );
-    } *//*
+    } */
     @GET
     @Path("hashtag/{id}")
     public HttpResponse getHashtag(final @PathParam("id") long id) {
@@ -115,11 +115,11 @@ public class MicrobloggingService extends Service {
     }
     @POST
     @Path("createHashtag")
-    public HttpResponse createHashtag(final @PathParam("id") long id, final @ContentParam String content) {
-        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException {
-            return mf.createHashtag(getConnection(), id, content);
+    public HttpResponse createHashtag(final @ContentParam String content) {
+        return GenericServiceResponse.processGenericRequest( new GenericServiceRequest() { public String toJson() throws SQLException, JsonParseException {
+            return mf.createHashtag(getConnection(), content);
         } } );
-    }  
+    }  /*
     @DELETE
     @Path("deleteHashtag")
     public HttpResponse deleteHashtag(final @PathParam("id") long id) {

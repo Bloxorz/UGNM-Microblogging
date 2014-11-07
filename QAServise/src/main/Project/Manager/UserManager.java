@@ -65,5 +65,4 @@ public class UserManager {
             return "Database updated. " + rows + " rows affected";
         }
     }
-
 }

@@ -15,6 +15,7 @@ public class ManagerFacade {
 
     //add your managers here
     protected UserManager usermng = new UserManager();
+    protected HashtagManager hashtagmng = new HashtagManager();
 
     private Connection conn;
     //Handles DB-Access ( connections, etc.)
@@ -32,10 +33,12 @@ public class ManagerFacade {
     /*public String deleteUser(Connection conn, long userId) throws SQLException {
         return usermng.deleteUser(conn,userId);
     }*/
-    /*public String getHashtag(Connection conn, long hashtagId) throws SQLException {
+    public String getHashtag(Connection conn, long hashtagId) throws SQLException {
         return hashtagmng.getHashtag(conn, hashtagId);
-    }*/
-
+    }
+    public String createHashtag(Connection conn, String content) throws SQLException {
+        return hashtagmng.getHashtag(conn, content);
+    }
 
 
 }
