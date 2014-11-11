@@ -28,7 +28,7 @@ import net.minidev.json.JSONObject;
  * that uses the LAS2peer Web-Connector for RESTful access to it.
  * 
  */
-@Path("ugnm-mircoblogging")
+@Path("ugnmMicro")
 @Version("0.1")
 public class ServiceClass extends Service {
 
