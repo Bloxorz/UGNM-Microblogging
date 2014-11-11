@@ -36,10 +36,10 @@ public class ServiceTest {
 	
 	private static UserAgent testAgent;
 	private static final String testPass = "adamspass";
-
-    private static final String testServiceClass = "i5.las2peer.services.servicePackage.ServiceClass";
 	
-	private static final String mainPath = "example/";
+	private static final String testServiceClass = "i5.las2peer.services.servicePackage.ServiceClass";
+	
+	private static final String mainPath = "ugnm-mircoblogging/";
 	
 	
 	/**
