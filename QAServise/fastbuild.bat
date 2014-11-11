@@ -1,1 +1,0 @@
-javac -target 1.7 -source 1.7 -cp "lib/*" -sourcepath "src/main" -d "temp" src/main/Project/MicrobloggingService.java
