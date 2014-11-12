@@ -31,7 +31,7 @@ __Operations:__
    * __Produces:__ application/json; JSON string in the form `{'id':'long'}`
    * __Parameter:__ authorization header, path parameter 'text' - the hashtag text
    * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
@@ -119,7 +119,7 @@ __Operations:__
    * __Produces:__ -
    * __Parameter:__ authorization header, id, expertiseId
    * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
@@ -150,7 +150,7 @@ __Operations:__
    * __Produces:__ application/json; JSON string in the form `{'id':'long'}`
    * __Parameter:__ authorization header, path parameter 'text' - the question text, 'authorId' the author's id
    * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
@@ -227,7 +227,7 @@ __Operations:__
    * __Produces:__ application/json; JSON string in the form `{'id':'long'}`
    * __Parameter:__ authorization header, path parameter 'text' - the answer text, 'id' the question id
    * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
@@ -313,7 +313,7 @@ __Operations:__
    * __Produces:__ application/json; JSON string in the form `{'id':'long'}`
    * __Parameter:__ authorization header, email, passhash, kontaklink, profilbild, elo
   * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
@@ -405,7 +405,7 @@ __Operations:__
    * __Produces:__ application/json; JSON string in the form `{'IdUserToQuestion':'long'}`
    * __Parameter:__ authorization header, 'id' the user id
   * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 403: forbidden, you are not authorized
             * 500: server error
@@ -440,7 +440,7 @@ __Operations:__
    * __Produces:__ - application/json; JSON string in the form `{'id':'long'}`
    * __Parameter:__ authorization header, 'text' - the expertise text
    * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
@@ -515,7 +515,7 @@ __Operations:__
    * __Produces:__ - application/json; JSON string in the form `{'id':'long'}`
    * __Parameter:__ authorization header, id
    * __HTTP Status Codes:__
-    * Success: 201
+    * Success: 200
     * Errors:
             * 304: not modified
             * 400: bad request
