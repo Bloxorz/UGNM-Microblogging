@@ -74,7 +74,22 @@ public class ManagerFacade {
         userManager.bookmark(conn, userId, questionId);
     }
     ////// expertiseManager //////
-    ////// hashtagManager //////
+    public List<ExpertiseDTO> getExpertiseList(Connection conn) throws SQLException {
+        return expertiseManager.getExpertiseList(conn);
+    }
+
+    public long addExpertise(Connection conn, ExpertiseDTO expertise, List<HashtagDTO> hashtags) throws SQLException, NotWellFormedException, CantInsertException {
+        return expertiseManager.addExpertise(conn, expertise, hashtags);
+    }
+
+    public ExpertiseDTO getExpertise(Connection conn, long expertiseId) throws SQLException {
+        return expertiseManager.getExpertise(conn, expertiseId);
+    }
+
+    public void editExpertise(Connection conn, ExpertiseDTO expertise) throws NotWellFormedException, SQLException, CantUpdateException {
+       expertiseManager.editExpertise(conn, expertise);
+    }
+        ////// hashtagManager //////
     public List<HashtagDTO> getHashtagCollection(Connection conn) throws SQLException {
         return hashtagManager.getHashtagCollection(conn);
     }
