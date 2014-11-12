@@ -19,6 +19,8 @@ public class UserDTO extends AbstractDTO {
 
     public UserDTO() {
         super();
+        setId(-1);
+        setElo(-1);
     }
 
     public int getElo() {

@@ -7,6 +7,9 @@ import Project.DTO.ExpertiseDTO;
  */
 public class CantUpdateException extends Exception {
     public CantUpdateException(String s) {
+    }
+
+    public CantUpdateException() {
 
     }
 }
