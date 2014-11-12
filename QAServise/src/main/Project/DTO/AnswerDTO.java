@@ -10,10 +10,21 @@ import java.sql.Timestamp;
 public class AnswerDTO extends PostDTO {
 
     private Rating rating;
+    private long questionId;
 
-    public AnswerDTO(Timestamp timestamp, String text, long userId, Rating rating) {
-        super(timestamp, text, userId);
+    public AnswerDTO(long id, Timestamp timestamp, String text, long userId, Rating rating, long questionId) {
+        super(id, timestamp, text, userId);
         this.rating = rating;
+        this.questionId = questionId;
+    }
+
+    public AnswerDTO(){
+
+    }
+
+    @Override
+    public boolean wellformed() {
+        return false;
     }
 
     public Rating getRating() {
@@ -22,5 +33,13 @@ public class AnswerDTO extends PostDTO {
 
     public void setRating(Rating rating) {
         this.rating = rating;
+    }
+
+    public long getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(long questionId) {
+        this.questionId = questionId;
     }
 }

@@ -3,9 +3,17 @@ package Project.DTO;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class AbstractDTO implements IDTO {
+public abstract class AbstractDTO implements IDTO {
 
-    private long id;
+    public long id;
+
+    public AbstractDTO(long id) {
+        this.id = id;
+    }
+
+    public AbstractDTO() {
+
+    }
 
     @Override
     public long getId() {

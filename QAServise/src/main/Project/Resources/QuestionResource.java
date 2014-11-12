@@ -1,5 +1,6 @@
 package Project.Resources;
 
+import Project.DTO.AnswerDTO;
 import Project.DTO.QuestionDTO;
 import i5.las2peer.restMapper.HttpResponse;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -33,7 +34,7 @@ public class QuestionResource extends AbstractResource {
         throw new NotImplementedException();
     }
 
-    public HttpResponse addAnswerToQuestion(String token, QuestionDTO question) {
+    public HttpResponse addAnswerToQuestion(String token, AnswerDTO answer) {
         throw new NotImplementedException();
     }
 

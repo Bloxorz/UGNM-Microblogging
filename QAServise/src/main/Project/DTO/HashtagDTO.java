@@ -7,6 +7,10 @@ public class HashtagDTO extends AbstractDTO{
 
     private String text;
 
+    public HashtagDTO(long id) {
+        super(id);
+    }
+
     public String getText() {
         return text;
     }

@@ -5,15 +5,28 @@ import Project.General.Rating;
  * Created by Marv on 05.11.2014.
  */
 public class UserDTO extends AbstractDTO {
-    private Rating rating;
+    private int elo;
     private String imagePath, contactInfo,email, pass;
 
-    public Rating getRating() {
-        return rating;
+    public UserDTO(long id, int elo, String imagePath, String contactInfo, String email, String pass) {
+        super(id);
+        this.elo = elo;
+        this.imagePath = imagePath;
+        this.contactInfo = contactInfo;
+        this.email = email;
+        this.pass = pass;
     }
 
-    public void setRating(Rating rating) {
-        this.rating = rating;
+    public UserDTO() {
+        super();
+    }
+
+    public int getElo() {
+        return elo;
+    }
+
+    public void setElo(int elo) {
+        this.elo = elo;
     }
 
     public String getImagePath() {

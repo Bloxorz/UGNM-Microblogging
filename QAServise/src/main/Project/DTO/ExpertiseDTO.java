@@ -7,6 +7,10 @@ public class ExpertiseDTO extends AbstractDTO{
 
     private String text;
 
+    public ExpertiseDTO(long id) {
+        super(id);
+    }
+
     public String getText() {
         return text;
     }

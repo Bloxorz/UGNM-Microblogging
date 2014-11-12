@@ -1,5 +1,7 @@
 package Project.DTO;
 
+import Project.Exceptions.NotWellFormedException;
+
 import java.sql.Timestamp;
 
 /**
@@ -7,7 +9,18 @@ import java.sql.Timestamp;
  */
 public class QuestionDTO extends PostDTO {
 
-    public QuestionDTO(Timestamp timestamp, String text, long userId) {
-        super(timestamp, text, userId);
+    public QuestionDTO(long id, Timestamp timestamp, String text, long userId) {
+        super(id, timestamp, text, userId);
     }
+
+    public QuestionDTO() {
+        super();
+    }
+
+    @Override
+    public boolean wellformed() {
+        return false;
+    }
+
+
 }
