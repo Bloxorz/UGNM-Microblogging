@@ -17,7 +17,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class HashtagResource extends AbstractResource {
 
     //TODO in der serviceclass wrappen
-    public HttpResponse getHashtagCollection() {
+    public HttpResponse getHashtagCollection(String token) {
         List<HashtagDTO> allHashtags = ManagerFacade.getInstance().getHashtags();
 
         //TODO
