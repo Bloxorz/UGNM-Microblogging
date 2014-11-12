@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import i5.las2peer.restMapper.HttpResponse;
 
+import java.sql.Connection;
 import java.util.List;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -15,23 +16,14 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * Created by Marv on 12.11.2014.
  */
 public class HashtagResource extends AbstractResource {
+    public HashtagResource(Connection conn) {
+        super(conn);
+    }
 
     //TODO in der serviceclass wrappen
 	
     public HttpResponse getHashtagCollection(String token) {
-        List<HashtagDTO> allHashtags = ManagerFacade.getInstance().getHashtags();
-
-        //TODO
-        Gson gson = new Gson();
-        String json = "";
-        HttpResponse response = new HttpResponse(json); //fertig
-        //TODO
-
-        int status = 404;
-        response.setStatus(status);
-
-
-        return response;
+        throw new NotImplementedException();
 
     }
     

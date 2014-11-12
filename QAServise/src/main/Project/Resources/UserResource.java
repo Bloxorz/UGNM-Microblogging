@@ -4,10 +4,16 @@ import Project.DTO.UserDTO;
 import i5.las2peer.restMapper.HttpResponse;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.Connection;
+
 /**
  * Created by Marv on 12.11.2014.
  */
 public class UserResource extends AbstractResource {
+
+    public UserResource(Connection conn) {
+        super(conn);
+    }
 
     public HttpResponse getUserCollection(String token) {
         throw new NotImplementedException();

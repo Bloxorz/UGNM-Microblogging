@@ -40,7 +40,7 @@ public class AnswerManager extends AbstractManager {
                 answer.setText(rs.getString("text"));
                 answer.setUserId(rs.getLong("userId"));
 
-                answer.setRating(rs.getInt("rating"));
+                answer.setRating(Rating.fromInt(rs.getInt("rating")));
                 answer.setQuestionId(rs.getLong("idQuestion"));
             }
         }

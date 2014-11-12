@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage;
 
+import Project.Resources.QuestionResource;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import net.minidev.json.JSONObject;
 
@@ -39,12 +41,15 @@ public class ServiceClass extends Service {
 	private String jdbcSchema;
 	private DatabaseManager dbm;
 
-	public ServiceClass() {
+
+	private QuestionResource questionResource;
+	public ServiceClass() throws SQLException {
 		// read and set properties values
 		// IF THE SERVICE CLASS NAME IS CHANGED, THE PROPERTIES FILE NAME NEED TO BE CHANGED TOO!
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
+		questionResource = new QuestionResource(dbm.getConnection());
 	}
 
 	/**
@@ -291,6 +296,14 @@ public class ServiceClass extends Service {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	////Own implementations////
+	@GET
+	@Path("question/{token}")
+	public HttpResponse getQuestionCollection(@PathParam("token") String token) {
+
+		return questionResource.getQuestionCollection(token);
 	}
 
 }

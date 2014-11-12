@@ -5,10 +5,16 @@ import Project.DTO.HashtagDTO;
 import i5.las2peer.restMapper.HttpResponse;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.Connection;
+
 /**
  * Created by Marv on 12.11.2014.
  */
 public class ExpertiseResource extends AbstractResource {
+
+    public ExpertiseResource(Connection conn) {
+        super(conn);
+    }
 
     public HttpResponse getExpertiseCollection(String token) {
         throw  new NotImplementedException();

@@ -39,71 +39,71 @@ public class ManagerFacade {
         return instance;
     }
 
-    public List<HashtagDTO> getHashtags() {
+    public List<HashtagDTO> getHashtags(String token) {
         List<HashtagDTO> result = new ArrayList<HashtagDTO>();
         //TODO
         return result;
     }
 
     ////// userManager //////
-    public List<UserDTO> getUserList(Connection conn) throws SQLException {
+    public List<UserDTO> getUserList(String token,Connection conn) throws SQLException {
         return userManager.getUserList(conn);
     }
 
-    public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException {
+    public long addUser(String token,Connection conn, UserDTO user) throws SQLException, CantInsertException {
         return userManager.addUser(conn, user);
     }
 
-    public UserDTO getUser(Connection conn, long userId) throws SQLException {
+    public UserDTO getUser(String token,Connection conn, long userId) throws SQLException {
         return userManager.getUser(conn, userId);
     }
 
-    public void editUser(Connection conn, UserDTO user) throws SQLException, NotWellFormedException, CantUpdateException {
+    public void editUser(String token,Connection conn, UserDTO user) throws SQLException, NotWellFormedException, CantUpdateException {
         userManager.editUser(conn, user);
     }
 
-    public void deleteUser(Connection conn, long userId) throws SQLException, CantUpdateException {
+    public void deleteUser(String token,Connection conn, long userId) throws SQLException, CantUpdateException {
         userManager.deleteUser(conn, userId);
     }
 
-    public List<QuestionDTO> bookmarkedQuestions(Connection conn, long userId) throws SQLException {
+    public List<QuestionDTO> bookmarkedQuestions(String token, Connection conn, long userId) throws SQLException {
         return userManager.bookmarkedQuestions(conn, userId);
     }
 
-    public void bookmark(Connection conn, long userId, long questionId) throws SQLException, CantInsertException {
+    public void bookmark(String token, Connection conn, long userId, long questionId) throws SQLException, CantInsertException {
         userManager.bookmark(conn, userId, questionId);
     }
     ////// expertiseManager //////
-    public List<ExpertiseDTO> getExpertiseList(Connection conn) throws SQLException {
+    public List<ExpertiseDTO> getExpertiseList(String token, Connection conn) throws SQLException {
         return expertiseManager.getExpertiseList(conn);
     }
 
-    public long addExpertise(Connection conn, ExpertiseDTO expertise, List<HashtagDTO> hashtags) throws SQLException, NotWellFormedException, CantInsertException {
+    public long addExpertise(String token, Connection conn, ExpertiseDTO expertise, List<HashtagDTO> hashtags) throws SQLException, NotWellFormedException, CantInsertException {
         return expertiseManager.addExpertise(conn, expertise, hashtags);
     }
 
-    public ExpertiseDTO getExpertise(Connection conn, long expertiseId) throws SQLException {
+    public ExpertiseDTO getExpertise(String token, Connection conn, long expertiseId) throws SQLException {
         return expertiseManager.getExpertise(conn, expertiseId);
     }
 
-    public void editExpertise(Connection conn, ExpertiseDTO expertise) throws NotWellFormedException, SQLException, CantUpdateException {
+    public void editExpertise(String token, Connection conn, ExpertiseDTO expertise) throws NotWellFormedException, SQLException, CantUpdateException {
        expertiseManager.editExpertise(conn, expertise);
     }
         ////// hashtagManager //////
-    public List<HashtagDTO> getHashtagCollection(Connection conn) throws SQLException {
+    public List<HashtagDTO> getHashtagCollection(String token, Connection conn) throws SQLException {
         return hashtagManager.getHashtagCollection(conn);
     }
-    public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException {
+    public HashtagDTO getHashtag(String token, Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getHashtag(conn, hashtagId);
     }
 
-    public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException {
+    public void updateHashtag(String token,Connection conn, HashtagDTO hashtag) throws SQLException {
         hashtagManager.updateHashtag(conn, hashtag);
     }
-    public void deleteHashtag(Connection conn, long hashtagId) throws SQLException {
+    public void deleteHashtag(String token,Connection conn, long hashtagId) throws SQLException {
         hashtagManager.deleteHashtag(conn, hashtagId);
     }
-    public List<HashtagDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
+    public List<HashtagDTO> getAllQuestionsToHashtag(String token,Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId);
     }
 
@@ -122,38 +122,38 @@ public class ManagerFacade {
     }
     
     ////// questionManager //////
-    public List<QuestionDTO> getQuestionList(Connection conn) throws SQLException {
+    public List<QuestionDTO> getQuestionList(String token, Connection conn) throws SQLException {
         return questionManager.getQuestionList(conn);
     }
-    public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
+    public long addQuestion(String token, Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
         return questionManager.addQuestion(conn, question);
     }
-    public QuestionDTO getQuestion(Connection conn, long questionId) throws SQLException {
+    public QuestionDTO getQuestion(String token, Connection conn, long questionId) throws SQLException {
         return questionManager.getQuestion(conn, questionId);
     }
-    public void editQuestion(Connection conn, String questionText) throws SQLException, CantUpdateException {
+    public void editQuestion(String token, Connection conn, String questionText) throws SQLException, CantUpdateException {
         questionManager.editQuestion(conn, questionText);
     }
-    public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
+    public void deleteQuestion(String token, Connection conn, long questionId) throws SQLException, CantDeleteException {
         questionManager.deleteQuestion(conn, questionId);
     }
-    public List<AnswerDTO> getAnswersToQuestion(Connection conn, long questionId) throws SQLException {
+    public List<AnswerDTO> getAnswersToQuestion(String token, Connection conn, long questionId) throws SQLException {
         return questionManager.getAnswersToQuestion(conn, questionId);
     }
-    public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
+    public long addAnswerToQuestion(String token, Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         return questionManager.addAnswerToQuestion(conn, answer);
     }
-    public List<UserDTO> getBookmarkUsersToQuestion(Connection conn, long questionId) throws SQLException {
+    public List<UserDTO> getBookmarkUsersToQuestion(String token, Connection conn, long questionId) throws SQLException {
         return questionManager.getBookmarkUsersToQuestion(conn, questionId);
     }
     ////// answerManager //////
-    public AnswerDTO getAnswer(Connection conn, long answerId) throws SQLException {
+    public AnswerDTO getAnswer(String token, Connection conn, long answerId) throws SQLException {
         return answerManager.getAnswer(conn, answerId);
     }
-    public void editAnswer(Connection conn, long answerId, String answerText, int rating) throws SQLException, CantUpdateException {
+    public void editAnswer(String token, Connection conn, long answerId, String answerText, int rating) throws SQLException, CantUpdateException {
         answerManager.editAnswer(conn, answerId, answerText, rating);
     }
-    public void deleteAnswer(Connection conn, long answerId) throws SQLException, CantDeleteException {
+    public void deleteAnswer(String token, Connection conn, long answerId) throws SQLException, CantDeleteException {
         answerManager.deleteAnswer(conn, answerId);
     }
 }
