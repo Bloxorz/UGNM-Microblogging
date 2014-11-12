@@ -17,13 +17,14 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class HashtagResource extends AbstractResource {
 
     //TODO in der serviceclass wrappen
+	
     public HttpResponse getHashtagCollection(String token) {
         List<HashtagDTO> allHashtags = ManagerFacade.getInstance().getHashtags();
 
         //TODO
         Gson gson = new Gson();
         String json = "";
-        HttpResponse response = new HttpResponse(json);
+        HttpResponse response = new HttpResponse(json); //fertig
         //TODO
 
         int status = 404;
@@ -36,27 +37,27 @@ public class HashtagResource extends AbstractResource {
     
     public HttpResponse addNewHashtag(String token, String text) {
     	
-    	throw new NotImplementedException();
+    	throw new NotImplementedException(); //fertig
     	
     }
     
     public HttpResponse getOneHashtag(String token, long hashtagId) {
     	
-    	throw new NotImplementedException();
+    	throw new NotImplementedException(); //fertig
     }
     
     public HttpResponse updateHashtag(String token, HashtagDTO hashtagDTO) {
     	
-    	throw new NotImplementedException();
+    	throw new NotImplementedException(); //fertig
     	
     }
     
     public HttpResponse deleteHashtag(String token, long hashtagId) {
     	
-    	throw new NotImplementedException();
+    	throw new NotImplementedException(); //fertig
     }
     
-    public HttpResponse getAllQuestionsToHashtag(String token) {
+    public HttpResponse getAllQuestionsToHashtag(String token, long hashtagId) {
     	
     	throw new NotImplementedException();
     }
