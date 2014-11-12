@@ -64,9 +64,9 @@ public class UserManager {
             if(rs.next()) {
                 return rs.getLong(1);
             }
-        } catch(Exception e) {
-            throw new CantInsertException("User could not been added");
-        }
+        } 
+        throw new CantInsertException("User could not been added");
+
     }
 
     public UserDTO getUser(Connection conn, long userId) throws SQLException {
