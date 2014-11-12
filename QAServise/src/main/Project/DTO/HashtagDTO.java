@@ -1,9 +1,9 @@
 package Project.DTO;
-import Project.General.Rating;
+
 /**
  * Created by Marv on 05.11.2014.
  */
-public class HashtagDTO {
+public class HashtagDTO extends AbstractDTO{
 
     private String text;
 
@@ -11,7 +11,7 @@ public class HashtagDTO {
         return text;
     }
 
-    public void setText(Rating rating) {
-        this.text = text;
+    public void setText(String name) {
+        this.text = name;
     }
 }

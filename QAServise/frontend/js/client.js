@@ -46,7 +46,7 @@ function TemplateServiceClient(endpointUrl) {
 */
 TemplateServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"example/validate",
+		"ugnmMicro/validate",
 		"",
 		"application/json",
 		{},
@@ -56,11 +56,11 @@ TemplateServiceClient.prototype.getMethod = function(successCallback, errorCallb
 };
 
 /**
-* An example function demonstrating a POST request on resource <endpointUrl>/example/myMethodPath/<input>
+* An example function demonstrating a POST request on resource <endpointUrl>/ugnmMicro/myMethodPath/<input>
 */
 TemplateServiceClient.prototype.postMethod = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
-		"example/myMethodPath/" + input,
+		"ugnmMicro/myMethodPath/" + input,
 		"",
 		"application/json",
 		{},
