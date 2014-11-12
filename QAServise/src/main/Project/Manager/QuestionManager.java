@@ -7,8 +7,6 @@ import Project.Exceptions.CantDeleteException;
 import Project.Exceptions.CantInsertException;
 import Project.Exceptions.CantUpdateException;
 import Project.General.Rating;
-import org.junit.runner.Result;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -11,7 +11,6 @@ import java.util.List;
 
 import Project.Exceptions.CantInsertException;
 import com.mysql.jdbc.Statement;
-import org.junit.runner.Result;
 
 
 public class HashtagManager extends AbstractManager {
@@ -137,6 +136,7 @@ public class HashtagManager extends AbstractManager {
 		
 		List<HashtagDTO> hashtag = new ArrayList<HashtagDTO>();
 		
+
 		return hashtag;
 	}
 

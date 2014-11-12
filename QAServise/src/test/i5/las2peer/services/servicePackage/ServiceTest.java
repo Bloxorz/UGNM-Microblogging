@@ -173,7 +173,7 @@ public class ServiceTest {
 	 * Important for development.
 	 */
 	@Test
-	public void testDebugMapping()
+	public void testDebugMapping() throws Exception
 	{
 		ServiceClass cl = new ServiceClass();
 		assertTrue(cl.debugMapping());

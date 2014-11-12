@@ -31,7 +31,7 @@ public class AnswerDTO extends PostDTO {
         return rating;
     }
 
-    public void setRating(Rating rating) {
+    public void setRating(Rating  rating) {
         this.rating = rating;
     }
 

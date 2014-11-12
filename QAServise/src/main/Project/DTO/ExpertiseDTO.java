@@ -1,7 +1,5 @@
 package Project.DTO;
 
-import java.util.List;
-
 /**
  * Created by Marv on 05.11.2014.
  */

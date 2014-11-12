@@ -5,7 +5,6 @@ import Project.DTO.UserDTO;
 import Project.Exceptions.CantInsertException;
 import Project.Exceptions.CantUpdateException;
 import Project.Exceptions.NotWellFormedException;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class UserManager extends AbstractManager{
+public class UserManager {
 
 
     public List<UserDTO> getUserList(Connection conn) throws SQLException {

@@ -6,13 +6,13 @@ import Project.General.Rating;
 public class HashtagDTO extends AbstractDTO{
 
     private String text;
+    
+    public HashtagDTO() {
+        super();
+    }
 
     public HashtagDTO(long id) {
         super(id);
-    }
-
-    public HashtagDTO() {
-
     }
 
     public String getText() {
