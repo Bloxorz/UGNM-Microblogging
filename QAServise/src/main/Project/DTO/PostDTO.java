@@ -10,6 +10,12 @@ public class PostDTO {
     private String text;
     private long userId;
 
+    public PostDTO(Timestamp timestamp, String text, long userId) {
+        this.timestamp = timestamp;
+        this.text = text;
+        this.userId = userId;
+    }
+
     public Timestamp getTimestamp() {
         return timestamp;
     }
