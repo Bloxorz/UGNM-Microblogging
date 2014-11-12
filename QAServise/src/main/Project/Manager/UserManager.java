@@ -64,7 +64,7 @@ public class UserManager {
             if(rs.next()) {
                 return rs.getLong(1);
             }
-        } 
+        }
         throw new CantInsertException("User could not been added");
 
     }

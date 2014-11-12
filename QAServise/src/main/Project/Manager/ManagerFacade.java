@@ -91,6 +91,21 @@ public class ManagerFacade {
     public List<HashtagDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId):
     }
+
+    public boolean existsHashtag(String token, Connection conn, String text) throws SQLException {
+        //TODO Authentification
+
+        return hashtagManager.existsHashtag(conn, text);
+    }
+
+
+    public long addHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException {
+        //TODO Authentification
+
+        return hashtagManager.addHashtag(conn, text);
+
+    }
+    
     ////// questionManager //////
     public List<QuestionDTO> getQuestionList(Connection conn) throws SQLException {
         return questionManager.getQuestionList(conn);

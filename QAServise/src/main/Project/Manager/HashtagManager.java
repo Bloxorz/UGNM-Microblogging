@@ -9,8 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Project.Exceptions.CantInsertException;
 import com.mysql.jdbc.Statement;
-
+import org.junit.runner.Result;
 
 
 public class HashtagManager {
@@ -66,30 +67,23 @@ public class HashtagManager {
 	        
 	}
 	
-	public HashtagDTO addHashtag(Connection conn, String text) throws SQLException {
+	public long addHashtag(Connection conn, String text) throws SQLException, CantInsertException {
 		
-		HashtagDTO hashtag = new HashtagDTO();
-		hashtag.setText(text);
-		
-		
-		final String sql = "INSERT INTO ugnm1415g2.hashtag (text) value ('?')";
+
+		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value (?)";
 		
 		try(PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); ) {
 			
 			pstmt.setString(1, text);
-			
 
 			pstmt.executeUpdate(sql);
             ResultSet rs = pstmt.getGeneratedKeys();
-            
-            
+
             if(rs.next()) {
-            	
-            	hashtag.setId(rs.getLong("idHashtag"));
-                
+				return rs.getLong(1);
             }
         }
-        return hashtag;
+		throw new CantInsertException("Could not insert Hashtag into DB");
 	}
 	
 	public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException {
@@ -144,6 +138,19 @@ public class HashtagManager {
 		List<HashtagDTO> hashtag = new ArrayList<HashtagDTO>();
 		
 		return hashtag;
+	}
+
+	public boolean existsHashtag(Connection conn, String text) throws SQLException {
+		final String sql = "SELECT idHashtag FROM Hashtag h WHERE h.text = ?;";
+
+		try(PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setString(1, text);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			return rs.next();
+		}
+
 	}
 	
 
