@@ -28,7 +28,7 @@ public class QuestionResource extends AbstractResource {
 
             Gson gson = new Gson();
             String json = gson.toJson(questions);
-            response = new HttpResponse("json");
+            response = new HttpResponse(json);
             response.setStatus(200);
 
         } catch (SQLException e) {
