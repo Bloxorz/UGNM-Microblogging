@@ -49,11 +49,7 @@ public class ServiceClass extends Service {
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
-		try {
-			questionResource = new QuestionResource(dbm.getConnection());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	/**
@@ -302,12 +298,6 @@ public class ServiceClass extends Service {
 		return result;
 	}
 
-	////Own implementations////
-	@GET
-	@Path("question/{token}")
-	public HttpResponse getQuestionCollection(@PathParam("token") String token) {
 
-		return questionResource.getQuestionCollection(token);
-	}
 
 }

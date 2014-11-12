@@ -1,7 +1,5 @@
 package Project.Resources;
 
-import i5.las2peer.services.servicePackage.database.DatabaseManager;
-
 import java.sql.Connection;
 
 /**

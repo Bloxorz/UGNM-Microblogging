@@ -1,16 +1,10 @@
 package Project.Resources;
 
 import Project.DTO.HashtagDTO;
-import Project.Manager.ManagerFacade;
-
-import com.google.gson.Gson;
-
 import i5.las2peer.restMapper.HttpResponse;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
-import java.util.List;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Marv on 12.11.2014.

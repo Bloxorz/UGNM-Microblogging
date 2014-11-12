@@ -5,16 +5,10 @@ import Project.DTO.UserDTO;
 import Project.Exceptions.CantInsertException;
 import Project.Exceptions.CantUpdateException;
 import Project.Exceptions.NotWellFormedException;
-import Project.General.Rating;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-import com.nimbusds.jose.JWEObject;
-import org.junit.runner.Result;
 
 /**
  * Created by Marv on 05.11.2014.
