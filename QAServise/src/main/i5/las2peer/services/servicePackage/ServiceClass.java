@@ -1,6 +1,6 @@
 package i5.las2peer.services.servicePackage;
 
-import Project.Resources.QuestionResource;
+import i5.las2peer.services.servicePackage.Resources.QuestionResource;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;

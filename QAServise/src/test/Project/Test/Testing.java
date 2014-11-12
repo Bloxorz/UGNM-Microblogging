@@ -1,8 +1,7 @@
 package Project.Test;
 
-import Project.Resources.QuestionResource;
+import i5.las2peer.services.servicePackage.Resources.QuestionResource;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
-import org.junit.Test;
 
 import java.sql.SQLException;
 
