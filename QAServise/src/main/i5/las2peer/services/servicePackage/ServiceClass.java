@@ -43,13 +43,17 @@ public class ServiceClass extends Service {
 
 
 	private QuestionResource questionResource;
-	public ServiceClass() throws SQLException {
+	public ServiceClass() {
 		// read and set properties values
 		// IF THE SERVICE CLASS NAME IS CHANGED, THE PROPERTIES FILE NAME NEED TO BE CHANGED TOO!
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
-		questionResource = new QuestionResource(dbm.getConnection());
+		try {
+			questionResource = new QuestionResource(dbm.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
