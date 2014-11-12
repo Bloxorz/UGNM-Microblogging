@@ -5,12 +5,8 @@ import com.google.gson.JsonParseException;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-
 import i5.las2peer.services.servicePackage.Exceptions.*;
 
 /**
