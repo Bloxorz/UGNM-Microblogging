@@ -38,7 +38,7 @@ public class QuestionResource extends AbstractResource {
     }
 
     public HttpResponse getBookmarkUsersToQuestion(String token, long questionId) {
-        
+    	throw new NotImplementedException();
     }
 
 }
