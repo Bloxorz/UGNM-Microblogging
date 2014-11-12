@@ -54,7 +54,7 @@ public class QuestionManager extends AbstractManager{
      * @throws CantInsertException Can't create a new Post in the DB
      */
     public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
-        long generatedId = 0;
+
         if(question.wellformed()) {
             String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
 
@@ -67,7 +67,7 @@ public class QuestionManager extends AbstractManager{
                 ResultSet rs = pstmt.executeQuery();
 
                 //fetch generated id
-
+                long generatedId = 0;
                 if(rs.next()) {
                     generatedId = rs.getLong(1);
                 } else {
@@ -79,9 +79,11 @@ public class QuestionManager extends AbstractManager{
                 PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
                 qstmt.setLong(1, generatedId);
                 qstmt.executeQuery();
+                return generatedId;
             }
         }
-        return generatedId;
+        throw new CantInsertException("Question could not been added");
+
     }
 
     /**

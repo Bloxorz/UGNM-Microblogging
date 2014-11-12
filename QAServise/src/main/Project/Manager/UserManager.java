@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.nimbusds.jose.JWEObject;
 import org.junit.runner.Result;
 
 /**
@@ -46,10 +47,10 @@ public class UserManager {
         return users;
     }
 
-    public long addUser(Connection conn, UserDTO user) throws SQLException {
+    public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException {
         final String sql = "INSERT INTO User(rating, image, contact, email, pass) VALUES " +
                 "(?,?,?,?,?)";
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+        try(PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); ) {
             pstmt.setInt(1, user.getElo());
             pstmt.setString(2, user.getImagePath());
             pstmt.setString(3, user.getContactInfo());
@@ -57,8 +58,14 @@ public class UserManager {
             pstmt.setString(5, user.getPass());
 
             if(pstmt.executeUpdate() == 0) {
-                throw new CantInsertException();
+                throw new CantInsertException("Can't insert into User");
             }
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if(rs.next()) {
+                return rs.getLong(1);
+            }
+        } catch(Exception e) {
+            throw new CantInsertException("User could not been added");
         }
     }
 
