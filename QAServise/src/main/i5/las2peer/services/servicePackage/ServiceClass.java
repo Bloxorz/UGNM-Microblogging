@@ -4,24 +4,19 @@ import Project.Resources.QuestionResource;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
-import i5.las2peer.restMapper.annotations.GET;
-import i5.las2peer.restMapper.annotations.POST;
-import i5.las2peer.restMapper.annotations.Path;
-import i5.las2peer.restMapper.annotations.PathParam;
-import i5.las2peer.restMapper.annotations.Version;
+import i5.las2peer.restMapper.annotations.*;
 import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
+import net.minidev.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import net.minidev.json.JSONObject;
 
 /**
  * LAS2peer Service
@@ -251,6 +246,18 @@ public class ServiceClass extends Service {
 				}
 			}
 		}
+	}
+
+	@GET
+	@Path("questions/{token}")
+	public HttpResponse getQuestions(@PathParam("token") String token) {
+		QuestionResource q = null;
+		try {
+			q = new QuestionResource(dbm.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return q.getQuestionCollection(token);
 	}
 
 	/**
