@@ -17,6 +17,8 @@ public class ManagerFacade {
 
     private static ManagerFacade instance;
 
+
+    public static String IGNORE_AUTHENTIFICATION ="masterkey_123456789asdfghjklöqwertzuioxcvbnjhgfdssxdcvjuztrdxsgcfdrtgvcdrgcxs";
     private UserManager userManager;
     private ExpertiseManager expertiseManager;
     private HashtagManager hashtagManager;
@@ -79,9 +81,7 @@ public class ManagerFacade {
     public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getHashtag(conn, hashtagId);
     }
-    public HashtagDTO addHashtag(Connection conn, String text) throws SQLException {
-        return hashtagManager.addHashtag(conn, text);
-    }
+
     public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException {
         hashtagManager.updateHashtag(conn, hashtag);
     }
@@ -89,7 +89,7 @@ public class ManagerFacade {
         hashtagManager.deleteHashtag(conn, hashtagId);
     }
     public List<HashtagDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
-        return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId):
+        return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId);
     }
 
     public boolean existsHashtag(String token, Connection conn, String text) throws SQLException {
@@ -123,7 +123,7 @@ public class ManagerFacade {
         questionManager.deleteQuestion(conn, questionId);
     }
     public List<AnswerDTO> getAnswersToQuestion(Connection conn, long questionId) throws SQLException {
-        return questionManager.getAnswersToQuestion(conn, questionId):
+        return questionManager.getAnswersToQuestion(conn, questionId);
     }
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         return questionManager.addAnswerToQuestion(conn, answer);
