@@ -1,27 +1,20 @@
 package i5.las2peer.services.servicePackage;
 
-import Project.Resources.QuestionResource;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
-import i5.las2peer.restMapper.annotations.GET;
-import i5.las2peer.restMapper.annotations.POST;
-import i5.las2peer.restMapper.annotations.Path;
-import i5.las2peer.restMapper.annotations.PathParam;
-import i5.las2peer.restMapper.annotations.Version;
+import i5.las2peer.restMapper.annotations.*;
 import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
+import net.minidev.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import net.minidev.json.JSONObject;
 
 /**
  * LAS2peer Service
@@ -41,8 +34,6 @@ public class ServiceClass extends Service {
 	private String jdbcSchema;
 	private DatabaseManager dbm;
 
-
-	private QuestionResource questionResource;
 	public ServiceClass() {
 		// read and set properties values
 		// IF THE SERVICE CLASS NAME IS CHANGED, THE PROPERTIES FILE NAME NEED TO BE CHANGED TOO!
