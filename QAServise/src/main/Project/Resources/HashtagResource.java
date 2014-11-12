@@ -29,5 +29,115 @@ public class HashtagResource extends AbstractResource {
         return response;
 
     }
+    
+    public HttpResponse addNewHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+    	
+    }
+    
+    public HttpResponse getOneHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+    }
+    
+    public HttpResponse updateHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+    	
+    }
+    
+    public HttpResponse deleteHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+    	
+    }
+    
+    public HttpResponse getAllQuestionsToHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+        
+    }
+    
+    public HttpResponse getAllExpertisesToHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+    }
+    
+    public HttpResponse addExpertiseToHashtag() {
+    	
+    	//TODO
+        Gson gson = new Gson();
+        String json = "";
+        HttpResponse response = new HttpResponse(json);
+        //TODO
+
+        int status = 404;
+        response.setStatus(status);
+
+
+        return response;
+    	
+    }
 
 }
