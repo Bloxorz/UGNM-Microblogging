@@ -13,6 +13,11 @@ public class AbstractDTO implements IDTO {
     }
 
     @Override
+    public boolean wellformed() {
+        return false;
+    }
+
+    @Override
     public void setId(long id) {
         this.id = id;
     }

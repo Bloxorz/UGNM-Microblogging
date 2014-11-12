@@ -7,4 +7,10 @@ public interface IDTO {
 
     public void setId(long id);
     public long getId();
+
+    /**
+     * Describes wether or not a DTO has at least it's minimum parameters set
+     * @return
+     */
+    public boolean wellformed();
 }

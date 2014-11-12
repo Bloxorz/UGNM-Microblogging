@@ -20,4 +20,20 @@ public class UserResource extends AbstractResource {
     public HttpResponse getUser(String token, long userId) {
         throw  new NotImplementedException();
     }
+
+    public HttpResponse editUser(String token, UserDTO user) {
+        throw  new NotImplementedException();
+    }
+
+    public HttpResponse deleteUser(String token, long UserId) {
+        throw  new NotImplementedException();
+    }
+
+    public HttpResponse questionBookmarks(String token, long UserId) {
+        throw  new NotImplementedException();
+    }
+
+    public HttpResponse addBookmark(String token, long QuestionId) {
+        throw  new NotImplementedException();
+    }
 }
