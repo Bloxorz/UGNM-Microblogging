@@ -95,7 +95,7 @@ public class QuestionManager extends AbstractManager{
         QuestionDTO question = null;
         final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
                 "idUser as userId FROM Post p right join Question q on " +
-                "p.idPost = q.idQuestion WHERE id = " + questionId + ";";
+                "p.idPost = q.idQuestion WHERE idPost = " + questionId + ";";
         try(Statement stmt = conn.createStatement();) {
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -126,21 +126,14 @@ public class QuestionManager extends AbstractManager{
     }
 
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        final String deleteFromQuestion = "DELETE FROM Question q WHERE q.idQuestion = ?;";
+        final String deleteFromQuestion = "DELETE FROM Post WHERE idPost = ?;";
 
         try(PreparedStatement qstmt = conn.prepareStatement(deleteFromQuestion); ) {
+
             qstmt.setLong(1, questionId);
 
             if(qstmt.executeUpdate() == 0) {
                 throw new CantDeleteException("Cant delete from Question table");
-            }
-
-            final String deleteFromPost = "DELETE FROM Post p WHERE p.idPost = ?";
-            PreparedStatement pstmt = conn.prepareStatement(deleteFromPost);
-            pstmt.setLong(1, questionId);
-
-            if(qstmt.executeUpdate() == 0) {
-                throw new CantDeleteException("Cant delete from Post table");
             }
         }
     }
