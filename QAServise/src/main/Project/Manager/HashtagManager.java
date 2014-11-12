@@ -14,7 +14,7 @@ import com.mysql.jdbc.Statement;
 import org.junit.runner.Result;
 
 
-public class HashtagManager {
+public class HashtagManager extends AbstractManager {
 	
 	public List<HashtagDTO> getHashtagCollection(Connection conn) throws SQLException {
 		

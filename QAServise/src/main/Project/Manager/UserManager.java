@@ -19,7 +19,7 @@ import org.junit.runner.Result;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class UserManager {
+public class UserManager extends AbstractManager{
 
 
     public List<UserDTO> getUserList(Connection conn) throws SQLException {
