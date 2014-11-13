@@ -135,8 +135,8 @@ public class ManagerFacade {
     public QuestionDTO getQuestion(String token, Connection conn, long questionId) throws SQLException {
         return questionManager.getQuestion(conn, questionId);
     }
-    public void editQuestion(String token, Connection conn, String questionText) throws SQLException, CantUpdateException {
-        questionManager.editQuestion(conn, questionText);
+    public void editQuestion(String token, Connection conn, long questionId, String questionText) throws SQLException, CantUpdateException {
+        questionManager.editQuestion(conn, questionId, questionText);
     }
     public void deleteQuestion(String token, Connection conn, long questionId) throws SQLException, CantDeleteException {
         questionManager.deleteQuestion(conn, questionId);

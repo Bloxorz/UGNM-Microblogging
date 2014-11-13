@@ -3,6 +3,7 @@ package i5.las2peer.services.servicePackage.Resources;
 import com.google.gson.JsonParseException;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
+import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
@@ -118,15 +119,73 @@ public class QuestionResource extends AbstractResource {
     }
 
     public HttpResponse getAnswersToQuestion(String token,long questionId) {
-        throw new NotImplementedException();
+        HttpResponse res;
+        try {
+            List<AnswerDTO> answers = ManagerFacade.getInstance().getAnswersToQuestion(token, conn, questionId);
+            if(answers == null) {
+                res = new HttpResponse("");
+                res.setStatus(404);
+                return res;
+            }
+            Gson gson = new Gson();
+
+            res = new HttpResponse(gson.toJson(answers));
+            res.setStatus(200);
+
+            return  res;
+        } catch (SQLException e) {
+            res = new HttpResponse("not found");
+            res.setStatus(500);
+            return  res;
+        }
     }
 
-    public HttpResponse addAnswerToQuestion(String token, AnswerDTO answer) {
-        throw new NotImplementedException();
+    public HttpResponse addAnswerToQuestion(String token, long questionId, String content) {
+
+        HttpResponse res;
+        try {
+            AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
+            Long generatedId = ManagerFacade.getInstance().addAnswerToQuestion(token, conn, answer);
+
+            res = new HttpResponse(generatedId.toString());
+            res.setStatus(201);
+            return res;
+        } catch (JsonParseException e) {
+            res = new HttpResponse("");
+            res.setStatus(400);
+        } catch (SQLException e) {
+            res = new HttpResponse("");
+            res.setStatus(500);
+        } catch (CantInsertException e) {
+            res = new HttpResponse("");
+            res.setStatus(500);
+        }
+
+        res = new HttpResponse("");
+        res.setStatus(500);
+        return res;
     }
 
     public HttpResponse getBookmarkUsersToQuestion(String token, long questionId) {
-    	throw new NotImplementedException();
+        HttpResponse res;
+        try {
+            List<UserDTO> users = ManagerFacade.getInstance().getBookmarkUsersToQuestion(token, conn, questionId);
+            if(users == null) {
+                res = new HttpResponse("");
+                res.setStatus(404);
+                return res;
+            }
+            Gson gson = new Gson();
+
+            res = new HttpResponse(gson.toJson(users));
+            res.setStatus(200);
+
+            return  res;
+        } catch (SQLException e) {
+            res = new HttpResponse("not found");
+            res.setStatus(500);
+            return  res;
+        }
     }
 
 }
