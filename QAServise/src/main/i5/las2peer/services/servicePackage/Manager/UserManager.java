@@ -40,10 +40,19 @@ public class UserManager {
         return users;
     }
 
-    public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException {
+    public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException, NotWellFormedException {
         final String sql = "INSERT INTO User(rating, image, contact, email, pass) VALUES " +
                 "(?,?,?,?,?)";
+<<<<<<< HEAD
 
+=======
+        
+        if(user.getContactInfo() == null || user.getEmail() == null ||  user.getImagePath() == null || user.getPass() == null){
+        	throw new NotWellFormedException("Ein Feld wurde falsch ausgefüllt!");
+        }
+        
+        
+>>>>>>> dca1c9b... UserResource update
         try(PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); ) {
             pstmt.setInt(1, user.getElo());
             pstmt.setString(2, user.getImagePath());

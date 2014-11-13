@@ -3,7 +3,10 @@ package i5.las2peer.services.servicePackage.Resources;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
+<<<<<<< HEAD
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
+=======
+>>>>>>> dca1c9b... UserResource update
 import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import i5.las2peer.restMapper.HttpResponse;
@@ -57,7 +60,16 @@ public class UserResource extends AbstractResource {
           catch (CantInsertException e){
         	  response.setStatus(304);
           }
+<<<<<<< HEAD
 
+=======
+        
+          catch (NotWellFormedException e){
+        	  
+        	  response.setStatus(400);
+          }
+        
+>>>>>>> dca1c9b... UserResource update
         return response;
     }
 
