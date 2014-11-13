@@ -89,6 +89,10 @@ public class ManagerFacade {
     public void editExpertise(String token, Connection conn, ExpertiseDTO expertise) throws NotWellFormedException, SQLException, CantUpdateException {
        expertiseManager.editExpertise(conn, expertise);
     }
+
+    public void deleteExpertise(String token, Connection conn, long expertiseId) throws CantDeleteException, SQLException {
+        expertiseManager.deleteExpertise(conn, expertiseId);
+    }
         ////// hashtagManager //////
     public List<HashtagDTO> getHashtagCollection(String token, Connection conn) throws SQLException {
         return hashtagManager.getHashtagCollection(conn);
