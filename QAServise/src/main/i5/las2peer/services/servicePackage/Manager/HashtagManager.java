@@ -9,7 +9,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
+import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
+import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
+
 import com.mysql.jdbc.Statement;
 
 
@@ -66,10 +70,14 @@ public class HashtagManager extends AbstractManager {
 	        
 	}
 	
-	public long addHashtag(Connection conn, String text) throws SQLException, CantInsertException {
+	public long addHashtag(Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
 		
 
 		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value (?)";
+		
+		if(text == null) {
+            throw new NotWellFormedException("Missing text!");
+        }
 		
 		try(PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); ) {
 			
@@ -85,10 +93,15 @@ public class HashtagManager extends AbstractManager {
 		throw new CantInsertException("Could not insert Hashtag into DB");
 	}
 	
-	public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException {
+	public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException {
 				
 		
 		final String sql = "Update ugnm1415g2.hashtag h SET h.text = ? WHERE h.idHashtag = ?";
+		
+		if(hashtag.getText() == null) {
+            throw new NotWellFormedException("Missing text!");
+        }
+		
 		String text = hashtag.getText();
 		Long id = hashtag.getId();
 		
@@ -101,9 +114,10 @@ public class HashtagManager extends AbstractManager {
 			pstmt.executeUpdate(sql);
             
         }
+		throw new CantUpdateException("Could not update Hashtag in DB!");
 	}
 	
-	public void deleteHashtag(Connection conn, long hashtagId) throws SQLException {
+	public void deleteHashtag(Connection conn, long hashtagId) throws SQLException, CantDeleteException {
 		
 		HashtagDTO hashtag = new HashtagDTO();
 		hashtag.setId(hashtagId);
@@ -129,7 +143,7 @@ public class HashtagManager extends AbstractManager {
 			
 				
 		}
-		
+		throw new CantDeleteException("Could not delete Hashtag from DB!");
 	}
 	
 	public List<HashtagDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {

@@ -96,11 +96,15 @@ public class ManagerFacade {
     public HashtagDTO getHashtag(String token, Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getHashtag(conn, hashtagId);
     }
+    
+    public long addNewHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
+        return hashtagManager.addHashtag(conn, text);
+    }
 
-    public void updateHashtag(String token,Connection conn, HashtagDTO hashtag) throws SQLException {
+    public void updateHashtag(String token,Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException {
         hashtagManager.updateHashtag(conn, hashtag);
     }
-    public void deleteHashtag(String token,Connection conn, long hashtagId) throws SQLException {
+    public void deleteHashtag(String token,Connection conn, long hashtagId) throws SQLException, CantDeleteException {
         hashtagManager.deleteHashtag(conn, hashtagId);
     }
     public List<HashtagDTO> getAllQuestionsToHashtag(String token,Connection conn, long hashtagId) throws SQLException {
@@ -114,7 +118,7 @@ public class ManagerFacade {
     }
 
 
-    public long addHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException {
+    public long addHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
         //TODO Authentification
 
         return hashtagManager.addHashtag(conn, text);

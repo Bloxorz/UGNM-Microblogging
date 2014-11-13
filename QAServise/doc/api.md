@@ -75,7 +75,6 @@ __Operations:__
     * Success: 200
     * Errors:
             * 304: not modified
-            * 400: bad request
             * 403: forbidden you are not authorized
             * 500: server error
 

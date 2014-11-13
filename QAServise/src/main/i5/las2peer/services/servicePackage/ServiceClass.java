@@ -1,6 +1,5 @@
 package i5.las2peer.services.servicePackage;
 
-import i5.las2peer.services.servicePackage.Resources.QuestionResource;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
@@ -9,6 +8,7 @@ import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
+import i5.las2peer.services.servicePackage.Resources.QuestionResource;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
 
@@ -36,6 +36,8 @@ public class ServiceClass extends Service {
 	private String jdbcSchema;
 	private DatabaseManager dbm;
 
+	// resources
+	private QuestionResource qr;
 
 	public ServiceClass() {
 		// read and set properties values
@@ -43,6 +45,12 @@ public class ServiceClass extends Service {
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
+
+		try {
+			qr = new QuestionResource(dbm.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -258,6 +266,18 @@ public class ServiceClass extends Service {
 			e.printStackTrace();
 		}
 		return q.getQuestionCollection(token);
+	}
+
+	@GET
+	@Path("question/{questionId}/{token}")
+	public HttpResponse getQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
+		return qr.getQuestion(token, questionId);
+	}
+
+	@DELETE
+	@Path("question/{questionId}/{token}")
+	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
+		return qr.deleteQuestion(token, questionId);
 	}
 
 	/**

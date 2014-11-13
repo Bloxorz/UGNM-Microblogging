@@ -43,6 +43,7 @@ public class UserManager {
     public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException {
         final String sql = "INSERT INTO User(rating, image, contact, email, pass) VALUES " +
                 "(?,?,?,?,?)";
+
         try(PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); ) {
             pstmt.setInt(1, user.getElo());
             pstmt.setString(2, user.getImagePath());
