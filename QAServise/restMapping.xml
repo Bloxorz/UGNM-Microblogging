@@ -20,9 +20,15 @@
         <parameter annotation="path" index="1" name="email" type="java.lang.String"/>
       </parameters>
     </method>
-    <method httpMethod="get" name="getExpertises" path="expertise/{token}" type="i5.las2peer.restMapper.HttpResponse">
+    <method httpMethod="get" name="getExpertises" path="expertises/{token}" type="i5.las2peer.restMapper.HttpResponse">
       <parameters>
         <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
+      </parameters>
+    </method>
+    <method httpMethod="get" name="getExpertise" path="expertise/{id}/{token}" type="i5.las2peer.restMapper.HttpResponse">
+      <parameters>
+        <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
+        <parameter annotation="path" index="1" name="id" type="long"/>
       </parameters>
     </method>
     <method httpMethod="get" name="getQuestions" path="questions/{token}" type="i5.las2peer.restMapper.HttpResponse">

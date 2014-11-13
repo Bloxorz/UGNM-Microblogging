@@ -260,12 +260,19 @@ public class ServiceClass extends Service {
 	}
 
     @GET
-    @Path("expertise/{token}")
+    @Path("expertises/{token}")
     public HttpResponse getExpertises(@PathParam("token") String token) {
         return exp.getExpertiseCollection(token);
     }
 
-	@GET
+    @GET
+    @Path("expertise/{id}/{token}")
+    public HttpResponse getExpertise(@PathParam("token") String token, @PathParam("id") long id) {
+        return exp.getExpertise(token, id);
+    }
+
+
+    @GET
 	@Path("questions/{token}")
 	public HttpResponse getQuestions(@PathParam("token") String token) {
 		QuestionResource q = null;
