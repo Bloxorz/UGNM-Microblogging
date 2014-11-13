@@ -74,11 +74,7 @@ public class ExpertiseResource extends AbstractResource {
         }
         return response;
     }
-
-    public HttpResponse deleteExpertise(String token, long expertiseId) {
-        throw  new NotImplementedException();
-    }
-
+    
     public HttpResponse editExpertise(String token, ExpertiseDTO expertise) {
         HttpResponse response = new HttpResponse("");
         try {
@@ -97,6 +93,21 @@ public class ExpertiseResource extends AbstractResource {
         return response;
     }
 
+    public HttpResponse deleteExpertise(String token, long expertiseId) {
+        HttpResponse response = new HttpResponse("");
+        try {
+            ManagerFacade.getInstance().deleteExpertise(token, conn, expertiseId);
+
+            response.setStatus(200);
+
+        } catch (SQLException e) {
+            response.setStatus(500);
+        } catch (CantDeleteException e) {
+            response.setStatus(500);
+        }
+
+        return response;
+    }
     public HttpResponse getHashtagsToExpertise(String token, long expertiseId) {
         throw  new NotImplementedException();
     }

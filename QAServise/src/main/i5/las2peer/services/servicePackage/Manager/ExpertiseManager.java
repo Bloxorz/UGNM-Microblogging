@@ -2,6 +2,7 @@ package i5.las2peer.services.servicePackage.Manager;
 
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
+import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
@@ -123,6 +124,22 @@ public class ExpertiseManager extends  AbstractManager {
         }
     }
 
+    public void deleteExpertise(Connection conn, long expertiseId) throws SQLException, CantDeleteException {
+
+        ExpertiseDTO expertise = new ExpertiseDTO();
+        expertise.setId(expertiseId);
+
+        final String sqlRequest = "DELETE FROM hashtag h WHERE h.idHashtag = ?";
+
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sqlRequest);
+            pstmt.setLong(1, expertiseId);
+            pstmt.executeUpdate();
+        } catch(SQLException e) {
+            throw new CantDeleteException("Could not delete Hashtag from DB!");
+        }
+    }
 
 
 
