@@ -73,7 +73,7 @@ public class HashtagManager extends AbstractManager {
 	public long addHashtag(Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
 		
 
-		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value ('?')";
+		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value ('?');";
 		
 		if(text == null) {
             throw new NotWellFormedException("Missing text!");
@@ -96,7 +96,7 @@ public class HashtagManager extends AbstractManager {
 	public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException {
 				
 		
-		final String sql = "Update ugnm1415g2.Hashtag h SET h.text = ? WHERE h.idHashtag = ?";
+		final String sql = "Update ugnm1415g2.Hashtag h SET h.text = ? WHERE h.idHashtag = ?;";
 		
 		if(hashtag.getText() == null) {
             throw new NotWellFormedException("Missing text!");
@@ -122,9 +122,9 @@ public class HashtagManager extends AbstractManager {
 		HashtagDTO hashtag = new HashtagDTO();
 		hashtag.setId(hashtagId);
 		
-		final String delFirstFkey = "DELETE FROM ugnm1415g2.Hashtagtoexpertise WHERE idHashtag = ?";
-		final String delSecondFkey = "DELETE FROM ugnm1415g2.Questiontohashtag WHERE idHashtag = ?";
-		final String delFromHashtag = "DELETE FROM ugnm1415g2.Hashtag WHERE idHashtag = ?";
+		final String delFirstFkey = "DELETE FROM ugnm1415g2.Hashtagtoexpertise WHERE idHashtag = ?;";
+		final String delSecondFkey = "DELETE FROM ugnm1415g2.Questiontohashtag WHERE idHashtag = ?;";
+		final String delFromHashtag = "DELETE FROM ugnm1415g2.Hashtag WHERE idHashtag = ?;";
 		
 		
 		try(PreparedStatement pstmt = conn.prepareStatement(delFirstFkey); ) {

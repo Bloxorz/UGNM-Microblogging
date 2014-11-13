@@ -20,18 +20,23 @@
         <parameter annotation="path" index="1" name="email" type="java.lang.String"/>
       </parameters>
     </method>
+    <method httpMethod="get" name="getUsers" path="user/{token}" type="i5.las2peer.restMapper.HttpResponse">
+      <parameters>
+        <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
+      </parameters>
+    </method>
+    <method httpMethod="get" name="getUser" path="user/{userId}/{token}" type="i5.las2peer.restMapper.HttpResponse">
+      <parameters>
+        <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
+        <parameter annotation="path" index="1" name="userId" type="java.lang.Long"/>
+      </parameters>
+    </method>
     <method httpMethod="get" name="getHashtags" path="hashtag/{token}" type="i5.las2peer.restMapper.HttpResponse">
       <parameters>
         <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
       </parameters>
     </method>
     <method httpMethod="get" name="getOneHashtag" path="hashtag/{hashtagId}/{token}" type="i5.las2peer.restMapper.HttpResponse">
-      <parameters>
-        <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
-        <parameter annotation="path" index="1" name="hashtagId" type="java.lang.Long"/>
-      </parameters>
-    </method>
-    <method httpMethod="delete" name="deleteHashtag" path="hashtag/{hashtagId}/{token}" type="i5.las2peer.restMapper.HttpResponse">
       <parameters>
         <parameter annotation="path" index="0" name="token" type="java.lang.String"/>
         <parameter annotation="path" index="1" name="hashtagId" type="java.lang.Long"/>

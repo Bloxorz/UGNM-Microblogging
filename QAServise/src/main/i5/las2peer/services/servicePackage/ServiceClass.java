@@ -11,6 +11,7 @@ import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.servicePackage.Resources.ExpertiseResource;
 import i5.las2peer.services.servicePackage.Resources.HashtagResource;
 import i5.las2peer.services.servicePackage.Resources.QuestionResource;
+import i5.las2peer.services.servicePackage.Resources.UserResource;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
 
@@ -42,6 +43,7 @@ public class ServiceClass extends Service {
 	private QuestionResource qr;
     private ExpertiseResource exp;
     private HashtagResource hr;
+    private UserResource use;
 
 	public ServiceClass() {
 		// read and set properties values
@@ -54,6 +56,7 @@ public class ServiceClass extends Service {
 			qr = new QuestionResource(dbm.getConnection());
             exp = new ExpertiseResource(dbm.getConnection());
             hr = new HashtagResource(dbm.getConnection());
+            use = new UserResource(dbm.getConnection());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -261,6 +264,25 @@ public class ServiceClass extends Service {
 			}
 		}
 	}
+	
+	@GET
+	@Path("user/{token}")
+	public HttpResponse getUsers(@PathParam("token") String token) {
+		return use.getUserCollection(token);
+	}
+	
+	@GET
+	@Path("user/{userId}/{token}")
+	public HttpResponse getUser(@PathParam("token") String token, @PathParam("userId") Long userId){
+		return use.getUser(token, userId);
+	}
+	
+	/*@DELETE
+	@Path("user/{userId}/{token}")
+	public HttpResponse deleteUser(@PathParam("token") String token, @PathParam("userId") Long userId){
+		return use.deleteUser(token, userId);
+	}*/
+	
 	
 	@GET
     @Path("hashtag/{token}")
