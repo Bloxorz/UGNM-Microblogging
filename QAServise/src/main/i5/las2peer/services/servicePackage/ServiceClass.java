@@ -8,10 +8,7 @@ import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
-import i5.las2peer.services.servicePackage.Resources.ExpertiseResource;
-import i5.las2peer.services.servicePackage.Resources.HashtagResource;
-import i5.las2peer.services.servicePackage.Resources.QuestionResource;
-import i5.las2peer.services.servicePackage.Resources.UserResource;
+import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
 
@@ -345,6 +342,30 @@ public class ServiceClass extends Service {
 	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
 		return qr.deleteQuestion(token, questionId);
 	}
+
+    /*@GET
+    @Path("answer/{id}/{token}")
+    public HttpResponse getAnswer(@PathParam("token") String token, @PathParam("id") long answerId) {
+        return new AnswerResource(getConnection()).getAnswer(token, answerId);
+    }
+
+    @DELETE
+    @Path("answer/{id}/{token}")
+    public HttpResponse deleteAnswer(@PathParam("token") String token, @PathParam("id") long answerId) {
+        return new AnswerResource(getConnection()).deleteAnswer(token, answerId);
+    }
+
+    @PUT
+    @Path("answer/{id}/{token}")
+    public HttpResponse deleteAnswer(@PathParam("token") String token, @PathParam("id") long answerId, @ContentParam String content) {
+        return new AnswerResource(getConnection()).editAnswer(token, answerId, content);
+    }*/
+
+    private Connection getConnection() {
+        try { return dbm.getConnection(); }
+        catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
 
 	/**
 	 * Method for debugging purposes.

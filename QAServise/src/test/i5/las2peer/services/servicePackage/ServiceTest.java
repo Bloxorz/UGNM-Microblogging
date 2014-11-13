@@ -200,5 +200,95 @@ public class ServiceTest {
         }
     }
 
+    @Test
+    public void testGetUser()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
 
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "user/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().endsWith("\"pass\":\"87ade9\",\"id\":15}]"));
+            System.out.println("Result of 'testGetUser': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "user/49/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testGetUser': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "user/4/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().contains("\"id\":4}]"));
+            System.out.println("Result of 'testGetUser': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
+
+    @Test
+    public void testGetHashtag()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "hashtag/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().contains("\"text\":\"C++\"")
+                        && result.getResponse().contains("\"text\":\"Java\""));
+            System.out.println("Result of 'testGetHashtag': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "hashtag/49/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testGetHashtag': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "hashtag/4/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().contains("\"id\":4"));
+            System.out.println("Result of 'testGetHashtag': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
+
+    @Test
+    public void testGetQuestion()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "questions/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().contains("[")
+                    && result.getResponse().contains("]"));
+            System.out.println("Result of 'testGetQuestion': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "question/49/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testGetQuestion': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "hashtag/4/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().contains("\"id\":4"));
+            System.out.println("Result of 'testGetQuestion': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
 }
