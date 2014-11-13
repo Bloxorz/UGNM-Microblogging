@@ -52,7 +52,7 @@ public class AnswerResource extends AbstractResource {
         return response;
 	}
 
-	public HttpResponse updateAnswer(String token, long answerID, String content) {
+	public HttpResponse editAnswer(String token, long answerID, String content) {
         HttpResponse response = new HttpResponse("");
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);

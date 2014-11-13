@@ -1,9 +1,11 @@
 package i5.las2peer.services.servicePackage.Resources;
 
+import com.google.gson.JsonParseException;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
+import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import com.google.gson.Gson;
 import i5.las2peer.restMapper.HttpResponse;
@@ -45,7 +47,7 @@ public class QuestionResource extends AbstractResource {
             Long generatedId = ManagerFacade.getInstance().addQuestion(token, conn, question);
 
             res = new HttpResponse(generatedId.toString());
-            res.setStatus(200);
+            res.setStatus(201);
             return res;
         } catch (SQLException e) {
            res = new HttpResponse("");
@@ -82,8 +84,22 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
-    public HttpResponse editQuestion(String token, QuestionDTO question) {
-        throw new NotImplementedException();
+    public HttpResponse editQuestion(String token, long questionId, String content) {
+        HttpResponse response = new HttpResponse("");
+        try {
+            QuestionDTO question = (QuestionDTO) new Gson().fromJson(content, QuestionDTO.class);
+            ManagerFacade.getInstance().editQuestion(token, conn, questionId, question.getText());
+
+            response.setStatus(200);
+
+        } catch (CantUpdateException e) {
+            response.setStatus(500);
+        } catch (JsonParseException e) {
+            response.setStatus(400);
+        } catch (SQLException e) {
+            response.setStatus(500);
+        }
+        return response;
     }
 
     public HttpResponse deleteQuestion(String token, long questionId) {

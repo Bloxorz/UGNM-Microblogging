@@ -111,7 +111,19 @@ public class QuestionManager extends AbstractManager{
     }
 
 
-    public void editQuestion(Connection conn, String questionText) throws SQLException, CantUpdateException {
+    public void editQuestion(Connection conn, long questionId, String questionText) throws SQLException, CantUpdateException {
+        final String sql = "UPDATE Post p RIGHT JOIN Question q ON p.idPost = q.idQuestion " +
+                "SET p.text = ? WHERE q.idQuestion = " + answerId + ";";
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setString(1, answerText);
+            pstmt.setInt(2, rating);
+
+            //if 0 rows were effected
+            if(pstmt.executeUpdate() == 0) {
+                throw new CantUpdateException("No rows affected");
+            }
+        }
+
 
         final String sql = "UPDATE Post p SET p.text = ?";
         try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
