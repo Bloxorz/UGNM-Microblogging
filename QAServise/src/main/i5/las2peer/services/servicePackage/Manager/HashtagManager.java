@@ -73,7 +73,7 @@ public class HashtagManager extends AbstractManager {
 	public long addHashtag(Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
 		
 
-		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value (?)";
+		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value ('?')";
 		
 		if(text == null) {
             throw new NotWellFormedException("Missing text!");

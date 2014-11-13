@@ -10,8 +10,6 @@ import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import com.google.gson.Gson;
 import i5.las2peer.restMapper.HttpResponse;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
