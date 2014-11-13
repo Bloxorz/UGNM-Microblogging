@@ -82,7 +82,7 @@ public class ManagerFacade {
         return expertiseManager.addExpertise(conn, expertise, hashtags);
     }
 
-    public ExpertiseDTO getExpertise(String token, Connection conn, long expertiseId) throws SQLException {
+    public ExpertiseDTO getExpertise(String token, Connection conn, long expertiseId) throws SQLException, HTTPNotFoundException {
         return expertiseManager.getExpertise(conn, expertiseId);
     }
 
