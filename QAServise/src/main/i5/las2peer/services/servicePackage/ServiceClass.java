@@ -9,6 +9,7 @@ import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.servicePackage.Resources.ExpertiseResource;
+import i5.las2peer.services.servicePackage.Resources.HashtagResource;
 import i5.las2peer.services.servicePackage.Resources.QuestionResource;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
@@ -40,6 +41,7 @@ public class ServiceClass extends Service {
 	// resources
 	private QuestionResource qr;
     private ExpertiseResource exp;
+    private HashtagResource hr;
 
 	public ServiceClass() {
 		// read and set properties values
@@ -51,6 +53,7 @@ public class ServiceClass extends Service {
 		try {
 			qr = new QuestionResource(dbm.getConnection());
             exp = new ExpertiseResource(dbm.getConnection());
+            hr = new HashtagResource(dbm.getConnection());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -258,6 +261,31 @@ public class ServiceClass extends Service {
 			}
 		}
 	}
+	
+	@GET
+    @Path("hashtag/{token}")
+    public HttpResponse getHashtags(@PathParam("token") String token) {
+        return hr.getHashtagCollection(token);
+    }
+	
+	/*@POST
+	@Path("hashtag/{token}")
+	public HttpResponse addHashtag(@PathParam("token") String token, @ContentParam String name){
+		return hr.addNewHashtag(token, name);
+		
+	}*/
+	
+	@GET
+	@Path("hashtag/{hashtagId}/{token}")
+	public HttpResponse getOneHashtag(@PathParam("token") String token, @PathParam("hashtagId") Long hashtagId){
+		return hr.getOneHashtag(token, hashtagId);
+	}
+	
+	/*@DELETE
+	@Path("hashtag/{hashtagId}/{token}")
+	public HttpResponse deleteHashtag(@PathParam("token") String token, @PathParam("hashtagId") Long hashtagId){
+		return hr.deleteHashtag(token, hashtagId);
+	}*/
 
     @GET
     @Path("expertises/{token}")
