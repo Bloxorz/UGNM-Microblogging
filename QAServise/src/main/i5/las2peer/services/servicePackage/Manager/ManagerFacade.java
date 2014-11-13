@@ -50,7 +50,7 @@ public class ManagerFacade {
         return userManager.getUserList(conn);
     }
 
-    public long addUser(String token,Connection conn, UserDTO user) throws SQLException, CantInsertException, NotWellFormedException {
+    public long addUser(String token,Connection conn, UserDTO user) throws SQLException, CantInsertException {
         return userManager.addUser(conn, user);
     }
 
