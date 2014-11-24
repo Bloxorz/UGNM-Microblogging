@@ -287,6 +287,13 @@ public class ServiceClass extends Service {
         return hr.getHashtagCollection(token);
     }
 	
+	@GET
+	@Path("hashtag/{id}/questions")
+	public HttpResponse getAllQuestionsToHashtag(@PathParam("id") Long hashtagId){
+		
+		return hr.getAllQuestionsToHashtag(hashtagId);
+	}
+	
 	/*@POST
 	@Path("hashtag/{token}")
 	public HttpResponse addHashtag(@PathParam("token") String token, @ContentParam String name){

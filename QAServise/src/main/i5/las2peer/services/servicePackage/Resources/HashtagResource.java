@@ -132,9 +132,19 @@ public class HashtagResource extends AbstractResource {
     	return response;
     }
     
-    public HttpResponse getAllQuestionsToHashtag(String token, long hashtagId) {
+    public HttpResponse getAllQuestionsToHashtag(long hashtagId) {
     	
-    	throw new NotImplementedException();
+    	HttpResponse response = new HttpResponse("");
+    	try {
+    		  ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId);
+
+              response.setStatus(200);
+
+         } catch (SQLException e) {
+             response.setStatus(500);
+            }
+    	
+    	return response;
     }
     
     public HttpResponse getAllExpertisesToHashtag(String token) {

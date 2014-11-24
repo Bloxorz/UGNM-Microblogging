@@ -111,7 +111,7 @@ public class ManagerFacade {
     public void deleteHashtag(String token,Connection conn, long hashtagId) throws SQLException, CantDeleteException {
         hashtagManager.deleteHashtag(conn, hashtagId);
     }
-    public List<HashtagDTO> getAllQuestionsToHashtag(String token,Connection conn, long hashtagId) throws SQLException {
+    public List<QuestionDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId);
     }
 

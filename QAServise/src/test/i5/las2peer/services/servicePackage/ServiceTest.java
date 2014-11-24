@@ -175,6 +175,9 @@ public class ServiceTest {
     /**
      * Tests the getExpertise method.
      */
+	
+	/*
+	
     @Test
     public void testGetExpertise()
     {
@@ -291,4 +294,6 @@ public class ServiceTest {
             fail ( "Exception: " + e );
         }
     }
+    
+    */
 }
