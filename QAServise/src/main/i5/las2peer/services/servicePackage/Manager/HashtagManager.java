@@ -1,7 +1,9 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -155,9 +157,10 @@ public class HashtagManager extends AbstractManager {
 				"(select q.idQuestion as fragenID, timestamp as timestamp, text as text, idUser as userID From " + 
 				"Post p join Question q on p.idPost = q.idQuestion) as t1 join " + 
 				"( select idHashtag, idQuestion from QuestionToHashtag where idHashtag = ? ) as t2 " + 
-				"on fragenID = idQuestion";
+				"on fragenID = idQuestion;";
 
         try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+        	
         	
         	pstmt.setLong(1,hashtagId);
 
@@ -174,6 +177,40 @@ public class HashtagManager extends AbstractManager {
             }
         }
         return res;
+	}
+	
+	public List<ExpertiseDTO> getAllExpertiseToHashtag(Connection conn, long hashtagId) throws SQLException {
+		
+		List<ExpertiseDTO> res = new ArrayList<ExpertiseDTO>();
+		
+		final String sql = "select id , text From ( "+
+				"select idExpertise as id, text as text from Expertise " +
+    			") as t1 join " +
+				"( select idExpertise from HashtagToExpertise WHERE idHashtag = 4 " +
+				") as t2 " +
+				"on id = idExpertise;";
+		
+		try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+		        	
+		        	
+		        	pstmt.setLong(1,hashtagId);
+		
+		            ResultSet rs = pstmt.executeQuery();
+		            
+		            while (rs.next()) {
+		            	ExpertiseDTO ex = new ExpertiseDTO();
+		            	
+		            	ex.setId(rs.getLong("id"));
+		            	ex.setText(rs.getString("test"));
+		            			                
+		            	
+		            	res.add(ex);
+		            }
+		        }
+		
+		return res;
+		
+		
 	}
 
 	public boolean existsHashtag(Connection conn, String text) throws SQLException {
