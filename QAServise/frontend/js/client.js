@@ -46,7 +46,7 @@ function TemplateServiceClient(endpointUrl) {
 */
 TemplateServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"ugnmMicro/validate",
+		"example/validate",
 		"",
 		"application/json",
 		{},
@@ -56,11 +56,11 @@ TemplateServiceClient.prototype.getMethod = function(successCallback, errorCallb
 };
 
 /**
-* An example function demonstrating a POST request on resource <endpointUrl>/ugnmMicro/myMethodPath/<input>
+* An example function demonstrating a POST request on resource <endpointUrl>/example/myMethodPath/<input>
 */
 TemplateServiceClient.prototype.postMethod = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
-		"ugnmMicro/myMethodPath/" + input,
+		"example/myMethodPath/" + input,
 		"",
 		"application/json",
 		{},
@@ -87,8 +87,21 @@ TemplateServiceClient.prototype.sendRequest = function(method, relativePath, con
 		mtype = mime;
 	}
 	
+	var rurl = this._serviceEndpoint + "/" + relativePath;
+	
+	if(!this.isAnonymous()){
+		console.log("Authenticated request");
+		if(rurl.indexOf("\?") > 0){	
+			rurl += "&access_token=" + window.localStorage["access_token"];
+		} else {
+			rurl += "?access_token=" + window.localStorage["access_token"];
+		}
+	} else {
+		console.log("Anonymous request... ");
+	}
+	
 	var ajaxObj = {
-		url: this._serviceEndpoint + "/" + relativePath,
+		url: rurl,
 		type: method.toUpperCase(),
 		data: content,
 		contentType: mtype,
@@ -114,6 +127,17 @@ TemplateServiceClient.prototype.sendRequest = function(method, relativePath, con
 	}
 	
 	$.ajax(ajaxObj);
+};
+
+/**
+* determines if user is authenticated via OpenID Connect or not.
+*/
+TemplateServiceClient.prototype.isAnonymous = function(){
+	if (oidc_userinfo !== undefined){
+		return false;
+	} else {
+		return true;
+	}
 };
 
 /**
