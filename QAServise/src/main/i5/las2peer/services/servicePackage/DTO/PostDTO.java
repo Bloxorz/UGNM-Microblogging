@@ -1,19 +1,19 @@
 package i5.las2peer.services.servicePackage.DTO;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by Marv on 05.11.2014.
  */
 public class PostDTO extends AbstractDTO{
 
-    private Timestamp timestamp;
+    private Date timestamp;
     private String text;
     private long userId;
 
-    public PostDTO(long id, Timestamp timestamp, String text, long userId) {
+    public PostDTO(long id, Date date, String text, long userId) {
         super(id);
-        this.timestamp = timestamp;
+        this.timestamp = date;
         this.text = text;
         this.userId = userId;
     }
@@ -22,12 +22,12 @@ public class PostDTO extends AbstractDTO{
 
     }
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp(Date date) {
+        this.timestamp = date;
     }
 
     public String getText() {

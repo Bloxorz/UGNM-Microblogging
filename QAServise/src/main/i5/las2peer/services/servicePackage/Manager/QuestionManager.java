@@ -58,7 +58,7 @@ public class QuestionManager extends AbstractManager{
 
             //add all references in DB
             try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, question.getTimestamp());
+                pstmt.setTimestamp(1, new Timestamp(question.getTimestamp().getTime()));
                 pstmt.setString(2, question.getText());
                 pstmt.setLong(3, question.getUserId());
 
@@ -183,7 +183,7 @@ public class QuestionManager extends AbstractManager{
 
             //add all references in DB
             try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, answer.getTimestamp());
+                pstmt.setTimestamp(1, new Timestamp(answer.getTimestamp().getTime()));
                 pstmt.setString(2, answer.getText());
                 pstmt.setLong(3, answer.getUserId());
 
