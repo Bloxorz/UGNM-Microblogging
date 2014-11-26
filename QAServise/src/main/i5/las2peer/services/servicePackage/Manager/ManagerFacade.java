@@ -114,6 +114,9 @@ public class ManagerFacade {
     public List<QuestionDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId);
     }
+    public List<ExpertiseDTO> getAllExpertiseToHashtag(Connection conn, long hashtagId) throws SQLException {
+    	return hashtagManager.getAllExpertiseToHashtag(conn, hashtagId);
+    }
 
     public boolean existsHashtag(String token, Connection conn, String text) throws SQLException {
         //TODO Authentification

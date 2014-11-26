@@ -289,9 +289,14 @@ public class ServiceClass extends Service {
 	
 	@GET
 	@Path("hashtag/{id}/questions")
-	public HttpResponse getAllQuestionsToHashtag(@PathParam("id") Long hashtagId){
-		
+	public HttpResponse getAllQuestionsToHashtag(@PathParam("id") Long hashtagId){	
 		return hr.getAllQuestionsToHashtag(hashtagId);
+	}
+	
+	@GET
+	@Path("hashtag/{id}/expertises")
+	public HttpResponse getAllExpertiseToHashtag(@PathParam("id") Long hashtagId){
+		return hr.getAllExpertisesToHashtag(hashtagId);
 	}
 	
 	/*@POST

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <service consumes="*" name="i5.las2peer.services.servicePackage.ServiceClass" path="ugnmMicro" produces="text/plain" version="0.1">
   <methods>
+    <method httpMethod="get" name="getAllQuestionsToHashtag" path="hashtag/{id}/questions" type="i5.las2peer.restMapper.HttpResponse">
+      <parameters>
+        <parameter annotation="path" index="0" name="id" type="java.lang.Long"/>
+      </parameters>
+    </method>
+    <method httpMethod="get" name="getAllExpertiseToHashtag" path="hashtag/{id}/expertises" type="i5.las2peer.restMapper.HttpResponse">
+      <parameters>
+        <parameter annotation="path" index="0" name="id" type="java.lang.Long"/>
+      </parameters>
+    </method>
+    <method httpMethod="delete" name="deleteQuestion" path="question/{questionId}/{token}" type="i5.las2peer.restMapper.HttpResponse">
+      <parameters>
+        <parameter annotation="path" index="0" name="questionId" type="long"/>
+        <parameter annotation="path" index="1" name="token" type="java.lang.String"/>
+      </parameters>
+    </method>
     <method httpMethod="get" name="validateLogin" path="validate" type="i5.las2peer.restMapper.HttpResponse">
       <parameters/>
     </method>
@@ -59,12 +75,6 @@
       </parameters>
     </method>
     <method httpMethod="get" name="getQuestion" path="question/{questionId}/{token}" type="i5.las2peer.restMapper.HttpResponse">
-      <parameters>
-        <parameter annotation="path" index="0" name="questionId" type="long"/>
-        <parameter annotation="path" index="1" name="token" type="java.lang.String"/>
-      </parameters>
-    </method>
-    <method httpMethod="delete" name="deleteQuestion" path="question/{questionId}/{token}" type="i5.las2peer.restMapper.HttpResponse">
       <parameters>
         <parameter annotation="path" index="0" name="questionId" type="long"/>
         <parameter annotation="path" index="1" name="token" type="java.lang.String"/>

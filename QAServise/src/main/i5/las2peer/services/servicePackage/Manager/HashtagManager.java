@@ -186,7 +186,7 @@ public class HashtagManager extends AbstractManager {
 		final String sql = "select id , text From ( "+
 				"select idExpertise as id, text as text from Expertise " +
     			") as t1 join " +
-				"( select idExpertise from HashtagToExpertise WHERE idHashtag = 4 " +
+				"( select idExpertise from HashtagToExpertise WHERE idHashtag = ? " +
 				") as t2 " +
 				"on id = idExpertise;";
 		
@@ -201,7 +201,7 @@ public class HashtagManager extends AbstractManager {
 		            	ExpertiseDTO ex = new ExpertiseDTO();
 		            	
 		            	ex.setId(rs.getLong("id"));
-		            	ex.setText(rs.getString("test"));
+		            	ex.setText(rs.getString("text"));
 		            			                
 		            	
 		            	res.add(ex);

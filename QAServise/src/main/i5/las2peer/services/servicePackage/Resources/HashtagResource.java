@@ -1,6 +1,8 @@
 package i5.las2peer.services.servicePackage.Resources;
 
+import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
+import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
@@ -136,8 +138,11 @@ public class HashtagResource extends AbstractResource {
     	
     	HttpResponse response = new HttpResponse("");
     	try {
-    		  ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId);
-
+    		List<QuestionDTO> quest = ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId);
+    		  
+    		  Gson gson = new Gson();
+              String json = gson.toJson(quest);
+              response = new HttpResponse(json);
               response.setStatus(200);
 
          } catch (SQLException e) {
@@ -147,9 +152,22 @@ public class HashtagResource extends AbstractResource {
     	return response;
     }
     
-    public HttpResponse getAllExpertisesToHashtag(String token) {
+    public HttpResponse getAllExpertisesToHashtag(long hashtagId) {
     	
-    	throw new NotImplementedException();
+    	HttpResponse response = new HttpResponse("");
+    	try {
+    		  List<ExpertiseDTO> ex = ManagerFacade.getInstance().getAllExpertiseToHashtag(conn, hashtagId);
+
+    		  Gson gson = new Gson();
+              String json = gson.toJson(ex);
+              response = new HttpResponse(json);
+              response.setStatus(200);
+
+         } catch (SQLException e) {
+             response.setStatus(500);
+            }
+    	
+    	return response;
     }
     
     public HttpResponse addExpertiseToHashtag(String token, long expertiseId) {
