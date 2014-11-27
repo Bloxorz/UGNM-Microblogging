@@ -58,7 +58,7 @@ public class QuestionManager extends AbstractManager{
 
             //add all references in DB
             try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, question.getTimestamp());
+                pstmt.setTimestamp(1, new Timestamp(question.getTimestamp().getTime()));
                 pstmt.setString(2, question.getText());
                 pstmt.setLong(3, question.getUserId());
 
@@ -95,7 +95,7 @@ public class QuestionManager extends AbstractManager{
         QuestionDTO question = null;
         final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
                 "idUser as userId FROM Post p right join Question q on " +
-                "p.idPost = q.idQuestion WHERE id = " + questionId + ";";
+                "p.idPost = q.idQuestion WHERE idPost = " + questionId + ";";
         try(Statement stmt = conn.createStatement();) {
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -111,9 +111,9 @@ public class QuestionManager extends AbstractManager{
     }
 
 
-    public void editQuestion(Connection conn, String questionText) throws SQLException, CantUpdateException {
-
-        final String sql = "UPDATE Post p SET p.text = ?";
+    public void editQuestion(Connection conn, long questionId, String questionText) throws SQLException, CantUpdateException {
+        final String sql = "UPDATE Post p RIGHT JOIN Question q ON p.idPost = q.idQuestion " +
+                "SET p.text = ? WHERE q.idQuestion = " + questionId + ";";
         try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
             pstmt.setString(1, questionText);
 
@@ -122,25 +122,17 @@ public class QuestionManager extends AbstractManager{
                 throw new CantUpdateException("No rows affected");
             }
         }
-
     }
 
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        final String deleteFromQuestion = "DELETE FROM Question q WHERE q.idQuestion = ?;";
+        final String deleteFromQuestion = "DELETE FROM Post WHERE idPost = ?;";
 
         try(PreparedStatement qstmt = conn.prepareStatement(deleteFromQuestion); ) {
+
             qstmt.setLong(1, questionId);
 
             if(qstmt.executeUpdate() == 0) {
                 throw new CantDeleteException("Cant delete from Question table");
-            }
-
-            final String deleteFromPost = "DELETE FROM Post p WHERE p.idPost = ?";
-            PreparedStatement pstmt = conn.prepareStatement(deleteFromPost);
-            pstmt.setLong(1, questionId);
-
-            if(qstmt.executeUpdate() == 0) {
-                throw new CantDeleteException("Cant delete from Post table");
             }
         }
     }
@@ -191,7 +183,7 @@ public class QuestionManager extends AbstractManager{
 
             //add all references in DB
             try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, answer.getTimestamp());
+                pstmt.setTimestamp(1, new Timestamp(answer.getTimestamp().getTime()));
                 pstmt.setString(2, answer.getText());
                 pstmt.setLong(3, answer.getUserId());
 

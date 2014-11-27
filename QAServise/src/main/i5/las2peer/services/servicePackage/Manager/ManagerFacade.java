@@ -89,6 +89,10 @@ public class ManagerFacade {
     public void editExpertise(String token, Connection conn, ExpertiseDTO expertise) throws NotWellFormedException, SQLException, CantUpdateException {
        expertiseManager.editExpertise(conn, expertise);
     }
+
+    public void deleteExpertise(String token, Connection conn, long expertiseId) throws CantDeleteException, SQLException {
+        expertiseManager.deleteExpertise(conn, expertiseId);
+    }
         ////// hashtagManager //////
     public List<HashtagDTO> getHashtagCollection(String token, Connection conn) throws SQLException {
         return hashtagManager.getHashtagCollection(conn);
@@ -96,15 +100,22 @@ public class ManagerFacade {
     public HashtagDTO getHashtag(String token, Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getHashtag(conn, hashtagId);
     }
+    
+    public long addNewHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
+        return hashtagManager.addHashtag(conn, text);
+    }
 
-    public void updateHashtag(String token,Connection conn, HashtagDTO hashtag) throws SQLException {
+    public void updateHashtag(String token,Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException {
         hashtagManager.updateHashtag(conn, hashtag);
     }
-    public void deleteHashtag(String token,Connection conn, long hashtagId) throws SQLException {
+    public void deleteHashtag(String token,Connection conn, long hashtagId) throws SQLException, CantDeleteException {
         hashtagManager.deleteHashtag(conn, hashtagId);
     }
-    public List<HashtagDTO> getAllQuestionsToHashtag(String token,Connection conn, long hashtagId) throws SQLException {
+    public List<QuestionDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
         return hashtagManager.getAllQuestionsToHashtag(conn, hashtagId);
+    }
+    public List<ExpertiseDTO> getAllExpertiseToHashtag(Connection conn, long hashtagId) throws SQLException {
+    	return hashtagManager.getAllExpertiseToHashtag(conn, hashtagId);
     }
 
     public boolean existsHashtag(String token, Connection conn, String text) throws SQLException {
@@ -114,7 +125,7 @@ public class ManagerFacade {
     }
 
 
-    public long addHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException {
+    public long addHashtag(String token, Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
         //TODO Authentification
 
         return hashtagManager.addHashtag(conn, text);
@@ -131,8 +142,8 @@ public class ManagerFacade {
     public QuestionDTO getQuestion(String token, Connection conn, long questionId) throws SQLException {
         return questionManager.getQuestion(conn, questionId);
     }
-    public void editQuestion(String token, Connection conn, String questionText) throws SQLException, CantUpdateException {
-        questionManager.editQuestion(conn, questionText);
+    public void editQuestion(String token, Connection conn, long questionId, String questionText) throws SQLException, CantUpdateException {
+        questionManager.editQuestion(conn, questionId, questionText);
     }
     public void deleteQuestion(String token, Connection conn, long questionId) throws SQLException, CantDeleteException {
         questionManager.deleteQuestion(conn, questionId);

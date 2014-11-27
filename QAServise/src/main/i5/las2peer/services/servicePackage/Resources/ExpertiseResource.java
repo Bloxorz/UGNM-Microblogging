@@ -63,7 +63,11 @@ public class ExpertiseResource extends AbstractResource {
     public HttpResponse getExpertise(String token, long expertiseId) {
         HttpResponse response = new HttpResponse("");
         try {
-             ExpertiseDTO exp = ManagerFacade.getInstance().getExpertise(token, conn, expertiseId);
+            ExpertiseDTO exp = ManagerFacade.getInstance().getExpertise(token, conn, expertiseId);
+
+            if(exp == null) {
+                throw new HTTPNotFoundException();
+            }
 
             Gson gson = new Gson();
             String json = gson.toJson(exp);
@@ -73,16 +77,12 @@ public class ExpertiseResource extends AbstractResource {
         } catch (SQLException e) {
             response.setStatus(500);
         } catch (HTTPNotFoundException e) {
+            response.setResult("404 Expertise not found");
             response.setStatus(404);
         }
-
         return response;
     }
-
-    public HttpResponse deleteExpertise(String token, long expertiseId) {
-        throw  new NotImplementedException();
-    }
-
+    
     public HttpResponse editExpertise(String token, ExpertiseDTO expertise) {
         HttpResponse response = new HttpResponse("");
         try {
@@ -101,6 +101,21 @@ public class ExpertiseResource extends AbstractResource {
         return response;
     }
 
+    public HttpResponse deleteExpertise(String token, long expertiseId) {
+        HttpResponse response = new HttpResponse("");
+        try {
+            ManagerFacade.getInstance().deleteExpertise(token, conn, expertiseId);
+
+            response.setStatus(200);
+
+        } catch (SQLException e) {
+            response.setStatus(500);
+        } catch (CantDeleteException e) {
+            response.setStatus(500);
+        }
+
+        return response;
+    }
     public HttpResponse getHashtagsToExpertise(String token, long expertiseId) {
         throw  new NotImplementedException();
     }

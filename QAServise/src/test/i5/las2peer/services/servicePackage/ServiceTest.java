@@ -138,34 +138,27 @@ public class ServiceTest {
 		}
 		
     }
-	
-	
-	/**
-	 * 
-	 * Test the example method that consumes one path parameter
-	 * which we give the value "testInput" in this test.
-	 * 
-	 */
-	@Test
-	public void testExampleMethod()
-	{
-		MiniClient c = new MiniClient();
-		c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
-		
-		try
-		{
-			c.setLogin(Long.toString(testAgent.getId()), testPass);
+
+    @Test
+    public void testExampleMethod()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
             ClientResponse result=c.sendRequest("POST", mainPath +"myMethodPath/testInput", ""); //testInput is the pathParam
             assertEquals(200, result.getHttpCode());
             assertTrue(result.getResponse().trim().contains("testInput")); //"testInput" name is part of response
-			System.out.println("Result of 'testExampleMethod': " + result.getResponse().trim());
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			fail ( "Exception: " + e );
-		}
-		
+            System.out.println("Result of 'testExampleMethod': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+
     }
 
 	/**
@@ -178,4 +171,129 @@ public class ServiceTest {
 		ServiceClass cl = new ServiceClass();
 		assertTrue(cl.debugMapping());
 	}
+
+    /**
+     * Tests the getExpertise method.
+     */
+	
+	/*
+	
+    @Test
+    public void testGetExpertise()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "expertise/6/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().equals("{\"text\":\"guitar\",\"id\":6}"));
+            System.out.println("Result of 'testExampleMethod': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "expertise/100/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testExampleMethod': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
+
+    @Test
+    public void testGetUser()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "user/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().endsWith("\"pass\":\"87ade9\",\"id\":15}]"));
+            System.out.println("Result of 'testGetUser': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "user/49/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testGetUser': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "user/4/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().contains("\"id\":4}]"));
+            System.out.println("Result of 'testGetUser': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
+
+    @Test
+    public void testGetHashtag()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "hashtag/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().contains("\"text\":\"C++\"")
+                        && result.getResponse().contains("\"text\":\"Java\""));
+            System.out.println("Result of 'testGetHashtag': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "hashtag/49/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testGetHashtag': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "hashtag/4/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().contains("\"id\":4"));
+            System.out.println("Result of 'testGetHashtag': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
+
+    @Test
+    public void testGetQuestion()
+    {
+        MiniClient c = new MiniClient();
+        c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+
+        try
+        {
+            c.setLogin(Long.toString(testAgent.getId()), testPass);
+            ClientResponse result=c.sendRequest("GET", mainPath + "questions/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().contains("[")
+                    && result.getResponse().contains("]"));
+            System.out.println("Result of 'testGetQuestion': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "question/49/token", "");
+            assertEquals(404, result.getHttpCode());
+            System.out.println("Result of 'testGetQuestion': " + result.getResponse().trim());
+
+            result = c.sendRequest("GET", mainPath + "hashtag/4/token", "");
+            assertEquals(200, result.getHttpCode());
+            assertTrue(result.getResponse().trim().contains("\"id\":4"));
+            System.out.println("Result of 'testGetQuestion': " + result.getResponse().trim());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail ( "Exception: " + e );
+        }
+    }
+    
+    */
 }

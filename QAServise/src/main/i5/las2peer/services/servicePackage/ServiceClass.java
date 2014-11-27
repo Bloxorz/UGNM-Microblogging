@@ -1,6 +1,5 @@
 package i5.las2peer.services.servicePackage;
 
-import i5.las2peer.services.servicePackage.Resources.QuestionResource;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
@@ -9,6 +8,7 @@ import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
+import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
 
@@ -36,6 +36,11 @@ public class ServiceClass extends Service {
 	private String jdbcSchema;
 	private DatabaseManager dbm;
 
+	// resources
+	private QuestionResource qr;
+    private ExpertiseResource exp;
+    private HashtagResource hr;
+    private UserResource use;
 
 	public ServiceClass() {
 		// read and set properties values
@@ -43,6 +48,15 @@ public class ServiceClass extends Service {
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
+
+		try {
+			qr = new QuestionResource(dbm.getConnection());
+            exp = new ExpertiseResource(dbm.getConnection());
+            hr = new HashtagResource(dbm.getConnection());
+            use = new UserResource(dbm.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -247,8 +261,77 @@ public class ServiceClass extends Service {
 			}
 		}
 	}
-
+	
 	@GET
+	@Path("user/{token}")
+	public HttpResponse getUsers(@PathParam("token") String token) {
+		return use.getUserCollection(token);
+	}
+	
+	@GET
+	@Path("user/{userId}/{token}")
+	public HttpResponse getUser(@PathParam("token") String token, @PathParam("userId") Long userId){
+		return use.getUser(token, userId);
+	}
+	
+	/*@DELETE
+	@Path("user/{userId}/{token}")
+	public HttpResponse deleteUser(@PathParam("token") String token, @PathParam("userId") Long userId){
+		return use.deleteUser(token, userId);
+	}*/
+	
+	
+	@GET
+    @Path("hashtag/{token}")
+    public HttpResponse getHashtags(@PathParam("token") String token) {
+        return hr.getHashtagCollection(token);
+    }
+	
+	@GET
+	@Path("hashtag/{id}/questions")
+	public HttpResponse getAllQuestionsToHashtag(@PathParam("id") Long hashtagId){	
+		return hr.getAllQuestionsToHashtag(hashtagId);
+	}
+	
+	@GET
+	@Path("hashtag/{id}/expertises")
+	public HttpResponse getAllExpertiseToHashtag(@PathParam("id") Long hashtagId){
+		return hr.getAllExpertisesToHashtag(hashtagId);
+	}
+	
+	/*@POST
+	@Path("hashtag/{token}")
+	public HttpResponse addHashtag(@PathParam("token") String token, @ContentParam String name){
+		return hr.addNewHashtag(token, name);
+		
+	}*/
+	
+	@GET
+	@Path("hashtag/{hashtagId}/{token}")
+	public HttpResponse getOneHashtag(@PathParam("token") String token, @PathParam("hashtagId") Long hashtagId){
+		return hr.getOneHashtag(token, hashtagId);
+	}
+	
+	/*@DELETE
+	@Path("hashtag/{hashtagId}/{token}")
+	public HttpResponse deleteHashtag(@PathParam("token") String token, @PathParam("hashtagId") Long hashtagId){
+		return hr.deleteHashtag(token, hashtagId);
+	}*/
+
+    @GET
+    @Path("expertises/{token}")
+    public HttpResponse getExpertises(@PathParam("token") String token) {
+        return exp.getExpertiseCollection(token);
+    }
+
+    @GET
+    @Path("expertise/{id}/{token}")
+    public HttpResponse getExpertise(@PathParam("token") String token, @PathParam("id") long id) {
+        return exp.getExpertise(token, id);
+    }
+
+
+    @GET
 	@Path("questions/{token}")
 	public HttpResponse getQuestions(@PathParam("token") String token) {
 		QuestionResource q = null;
@@ -259,6 +342,42 @@ public class ServiceClass extends Service {
 		}
 		return q.getQuestionCollection(token);
 	}
+
+	@GET
+	@Path("question/{questionId}/{token}")
+	public HttpResponse getQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
+		return qr.getQuestion(token, questionId);
+	}
+
+	@DELETE
+	@Path("question/{questionId}/{token}")
+	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
+		return qr.deleteQuestion(token, questionId);
+	}
+
+    /*@GET
+    @Path("answer/{id}/{token}")
+    public HttpResponse getAnswer(@PathParam("token") String token, @PathParam("id") long answerId) {
+        return new AnswerResource(getConnection()).getAnswer(token, answerId);
+    }
+
+    @DELETE
+    @Path("answer/{id}/{token}")
+    public HttpResponse deleteAnswer(@PathParam("token") String token, @PathParam("id") long answerId) {
+        return new AnswerResource(getConnection()).deleteAnswer(token, answerId);
+    }
+
+    @PUT
+    @Path("answer/{id}/{token}")
+    public HttpResponse deleteAnswer(@PathParam("token") String token, @PathParam("id") long answerId, @ContentParam String content) {
+        return new AnswerResource(getConnection()).editAnswer(token, answerId, content);
+    }*/
+
+    private Connection getConnection() {
+        try { return dbm.getConnection(); }
+        catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
 
 	/**
 	 * Method for debugging purposes.
