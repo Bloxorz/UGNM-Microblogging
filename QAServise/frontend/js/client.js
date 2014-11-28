@@ -41,6 +41,17 @@ function TemplateServiceClient(endpointUrl) {
 	}
 };
 
+TemplateServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
+	this.sendRequest("GET",
+		"ugnmMicro/questions/token",
+		"",
+		"application/json",
+		{},
+		successCallback,
+		errorCallback
+	);
+};
+
 /**
 * An example function demonstrating a GET request on resource <endpointUrl>/example/validate
 */

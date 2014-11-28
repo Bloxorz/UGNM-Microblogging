@@ -67,7 +67,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li><a class="active" href="#url1">Alle Fragen</a></li>
+                <li><a id="all-questions" href="#">Alle Fragen</a></li>
                 <li><a href="#url2">Meine Fragen</a></li>
                 <li><a href="#url2">Meine Antworten</a></li>
                 <li><a href="#url2">Meine Favoriten</a></li>
@@ -308,7 +308,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       );
     }
-    
+
+    function getQuestions() {
+      client.getAllQuestions(
+        function(data,type) {
+          var dom,
+              question, 
+              questions = JSON.parse(data);
+
+          dom = '<div class="my-header"><h4>Alle Fragen</h4><hr></div>';
+
+          questions.forEach(function(question) {
+            dom += "<div class=\"question\">" +
+            "<p><a href=\"#\">css</a>, <a href=\"#\">bootstrap</a></p>" +
+            "<h4><a href=\"answers.html\">" +
+            question.text +
+            "</a></h4><div><span class=\"pull-left\">" +
+            question.timestamp +
+            "</span><span class=\"pull-right\">0x favorisiert</span>" +
+            "<div class=\"clearfix\"></div></div><hr></div>";
+          });
+
+          $('div.col-sm-9').html(dom);
+        },
+        function(error) {
+          // this is the error callback
+          $('div.col-sm-9').html(error);
+        }
+      );
+    }
+
+    $("#all-questions").on('click', function() {
+      getQuestions();
+    });
   </script>
   
 </body>
