@@ -263,28 +263,28 @@ public class ServiceClass extends Service {
 	}
 	
 	@GET
-	@Path("user/{token}")
-	public HttpResponse getUsers(@PathParam("token") String token) {
-		return use.getUserCollection(token);
+	@Path("user/")
+	public HttpResponse getUsers() {
+		return use.getUserCollection();
 	}
 	
 	@GET
-	@Path("user/{userId}/{token}")
-	public HttpResponse getUser(@PathParam("token") String token, @PathParam("userId") Long userId){
-		return use.getUser(token, userId);
+	@Path("user/{userId}")
+	public HttpResponse getUser(@PathParam("userId") Long userId){
+		return use.getUser(userId);
 	}
 	
 	/*@DELETE
 	@Path("user/{userId}/{token}")
-	public HttpResponse deleteUser(@PathParam("token") String token, @PathParam("userId") Long userId){
+	public HttpResponse deleteUser(@PathParam("userId") Long userId){
 		return use.deleteUser(token, userId);
 	}*/
 	
 	
 	@GET
-    @Path("hashtag/{token}")
-    public HttpResponse getHashtags(@PathParam("token") String token) {
-        return hr.getHashtagCollection(token);
+    @Path("hashtag/")
+    public HttpResponse getHashtags() {
+        return hr.getHashtagCollection();
     }
 	
 	@GET
@@ -300,76 +300,76 @@ public class ServiceClass extends Service {
 	}
 	
 	/*@POST
-	@Path("hashtag/{token}")
-	public HttpResponse addHashtag(@PathParam("token") String token, @ContentParam String name){
+	@Path("hashtag/")
+	public HttpResponse addHashtag(@ContentParam String name){
 		return hr.addNewHashtag(token, name);
 		
 	}*/
 	
 	@GET
-	@Path("hashtag/{hashtagId}/{token}")
-	public HttpResponse getOneHashtag(@PathParam("token") String token, @PathParam("hashtagId") Long hashtagId){
-		return hr.getOneHashtag(token, hashtagId);
+	@Path("hashtag/{hashtagId}")
+	public HttpResponse getOneHashtag(@PathParam("hashtagId") Long hashtagId){
+		return hr.getOneHashtag(hashtagId);
 	}
 	
 	/*@DELETE
 	@Path("hashtag/{hashtagId}/{token}")
-	public HttpResponse deleteHashtag(@PathParam("token") String token, @PathParam("hashtagId") Long hashtagId){
+	public HttpResponse deleteHashtag(@PathParam("hashtagId") Long hashtagId){
 		return hr.deleteHashtag(token, hashtagId);
 	}*/
 
     @GET
     @Path("expertises/{token}")
-    public HttpResponse getExpertises(@PathParam("token") String token) {
-        return exp.getExpertiseCollection(token);
+    public HttpResponse getExpertises() {
+        return exp.getExpertiseCollection();
     }
 
     @GET
-    @Path("expertise/{id}/{token}")
-    public HttpResponse getExpertise(@PathParam("token") String token, @PathParam("id") long id) {
-        return exp.getExpertise(token, id);
+    @Path("expertise/{id}")
+    public HttpResponse getExpertise(@PathParam("id") long id) {
+        return exp.getExpertise(id);
     }
 
 
     @GET
-	@Path("questions/{token}")
-	public HttpResponse getQuestions(@PathParam("token") String token) {
+	@Path("questions")
+	public HttpResponse getQuestions() {
 		QuestionResource q = null;
 		try {
 			q = new QuestionResource(dbm.getConnection());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return q.getQuestionCollection(token);
+		return q.getQuestionCollection();
 	}
 
 	@GET
-	@Path("question/{questionId}/{token}")
-	public HttpResponse getQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
-		return qr.getQuestion(token, questionId);
+	@Path("question/{questionId}")
+	public HttpResponse getQuestion(@PathParam("questionId") long questionId) {
+		return qr.getQuestion(questionId);
 	}
 
 	@DELETE
-	@Path("question/{questionId}/{token}")
-	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId, @PathParam("token") String token) {
-		return qr.deleteQuestion(token, questionId);
+	@Path("question/{questionId}")
+	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId) {
+		return qr.deleteQuestion(questionId);
 	}
 
     /*@GET
     @Path("answer/{id}/{token}")
-    public HttpResponse getAnswer(@PathParam("token") String token, @PathParam("id") long answerId) {
+    public HttpResponse getAnswer(@PathParam("id") long answerId) {
         return new AnswerResource(getConnection()).getAnswer(token, answerId);
     }
 
     @DELETE
     @Path("answer/{id}/{token}")
-    public HttpResponse deleteAnswer(@PathParam("token") String token, @PathParam("id") long answerId) {
+    public HttpResponse deleteAnswer(@PathParam("id") long answerId) {
         return new AnswerResource(getConnection()).deleteAnswer(token, answerId);
     }
 
     @PUT
     @Path("answer/{id}/{token}")
-    public HttpResponse deleteAnswer(@PathParam("token") String token, @PathParam("id") long answerId, @ContentParam String content) {
+    public HttpResponse deleteAnswer(@PathParam("id") long answerId, @ContentParam String content) {
         return new AnswerResource(getConnection()).editAnswer(token, answerId, content);
     }*/
 

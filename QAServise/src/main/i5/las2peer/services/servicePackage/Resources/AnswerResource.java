@@ -18,10 +18,10 @@ public class AnswerResource extends AbstractResource {
 		super(conn);
 	}
 
-	public HttpResponse getAnswer(String token, long answerID) {
+	public HttpResponse getAnswer(long answerID) {
         HttpResponse response = new HttpResponse("");
         try {
-            AnswerDTO answers = ManagerFacade.getInstance().getAnswer(token, conn, answerID);
+            AnswerDTO answers = ManagerFacade.getInstance().getAnswer(conn, answerID);
 
             Gson gson = new Gson();
             String json = gson.toJson(answers);
@@ -33,10 +33,10 @@ public class AnswerResource extends AbstractResource {
         return response;
 	}
 
-	public HttpResponse deleteAnswer(String token, long answerID) {
+	public HttpResponse deleteAnswer(long answerID) {
         HttpResponse response = new HttpResponse("");
         try {
-            ManagerFacade.getInstance().deleteAnswer(token, conn, answerID);
+            ManagerFacade.getInstance().deleteAnswer(conn, answerID);
 
             response.setStatus(200);
 
@@ -48,11 +48,11 @@ public class AnswerResource extends AbstractResource {
         return response;
 	}
 
-	public HttpResponse editAnswer(String token, long answerID, String content) {
+	public HttpResponse editAnswer(long answerID, String content) {
         HttpResponse response = new HttpResponse("");
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
-            ManagerFacade.getInstance().editAnswer(token, conn, answerID, answer.getText(), answer.getRating().getValue());
+            ManagerFacade.getInstance().editAnswer(conn, answerID, answer.getText(), answer.getRating().getValue());
 
             response.setStatus(200);
 

@@ -22,10 +22,10 @@ public class ExpertiseResource extends AbstractResource {
         super(conn);
     }
 
-    public HttpResponse getExpertiseCollection(String token) {
+    public HttpResponse getExpertiseCollection() {
         HttpResponse response = new HttpResponse("");
         try {
-            List<ExpertiseDTO> expertise = ManagerFacade.getInstance().getExpertiseList(token, conn);
+            List<ExpertiseDTO> expertise = ManagerFacade.getInstance().getExpertiseList(conn);
 
             Gson gson = new Gson();
             String json = gson.toJson(expertise);
@@ -38,12 +38,12 @@ public class ExpertiseResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse addExpertise(String token, ExpertiseDTO expertise) {
+    public HttpResponse addExpertise(ExpertiseDTO expertise) {
         HttpResponse response = new HttpResponse("");
         try {
 
-            List<HashtagDTO> hashtags = ManagerFacade.getInstance().getHashtags(token);
-            long id = ManagerFacade.getInstance().addExpertise(token, conn, expertise, hashtags);
+            List<HashtagDTO> hashtags = ManagerFacade.getInstance().getHashtags();
+            long id = ManagerFacade.getInstance().addExpertise(conn, expertise, hashtags);
 
             String json = "{'id': " + id + "}";
             response = new HttpResponse(json);
@@ -60,10 +60,10 @@ public class ExpertiseResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse getExpertise(String token, long expertiseId) {
+    public HttpResponse getExpertise(long expertiseId) {
         HttpResponse response = new HttpResponse("");
         try {
-            ExpertiseDTO exp = ManagerFacade.getInstance().getExpertise(token, conn, expertiseId);
+            ExpertiseDTO exp = ManagerFacade.getInstance().getExpertise(conn, expertiseId);
 
             if(exp == null) {
                 throw new HTTPNotFoundException();
@@ -83,10 +83,10 @@ public class ExpertiseResource extends AbstractResource {
         return response;
     }
     
-    public HttpResponse editExpertise(String token, ExpertiseDTO expertise) {
+    public HttpResponse editExpertise(ExpertiseDTO expertise) {
         HttpResponse response = new HttpResponse("");
         try {
-           ManagerFacade.getInstance().editExpertise(token, conn, expertise);
+           ManagerFacade.getInstance().editExpertise(conn, expertise);
 
             response.setStatus(200);
 
@@ -104,7 +104,7 @@ public class ExpertiseResource extends AbstractResource {
     public HttpResponse deleteExpertise(String token, long expertiseId) {
         HttpResponse response = new HttpResponse("");
         try {
-            ManagerFacade.getInstance().deleteExpertise(token, conn, expertiseId);
+            ManagerFacade.getInstance().deleteExpertise(conn, expertiseId);
 
             response.setStatus(200);
 

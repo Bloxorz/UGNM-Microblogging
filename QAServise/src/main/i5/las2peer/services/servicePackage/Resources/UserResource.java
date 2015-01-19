@@ -22,11 +22,11 @@ public class UserResource extends AbstractResource {
         super(conn);
     }
 
-    public HttpResponse getUserCollection(String token) {
+    public HttpResponse getUserCollection() {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            List<UserDTO> user = ManagerFacade.getInstance().getUserList(token, conn);
+            List<UserDTO> user = ManagerFacade.getInstance().getUserList(conn);
 
             Gson gson = new Gson();
             String json = gson.toJson(user);
@@ -39,11 +39,11 @@ public class UserResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse addUser(String token, UserDTO user) {
+    public HttpResponse addUser(UserDTO user) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            Long users = ManagerFacade.getInstance().addUser(token, conn, user);
+            Long users = ManagerFacade.getInstance().addUser(conn, user);
 
             Gson gson = new Gson();
             String json = gson.toJson(users);
@@ -61,11 +61,11 @@ public class UserResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse getUser(String token, long userId) {
+    public HttpResponse getUser(long userId) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            UserDTO user = ManagerFacade.getInstance().getUser(token, conn, userId);
+            UserDTO user = ManagerFacade.getInstance().getUser(conn, userId);
 
             Gson gson = new Gson();
             String json = gson.toJson(user);
@@ -79,11 +79,11 @@ public class UserResource extends AbstractResource {
     }
     
 
-    public HttpResponse editUser(String token, UserDTO user) {
+    public HttpResponse editUser(UserDTO user) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            ManagerFacade.getInstance().editUser(token, conn, user);
+            ManagerFacade.getInstance().editUser(conn, user);
             response.setStatus(200);
 
         } catch (SQLException e) {
@@ -103,11 +103,11 @@ public class UserResource extends AbstractResource {
     	
     }
 
-    public HttpResponse deleteUser(String token, long UserId) {
+    public HttpResponse deleteUser(long UserId) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            ManagerFacade.getInstance().deleteUser(token, conn, UserId);
+            ManagerFacade.getInstance().deleteUser(conn, UserId);
             response.setStatus(200);
 
         } catch (SQLException e) {
@@ -121,11 +121,11 @@ public class UserResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse questionBookmarks(String token, long UserId) {
+    public HttpResponse questionBookmarks(long UserId) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            List<QuestionDTO> user = ManagerFacade.getInstance().bookmarkedQuestions(token, conn, UserId);
+            List<QuestionDTO> user = ManagerFacade.getInstance().bookmarkedQuestions(conn, UserId);
 
             Gson gson = new Gson();
             String json = gson.toJson(user);
@@ -138,11 +138,11 @@ public class UserResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse addBookmark(String token, long UserId, long QuestionId) {
+    public HttpResponse addBookmark(long UserId, long QuestionId) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            ManagerFacade.getInstance().bookmark(token, conn, UserId, QuestionId);
+            ManagerFacade.getInstance().bookmark(conn, UserId, QuestionId);
             response.setStatus(200);
 
         } catch (SQLException e) {

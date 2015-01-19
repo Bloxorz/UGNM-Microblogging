@@ -65,9 +65,8 @@ public class ExpertiseManager extends  AbstractManager {
             //add all Hashtags that do not exist yet
             List<Long> hashTagIds = new ArrayList<Long>();
             for(HashtagDTO hashtag : hashtags) {
-                if(ManagerFacade.getInstance().existsHashtag(ManagerFacade.IGNORE_AUTHENTIFICATION,
-                        conn, hashtag.getText())) {
-                    Long id = ManagerFacade.getInstance().addHashtag(ManagerFacade.IGNORE_AUTHENTIFICATION, conn, hashtag.getText());
+                if(ManagerFacade.getInstance().existsHashtag(conn, hashtag.getText())) {
+                    Long id = ManagerFacade.getInstance().addHashtag(conn, hashtag.getText());
                     hashTagIds.add(id);
                 } else {
                     hashTagIds.add( new Long(hashtag.getId()));
