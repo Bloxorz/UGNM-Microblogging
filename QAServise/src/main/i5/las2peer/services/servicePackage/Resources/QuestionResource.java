@@ -24,10 +24,10 @@ public class QuestionResource extends AbstractResource {
         super(conn);
     }
 
-    public HttpResponse getQuestionCollection(String token) {
+    public HttpResponse getQuestionCollection() {
         HttpResponse response = new HttpResponse("");
         try {
-            List<QuestionDTO> questions = ManagerFacade.getInstance().getQuestionList(token, conn);
+            List<QuestionDTO> questions = ManagerFacade.getInstance().getQuestionList(conn);
 
             Gson gson = new Gson();
             String json = gson.toJson(questions);
@@ -40,10 +40,10 @@ public class QuestionResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse addQuestion(String token, QuestionDTO question) {
+    public HttpResponse addQuestion(QuestionDTO question) {
         HttpResponse res;
         try {
-            Long generatedId = ManagerFacade.getInstance().addQuestion(token, conn, question);
+            Long generatedId = ManagerFacade.getInstance().addQuestion(conn, question);
 
             res = new HttpResponse(generatedId.toString());
             res.setStatus(201);
@@ -61,10 +61,10 @@ public class QuestionResource extends AbstractResource {
         return res;
     }
 
-    public HttpResponse getQuestion(String token, long questionId) {
+    public HttpResponse getQuestion(long questionId) {
         HttpResponse res;
         try {
-            QuestionDTO question = ManagerFacade.getInstance().getQuestion(token, conn, questionId);
+            QuestionDTO question = ManagerFacade.getInstance().getQuestion(conn, questionId);
             if(question == null) {
                 res = new HttpResponse("null");
                 res.setStatus(404);
@@ -83,11 +83,11 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
-    public HttpResponse editQuestion(String token, long questionId, String content) {
+    public HttpResponse editQuestion(long questionId, String content) {
         HttpResponse response = new HttpResponse("");
         try {
             QuestionDTO question = (QuestionDTO) new Gson().fromJson(content, QuestionDTO.class);
-            ManagerFacade.getInstance().editQuestion(token, conn, questionId, question.getText());
+            ManagerFacade.getInstance().editQuestion(conn, questionId, question.getText());
 
             response.setStatus(200);
 
@@ -101,11 +101,11 @@ public class QuestionResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse deleteQuestion(String token, long questionId) {
+    public HttpResponse deleteQuestion(long questionId) {
         HttpResponse res = new HttpResponse("");
 
         try {
-            ManagerFacade.getInstance().deleteQuestion(token, conn, questionId);
+            ManagerFacade.getInstance().deleteQuestion(conn, questionId);
             res.setStatus(200);
         } catch (SQLException e) {
             res.setStatus(500);
@@ -116,10 +116,10 @@ public class QuestionResource extends AbstractResource {
         return res;
     }
 
-    public HttpResponse getAnswersToQuestion(String token,long questionId) {
+    public HttpResponse getAnswersToQuestion(long questionId) {
         HttpResponse res;
         try {
-            List<AnswerDTO> answers = ManagerFacade.getInstance().getAnswersToQuestion(token, conn, questionId);
+            List<AnswerDTO> answers = ManagerFacade.getInstance().getAnswersToQuestion(conn, questionId);
             if(answers == null) {
                 res = new HttpResponse("");
                 res.setStatus(404);
@@ -138,12 +138,12 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
-    public HttpResponse addAnswerToQuestion(String token, long questionId, String content) {
+    public HttpResponse addAnswerToQuestion(long questionId, String content) {
 
         HttpResponse res;
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
-            Long generatedId = ManagerFacade.getInstance().addAnswerToQuestion(token, conn, answer);
+            Long generatedId = ManagerFacade.getInstance().addAnswerToQuestion(conn, answer);
 
             res = new HttpResponse(generatedId.toString());
             res.setStatus(201);
@@ -164,10 +164,10 @@ public class QuestionResource extends AbstractResource {
         return res;
     }
 
-    public HttpResponse getBookmarkUsersToQuestion(String token, long questionId) {
+    public HttpResponse getBookmarkUsersToQuestion(long questionId) {
         HttpResponse res;
         try {
-            List<UserDTO> users = ManagerFacade.getInstance().getBookmarkUsersToQuestion(token, conn, questionId);
+            List<UserDTO> users = ManagerFacade.getInstance().getBookmarkUsersToQuestion(conn, questionId);
             if(users == null) {
                 res = new HttpResponse("");
                 res.setStatus(404);

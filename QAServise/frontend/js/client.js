@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 * Instantiates a new TemplateServiceClient, given its endpoint URL.
 */
-function TemplateServiceClient(endpointUrl) {
+function ServiceClient(endpointUrl) {
 	// care for trailing slash in endpoint URL
 	if(endpointUrl.endsWith("/")) {
 		this._serviceEndpoint = endpointUrl.substr(0,endpointUrl.length-1);
@@ -41,7 +41,7 @@ function TemplateServiceClient(endpointUrl) {
 	}
 };
 
-TemplateServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
+ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
 		"ugnmMicro/questions/token",
 		"",
@@ -55,7 +55,7 @@ TemplateServiceClient.prototype.getAllQuestions = function(successCallback, erro
 /**
 * An example function demonstrating a GET request on resource <endpointUrl>/example/validate
 */
-TemplateServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
+ServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
 		"example/validate",
 		"",
@@ -69,7 +69,7 @@ TemplateServiceClient.prototype.getMethod = function(successCallback, errorCallb
 /**
 * An example function demonstrating a POST request on resource <endpointUrl>/example/myMethodPath/<input>
 */
-TemplateServiceClient.prototype.postMethod = function(input, successCallback, errorCallback) {
+ServiceClient.prototype.postMethod = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
 		"example/myMethodPath/" + input,
 		"",
@@ -92,7 +92,7 @@ TemplateServiceClient.prototype.postMethod = function(input, successCallback, er
 *   - errorCallback: a callback function invoked in case the request failed. Expects one parameter "error" representing the error occurred.
 *   
 */
-TemplateServiceClient.prototype.sendRequest = function(method, relativePath, content, mime, customHeaders, successCallback, errorCallback) {
+ServiceClient.prototype.sendRequest = function(method, relativePath, content, mime, customHeaders, successCallback, errorCallback) {
 	var mtype = "text/plain; charset=UTF-8"
 	if(mime !== 'undefined') {
 		mtype = mime;
@@ -143,7 +143,7 @@ TemplateServiceClient.prototype.sendRequest = function(method, relativePath, con
 /**
 * determines if user is authenticated via OpenID Connect or not.
 */
-TemplateServiceClient.prototype.isAnonymous = function(){
+ServiceClient.prototype.isAnonymous = function(){
 	if (oidc_userinfo !== undefined){
 		return false;
 	} else {

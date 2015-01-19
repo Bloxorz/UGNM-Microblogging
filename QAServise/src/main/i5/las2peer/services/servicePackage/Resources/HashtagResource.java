@@ -27,11 +27,11 @@ public class HashtagResource extends AbstractResource {
 
     //TODO in der serviceclass wrappen
 	
-    public HttpResponse getHashtagCollection(String token) {
+    public HttpResponse getHashtagCollection() {
     	
     	HttpResponse response = new HttpResponse("");
         try {
-            List<HashtagDTO> hashtag = ManagerFacade.getInstance().getHashtagCollection(token, conn);
+            List<HashtagDTO> hashtag = ManagerFacade.getInstance().getHashtagCollection(conn);
 
             Gson gson = new Gson();
             String json = gson.toJson(hashtag);
@@ -45,11 +45,11 @@ public class HashtagResource extends AbstractResource {
 
     }
     
-    public HttpResponse addNewHashtag(String token, String text) {
+    public HttpResponse addNewHashtag(String text) {
     	
     	HttpResponse response = new HttpResponse("");
     	try {
-              Long hashtag = ManagerFacade.getInstance().addNewHashtag(token, conn, text);
+              Long hashtag = ManagerFacade.getInstance().addNewHashtag(conn, text);
 
               Gson gson = new Gson();
               String json = gson.toJson(hashtag);
@@ -73,11 +73,11 @@ public class HashtagResource extends AbstractResource {
     	
     }
     
-    public HttpResponse getOneHashtag(String token, long hashtagId) {
+    public HttpResponse getOneHashtag(long hashtagId) {
     	
     	HttpResponse response = new HttpResponse("");
     	try {
-    		  HashtagDTO hashtag = ManagerFacade.getInstance().getHashtag(token, conn, hashtagId);
+    		  HashtagDTO hashtag = ManagerFacade.getInstance().getHashtag(conn, hashtagId);
 
               Gson gson = new Gson();
               String json = gson.toJson(hashtag);
@@ -91,11 +91,11 @@ public class HashtagResource extends AbstractResource {
     	return response;
     }
     
-    public HttpResponse updateHashtag(String token, HashtagDTO hashtagDTO) {
+    public HttpResponse updateHashtag(HashtagDTO hashtagDTO) {
     	
     	HttpResponse response = new HttpResponse("");
     	try {
-              ManagerFacade.getInstance().updateHashtag(token, conn, hashtagDTO);
+              ManagerFacade.getInstance().updateHashtag(conn, hashtagDTO);
               response.setStatus(200);
 
          } catch (SQLException e) {
@@ -113,11 +113,11 @@ public class HashtagResource extends AbstractResource {
     	
     }
     
-    public HttpResponse deleteHashtag(String token, long hashtagId) {
+    public HttpResponse deleteHashtag(long hashtagId) {
     	
     	HttpResponse response = new HttpResponse("");
     	try {
-    		  ManagerFacade.getInstance().deleteHashtag(token, conn, hashtagId);
+    		  ManagerFacade.getInstance().deleteHashtag(conn, hashtagId);
 
               response.setStatus(200);
 
@@ -170,7 +170,7 @@ public class HashtagResource extends AbstractResource {
     	return response;
     }
     
-    public HttpResponse addExpertiseToHashtag(String token, long expertiseId) {
+    public HttpResponse addExpertiseToHashtag(long expertiseId) {
     	
     	throw new NotImplementedException();
     }
