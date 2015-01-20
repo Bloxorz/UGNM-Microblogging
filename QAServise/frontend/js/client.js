@@ -43,7 +43,7 @@ function ServiceClient(endpointUrl) {
 
 ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"ugnmMicro/questions/token",
+		"ugnmMicro/questions/",
 		"",
 		"application/json",
 		{},
