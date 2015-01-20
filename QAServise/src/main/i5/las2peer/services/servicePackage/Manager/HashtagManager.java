@@ -11,10 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
-import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
-import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
-import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
+import i5.las2peer.services.servicePackage.Exceptions.*;
 
 import com.mysql.jdbc.Statement;
 
@@ -49,7 +46,7 @@ public class HashtagManager extends AbstractManager {
 		
 	}
 	
-	public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException {
+	public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException, CantFindException {
 		
 		 HashtagDTO hashtag = new HashtagDTO();
 		 hashtag.setId(hashtagId);
@@ -63,10 +60,10 @@ public class HashtagManager extends AbstractManager {
 	            
 	            
 	            if(rs.next()) {
-	            	
 	            	hashtag.setText(rs.getString("text"));
-	                
-	            }
+	            } else {
+					throw new CantFindException();
+				}
 	        }
 	        return hashtag;
 	        
@@ -75,7 +72,7 @@ public class HashtagManager extends AbstractManager {
 	public long addHashtag(Connection conn, String text) throws SQLException, CantInsertException, NotWellFormedException {
 		
 
-		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) value ('?');";
+		final String sql = "INSERT INTO ugnm1415g2.Hashtag (text) VALUES (?)";
 		
 		if(text == null) {
             throw new NotWellFormedException("Missing text!");
@@ -85,7 +82,7 @@ public class HashtagManager extends AbstractManager {
 			
 			pstmt.setString(1, text);
 
-			pstmt.executeUpdate(sql);
+			pstmt.executeUpdate();
             ResultSet rs = pstmt.getGeneratedKeys();
 
             if(rs.next()) {
@@ -95,10 +92,10 @@ public class HashtagManager extends AbstractManager {
 		throw new CantInsertException("Could not insert Hashtag into DB");
 	}
 	
-	public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException {
+	public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException, CantFindException {
 				
 		
-		final String sql = "Update ugnm1415g2.Hashtag h SET h.text = ? WHERE h.idHashtag = ?;";
+		final String sql = "UPDATE ugnm1415g2.Hashtag h SET h.text = ? WHERE h.idHashtag = ?;";
 		
 		if(hashtag.getText() == null) {
             throw new NotWellFormedException("Missing text!");
@@ -113,39 +110,43 @@ public class HashtagManager extends AbstractManager {
 			pstmt.setLong(2, id);
 			
 
-			pstmt.executeUpdate(sql);
-            
-        }
-		throw new CantUpdateException("Could not update Hashtag in DB!");
+			int rowsAffected = pstmt.executeUpdate();
+			if(rowsAffected == 0) {
+				throw new CantFindException();
+			}
+        } catch (SQLException e) {
+			throw new CantUpdateException(e.toString());
+		}
 	}
 	
-	public void deleteHashtag(Connection conn, long hashtagId) throws SQLException, CantDeleteException {
+	public void deleteHashtag(Connection conn, long hashtagId) throws SQLException, CantDeleteException, CantFindException {
 		
 		HashtagDTO hashtag = new HashtagDTO();
 		hashtag.setId(hashtagId);
 		
-		final String delFirstFkey = "DELETE FROM ugnm1415g2.Hashtagtoexpertise WHERE idHashtag = ?;";
-		final String delSecondFkey = "DELETE FROM ugnm1415g2.Questiontohashtag WHERE idHashtag = ?;";
+		final String delFirstFkey = "DELETE FROM ugnm1415g2.HashtagToExpertise WHERE idHashtag = ?;";
+		final String delSecondFkey = "DELETE FROM ugnm1415g2.QuestionToHashtag WHERE idHashtag = ?;";
 		final String delFromHashtag = "DELETE FROM ugnm1415g2.Hashtag WHERE idHashtag = ?;";
 		
 		
-		try(PreparedStatement pstmt = conn.prepareStatement(delFirstFkey); ) {
+		try(PreparedStatement pstmt1 = conn.prepareStatement(delFirstFkey);
+			PreparedStatement pstmt2 = conn.prepareStatement(delSecondFkey);
+			PreparedStatement pstmt3 = conn.prepareStatement(delFromHashtag); ) {
 			
-			pstmt.setLong(1, hashtag.getId());
-			pstmt.executeUpdate();
-			
-			PreparedStatement pstmt1 = conn.prepareStatement(delSecondFkey);
 			pstmt1.setLong(1, hashtag.getId());
 			pstmt1.executeUpdate();
-			
-			
-			PreparedStatement pstmt2 = conn.prepareStatement(delFromHashtag);  
+
 			pstmt2.setLong(1, hashtag.getId());
 			pstmt2.executeUpdate();
-			
-				
+
+			pstmt3.setLong(1, hashtag.getId());
+			int rowsAffected = pstmt3.executeUpdate();
+			if( rowsAffected == 0 ) {
+				throw new CantFindException();
+			}
+		} catch (SQLException e) {
+			throw new CantDeleteException(e.toString());
 		}
-		throw new CantDeleteException("Could not delete Hashtag from DB!");
 	}
 	
 	public List<QuestionDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
@@ -182,7 +183,6 @@ public class HashtagManager extends AbstractManager {
 	public List<ExpertiseDTO> getAllExpertiseToHashtag(Connection conn, long hashtagId) throws SQLException {
 		
 		List<ExpertiseDTO> res = new ArrayList<ExpertiseDTO>();
-		
 		final String sql = "select id , text From ( "+
 				"select idExpertise as id, text as text from Expertise " +
     			") as t1 join " +

@@ -21,5 +21,12 @@ public class QuestionDTO extends PostDTO {
         return false;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return (this.getId() == ((QuestionDTO)other).getId())
+                && (this.getText().equals(((QuestionDTO) other).getText()))
+                && (this.getTimestamp().equals(((QuestionDTO) other).getTimestamp()))
+                && (this.getUserId() == ((QuestionDTO) other).getUserId());
+    }
 
 }

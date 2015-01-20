@@ -36,6 +36,6 @@ VALUES (1),(2),(4);
 INSERT INTO Answer (idAnswer, rating, idQuestion)
 VALUES (3,100,2),(5,0,2),(6,0,4),(7,0,4),(8,0,4);
 INSERT INTO QuestionToHashtag (idQuestion, idHashtag)
-VALUES (1,3),(1,1),(2,1),(2,2),(2,3),(2,4),(2,5),(2,6),(4,1);
+VALUES (1,3),(1,1),(2,4),(4,1);
 INSERT INTO UserToQuestion (idUser, idQuestion)
 VALUES (4,1),(4,2),(5,4);

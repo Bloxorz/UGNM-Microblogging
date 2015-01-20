@@ -1,7 +1,7 @@
 package i5.las2peer.services.servicePackage.Manager;
 
 import java.sql.SQLException;
-import i5.las2peer.services.servicePackage.Exceptions.HTTPNotFoundException;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import com.google.gson.JsonParseException;
 
 import i5.las2peer.restMapper.HttpResponse;
@@ -16,7 +16,7 @@ import i5.las2peer.restMapper.HttpResponse;
             response = new HttpResponse( sr.toJson() );
             //successful
             response.setStatus(200);
-        } catch (HTTPNotFoundException e) {
+        } catch (CantFindException e) {
             response = new HttpResponse("");
             response.setStatus(404);
         } catch (SQLException e) {

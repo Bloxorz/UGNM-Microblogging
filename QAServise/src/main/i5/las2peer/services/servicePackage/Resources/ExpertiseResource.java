@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.restMapper.HttpResponse;
-import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.*;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -66,7 +65,7 @@ public class ExpertiseResource extends AbstractResource {
             ExpertiseDTO exp = ManagerFacade.getInstance().getExpertise(conn, expertiseId);
 
             if(exp == null) {
-                throw new HTTPNotFoundException();
+                throw new CantFindException();
             }
 
             Gson gson = new Gson();
@@ -76,7 +75,7 @@ public class ExpertiseResource extends AbstractResource {
 
         } catch (SQLException e) {
             response.setStatus(500);
-        } catch (HTTPNotFoundException e) {
+        } catch (CantFindException e) {
             response.setResult("404 Expertise not found");
             response.setStatus(404);
         }
