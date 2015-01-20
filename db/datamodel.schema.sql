@@ -1,5 +1,12 @@
 USE ugnm1415g2;
 
+-- delete all:
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS User, Post, Question, Answer, Hashtag, Expertise,
+					QuestionToHashtag, HashtagToExpertise, UserToExpertise,
+					UserToQuestion, FavoriteQuestionsToUser;
+SET FOREIGN_KEY_CHECKS=1;
+
 -- entities
 CREATE TABLE User
 (
@@ -93,4 +100,3 @@ CREATE TABLE FavoriteQuestionsToUser (
 	FOREIGN KEY (idUser) REFERENCES User(idUser)
 );
 
--- delete all:  DROP TABLE QuestionToHashtag,HashtagToExpertise,UserToExpertise,UserToQuestion; DROP TABLE Expertise,Hashtag,Answer; DROP TABLE Question,Post; DROP TABLE User

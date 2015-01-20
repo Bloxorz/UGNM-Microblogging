@@ -22,10 +22,10 @@ VALUES (1,1),(1,2),(2,1),(2,2),(3,3),(3,4),(4,1),(4,4),(5,1),(5,2),(5,3),(5,4);
 	
 INSERT INTO Post (text, idUser)
 VALUES 
-	('How do I write a for-loop?#For-Loop#Java', 1),
-	('Where can I find the toilet?#All', 4),
+	('How do I write a for-loop?', 1),
+	('Where can I find the toilet?', 4),
 	('In the building E2, first floor.', 2),
-	('How does the JFrame-constructor work?#Java', 2),
+	('How does the JFrame-constructor work?', 2),
 	('I think he is right', 5),
 	('You should google for it.', 3),
 	('I want to recherche it...', 5),

@@ -22,6 +22,6 @@ public class Testing {
         dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
         QuestionResource q = new QuestionResource(dbm.getConnection());
 
-        q.getQuestionCollection("");
+       // q.getQuestionCollection("");
     }
 }
