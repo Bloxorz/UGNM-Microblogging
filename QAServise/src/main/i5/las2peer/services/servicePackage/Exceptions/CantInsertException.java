@@ -5,6 +5,6 @@ package i5.las2peer.services.servicePackage.Exceptions;
  */
 public class CantInsertException extends  Exception{
     public CantInsertException(String msg) {
-
+        super(msg);
     }
 }

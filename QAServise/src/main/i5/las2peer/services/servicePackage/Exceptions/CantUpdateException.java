@@ -5,6 +5,7 @@ package i5.las2peer.services.servicePackage.Exceptions;
  */
 public class CantUpdateException extends Exception {
     public CantUpdateException(String s) {
+        super(s);
     }
 
     public CantUpdateException() {

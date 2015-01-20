@@ -5,6 +5,6 @@ package i5.las2peer.services.servicePackage.Exceptions;
  */
 public class CantDeleteException extends Exception {
     public CantDeleteException(String s) {
-
+        super(s);
     }
 }
