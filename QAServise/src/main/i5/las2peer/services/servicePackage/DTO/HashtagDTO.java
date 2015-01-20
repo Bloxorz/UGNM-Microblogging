@@ -15,11 +15,19 @@ public class HashtagDTO extends AbstractDTO{
         super(id);
     }
 
+    public HashtagDTO(long id, String text) { super(id); setText(text); }
+
     public String getText() {
         return text;
     }
 
     public void setText(String name) {
         this.text = name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return this.getText().equals(((HashtagDTO)other).getText())
+                && (this.getId() == ((AbstractDTO)other).getId());
     }
 }

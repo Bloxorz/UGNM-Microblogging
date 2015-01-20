@@ -82,7 +82,7 @@ public class ManagerFacade {
         return expertiseManager.addExpertise(conn, expertise, hashtags);
     }
 
-    public ExpertiseDTO getExpertise( Connection conn, long expertiseId) throws SQLException, HTTPNotFoundException {
+    public ExpertiseDTO getExpertise( Connection conn, long expertiseId) throws SQLException, CantFindException {
         return expertiseManager.getExpertise(conn, expertiseId);
     }
 
@@ -97,7 +97,7 @@ public class ManagerFacade {
     public List<HashtagDTO> getHashtagCollection( Connection conn) throws SQLException {
         return hashtagManager.getHashtagCollection(conn);
     }
-    public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException {
+    public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException, CantFindException {
         return hashtagManager.getHashtag(conn, hashtagId);
     }
     
@@ -105,10 +105,10 @@ public class ManagerFacade {
         return hashtagManager.addHashtag(conn, text);
     }
 
-    public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException {
+    public void updateHashtag(Connection conn, HashtagDTO hashtag) throws SQLException, CantUpdateException, NotWellFormedException, CantFindException {
         hashtagManager.updateHashtag(conn, hashtag);
     }
-    public void deleteHashtag(Connection conn, long hashtagId) throws SQLException, CantDeleteException {
+    public void deleteHashtag(Connection conn, long hashtagId) throws SQLException, CantDeleteException, CantFindException {
         hashtagManager.deleteHashtag(conn, hashtagId);
     }
     public List<QuestionDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {

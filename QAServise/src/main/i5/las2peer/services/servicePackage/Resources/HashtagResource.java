@@ -3,10 +3,7 @@ package i5.las2peer.services.servicePackage.Resources;
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
-import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
-import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
-import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
-import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
+import i5.las2peer.services.servicePackage.Exceptions.*;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import i5.las2peer.restMapper.HttpResponse;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -86,7 +83,9 @@ public class HashtagResource extends AbstractResource {
 
          } catch (SQLException e) {
              response.setStatus(500);
-            }
+        } catch (CantFindException e) {
+            response.setStatus(404);
+        }
     		
     	return response;
     }
@@ -109,6 +108,10 @@ public class HashtagResource extends AbstractResource {
     		catch (NotWellFormedException e){
     			response.setStatus(400);
     		}
+
+            catch (CantFindException e) {
+                response.setStatus(404);
+            }
     	return response;
     	
     }
@@ -128,6 +131,9 @@ public class HashtagResource extends AbstractResource {
     		catch (CantDeleteException e){
     			response.setStatus(304);
     		}
+        catch (CantFindException e) {
+            response.setStatus(404);
+        }
     	
 
     		
