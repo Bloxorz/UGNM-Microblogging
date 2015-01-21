@@ -27,7 +27,7 @@ public class DatabaseManagerTest {
             ProcessBuilder ps=new ProcessBuilder("mysql","--host=127.0.0.1","--port=3306","--user=root","--password=","ugnm1415g2");
 
             ps.redirectErrorStream(true);
-            ps.redirectInput(new File("./QAServise/src/test/i5/las2peer/services/servicePackage/database/testdatabase.sql"));
+            ps.redirectInput(new File("./src/test/i5/las2peer/services/servicePackage/database/testdatabase.sql"));
 
             Process pr = ps.start();
             BufferedReader in = new BufferedReader(

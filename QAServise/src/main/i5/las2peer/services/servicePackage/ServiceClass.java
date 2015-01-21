@@ -8,6 +8,7 @@ import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
+import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
@@ -353,6 +354,12 @@ public class ServiceClass extends Service {
 	@Path("question/{questionId}")
 	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId) {
 		return qr.deleteQuestion(questionId);
+	}
+
+	@POST
+	@Path("question")
+	public HttpResponse addQuestion(@ContentParam String content) {
+		return qr.addQuestion(content);
 	}
 
     /*@GET

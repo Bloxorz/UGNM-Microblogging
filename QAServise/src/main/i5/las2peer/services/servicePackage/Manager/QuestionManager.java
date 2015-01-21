@@ -53,35 +53,30 @@ public class QuestionManager extends AbstractManager{
      */
     public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
 
-        if(question.wellformed()) {
-            String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
+        String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
 
-            //add all references in DB
-            try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, new Timestamp(question.getTimestamp().getTime()));
-                pstmt.setString(2, question.getText());
-                pstmt.setLong(3, question.getUserId());
+        //add all references in DB
+        try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
+            pstmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            pstmt.setString(2, question.getText());
+            pstmt.setLong(3, question.getUserId());
 
-                ResultSet rs = pstmt.executeQuery();
+            int ind = pstmt.executeUpdate();
 
-                //fetch generated id
-                long generatedId = 0;
-                if(rs.next()) {
-                    generatedId = rs.getLong(1);
-                } else {
-                    throw new CantInsertException("Could not Insert into Post table");
-                }
+            ResultSet rs = pstmt.getGeneratedKeys();
 
-                //insert question reference
-                String addAsQuestion = "INSERT INTO Question (idQuestion) VALUES (?)";
-                PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
-                qstmt.setLong(1, generatedId);
-                qstmt.executeQuery();
-                return generatedId;
+            long generatedId = 0;
+            if(rs.next()) {
+                generatedId = rs.getLong(1);
             }
-        }
-        throw new CantInsertException("Question could not been added");
 
+            //insert question reference
+            String addAsQuestion = "INSERT INTO Question (idQuestion) VALUES (?)";
+            PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
+            qstmt.setLong(1, generatedId);
+            qstmt.executeUpdate();
+            return generatedId;
+        }
     }
 
     /**
