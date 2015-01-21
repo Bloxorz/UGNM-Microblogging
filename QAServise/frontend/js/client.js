@@ -80,6 +80,19 @@ ServiceClient.prototype.postMethod = function(input, successCallback, errorCallb
 	);
 };
 
+
+ServiceClient.prototype.addQuestion = function(input, successCallback, errorCallback) {
+	this.sendRequest("POST",
+		"ugnmMicro/question/",
+		input,
+		"application/json",
+		{},
+		successCallback,
+		errorCallback
+	);
+};
+
+
 /**
 * sends an AJAX request to a resource.
 * Parameters:

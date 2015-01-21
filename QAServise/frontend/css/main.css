@@ -156,8 +156,9 @@ body {
 	color: #3572d9;
 }
 
-.question > h4 > a {
+.question > a {
 	color: #688198;
+	font-size: 1.5em;
 }
 
 .question > div > span {
