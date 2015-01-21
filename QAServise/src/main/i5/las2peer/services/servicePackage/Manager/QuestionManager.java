@@ -4,6 +4,7 @@ import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.General.Rating;
@@ -53,16 +54,16 @@ public class QuestionManager extends AbstractManager{
      */
     public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
 
-        if(question.wellformed()) {
-            String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
+            String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 
             //add all references in DB
             try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, new Timestamp(question.getTimestamp().getTime()));
-                pstmt.setString(2, question.getText());
-                pstmt.setLong(3, question.getUserId());
+                pstmt.setString(1, question.getText());
+                pstmt.setLong(2, question.getUserId());
 
-                ResultSet rs = pstmt.executeQuery();
+                int rowsAffected = pstmt.executeUpdate();
+
+                ResultSet rs = pstmt.getGeneratedKeys();
 
                 //fetch generated id
                 long generatedId = 0;
@@ -76,11 +77,13 @@ public class QuestionManager extends AbstractManager{
                 String addAsQuestion = "INSERT INTO Question (idQuestion) VALUES (?)";
                 PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
                 qstmt.setLong(1, generatedId);
-                qstmt.executeQuery();
+                rowsAffected = qstmt.executeUpdate();
+                if(rowsAffected == 0)
+                    throw new CantInsertException("Could not Insert into Question table");
+
+                question.setId(generatedId);
                 return generatedId;
             }
-        }
-        throw new CantInsertException("Question could not been added");
 
     }
 
@@ -91,22 +94,28 @@ public class QuestionManager extends AbstractManager{
      * @return a well formed question or null
      * @throws SQLException unknown Database error
      */
-    public QuestionDTO getQuestion(Connection conn, long questionId) throws SQLException {
-        QuestionDTO question = null;
+    public QuestionDTO getQuestion(Connection conn, long questionId) throws SQLException, CantFindException {
+        QuestionDTO question = new QuestionDTO();
+
         final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
                 "idUser as userId FROM Post p right join Question q on " +
-                "p.idPost = q.idQuestion WHERE idPost = " + questionId + ";";
-        try(Statement stmt = conn.createStatement();) {
-            ResultSet rs = stmt.executeQuery(sql);
+                "p.idPost = q.idQuestion WHERE idPost = ?;";
+
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, questionId);
+
+            ResultSet rs = pstmt.executeQuery();
 
             if(rs.next()) {
-                question = new QuestionDTO();
                 question.setId(rs.getLong("id"));
                 question.setTimestamp(rs.getTimestamp("timestamp"));
                 question.setText(rs.getString("text"));
                 question.setUserId(rs.getLong("userId"));
+            } else {
+                throw new CantFindException();
             }
         }
+
         return question;
     }
 

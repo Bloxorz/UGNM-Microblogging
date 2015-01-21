@@ -2,10 +2,7 @@ package i5.las2peer.services.servicePackage.Manager;
 
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
-import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
-import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
-import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
-import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
+import i5.las2peer.services.servicePackage.Exceptions.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ public class ExpertiseManager extends  AbstractManager {
         return expertises;
     }
 
-    public long addExpertise(Connection conn, ExpertiseDTO expertise, List<HashtagDTO> hashtags) throws SQLException, NotWellFormedException, CantInsertException {
+    public long addExpertise(Connection conn, ExpertiseDTO expertise/*, List<HashtagDTO> hashtags*/) throws SQLException, NotWellFormedException, CantInsertException {
         //TODO clean up
 
         final String insertExpertiseSQL = "INSERT INTO Expertise (text) VALUES (?)";
@@ -52,8 +49,10 @@ public class ExpertiseManager extends  AbstractManager {
         }
 
         try(PreparedStatement pstmt = conn.prepareStatement(insertExpertiseSQL, Statement.RETURN_GENERATED_KEYS); ) {
-            pstmt.setString(1, expertise.getText());
 
+            pstmt.setString(1, expertise.getText());
+            pstmt.executeUpdate();
+            
             long expertiseId = 0;
             ResultSet rs = pstmt.getGeneratedKeys();
             if(rs.next()) {
@@ -61,7 +60,7 @@ public class ExpertiseManager extends  AbstractManager {
             } else {
                 throw  new CantInsertException("Can't insert into Expertise");
             }
-
+/*
             //add all Hashtags that do not exist yet
             List<Long> hashTagIds = new ArrayList<Long>();
             for(HashtagDTO hashtag : hashtags) {
@@ -84,13 +83,13 @@ public class ExpertiseManager extends  AbstractManager {
                     if(qstmt.executeUpdate() == 0)
                         throw  new CantInsertException("hashtag could not been added to Databse");
                 }
-            }
+            }*/
 
             return expertiseId;
         }
     }
 
-    public ExpertiseDTO getExpertise(Connection conn, long expertiseId) throws SQLException {
+    public ExpertiseDTO getExpertise(Connection conn, long expertiseId) throws SQLException, CantFindException {
         final String sql = "SELECT text as text FROM Expertise e WHERE e.idExpertise = ?";
         try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
             pstmt.setLong(1, expertiseId);
@@ -102,7 +101,7 @@ public class ExpertiseManager extends  AbstractManager {
                 expertise.setId(expertiseId);
                 return expertise;
             } else {
-                return null;
+                throw new CantFindException();
             }
         }
     }
@@ -123,20 +122,23 @@ public class ExpertiseManager extends  AbstractManager {
         }
     }
 
-    public void deleteExpertise(Connection conn, long expertiseId) throws SQLException, CantDeleteException {
+    public void deleteExpertise(Connection conn, long expertiseId) throws SQLException, CantDeleteException, CantFindException {
 
         ExpertiseDTO expertise = new ExpertiseDTO();
         expertise.setId(expertiseId);
 
-        final String sqlRequest = "DELETE FROM hashtag h WHERE h.idHashtag = ?";
+        final String sqlRequest = "DELETE FROM Expertise WHERE idExpertise = ?";
 
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(sqlRequest);
             pstmt.setLong(1, expertiseId);
-            pstmt.executeUpdate();
+            int rowsAffected = pstmt.executeUpdate();
+            if( rowsAffected == 0 ) {
+                throw new CantFindException();
+            };
         } catch(SQLException e) {
-            throw new CantDeleteException("Could not delete Hashtag from DB!");
+            throw new CantDeleteException(e.toString());
         }
     }
 

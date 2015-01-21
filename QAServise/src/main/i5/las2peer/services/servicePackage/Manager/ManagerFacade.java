@@ -79,7 +79,7 @@ public class ManagerFacade {
     }
 
     public long addExpertise( Connection conn, ExpertiseDTO expertise, List<HashtagDTO> hashtags) throws SQLException, NotWellFormedException, CantInsertException {
-        return expertiseManager.addExpertise(conn, expertise, hashtags);
+        return expertiseManager.addExpertise(conn, expertise/*, hashtags*/);
     }
 
     public ExpertiseDTO getExpertise( Connection conn, long expertiseId) throws SQLException, CantFindException {
@@ -90,7 +90,7 @@ public class ManagerFacade {
        expertiseManager.editExpertise(conn, expertise);
     }
 
-    public void deleteExpertise( Connection conn, long expertiseId) throws CantDeleteException, SQLException {
+    public void deleteExpertise( Connection conn, long expertiseId) throws CantDeleteException, SQLException, CantFindException {
         expertiseManager.deleteExpertise(conn, expertiseId);
     }
         ////// hashtagManager //////
@@ -139,7 +139,7 @@ public class ManagerFacade {
     public long addQuestion( Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
         return questionManager.addQuestion(conn, question);
     }
-    public QuestionDTO getQuestion( Connection conn, long questionId) throws SQLException {
+    public QuestionDTO getQuestion( Connection conn, long questionId) throws SQLException, CantFindException {
         return questionManager.getQuestion(conn, questionId);
     }
     public void editQuestion( Connection conn, long questionId, String questionText) throws SQLException, CantUpdateException {
