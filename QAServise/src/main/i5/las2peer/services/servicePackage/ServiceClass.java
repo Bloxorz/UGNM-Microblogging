@@ -11,6 +11,7 @@ import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
+import org.bouncycastle.asn1.ua.UAObjectIdentifiers;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -74,6 +75,13 @@ public class ServiceClass extends Service {
 		
 		HttpResponse res = new HttpResponse(returnString);
 		res.setStatus(200);
+
+		System.out.println(returnString);
+		System.out.println(((UserAgent) getActiveAgent()).getId());
+		System.out.println(((UserAgent) getActiveAgent()).getEmail());
+		System.out.println(((UserAgent) getActiveAgent()).getLoginName());
+		System.out.println(((UserAgent) getActiveAgent()).getUserData());
+
 		return res;
 	}
 

@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import i5.las2peer.restMapper.RESTMapper;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
@@ -134,7 +135,7 @@ public class QuestionManager extends AbstractManager{
     }
 
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        final String deleteFromQuestion = "DELETE FROM Post WHERE idPost = ?;";
+        final String deleteFromQuestion = "DELETE FROM Question WHERE idQuestion = ?;";
 
         try(PreparedStatement qstmt = conn.prepareStatement(deleteFromQuestion); ) {
 
@@ -187,32 +188,36 @@ public class QuestionManager extends AbstractManager{
      */
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         long generatedId = 0;
-        if(answer.wellformed()) {
-            String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
+        String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 
-            //add all references in DB
-            try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, new Timestamp(answer.getTimestamp().getTime()));
-                pstmt.setString(2, answer.getText());
-                pstmt.setLong(3, answer.getUserId());
+        //add all references in DB
+        try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
 
-                ResultSet rs = pstmt.executeQuery();
+            pstmt.setString(1, answer.getText());
+            pstmt.setLong(2, answer.getUserId());
 
-                //fetch generated id
+            int affectedRows = pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
 
-                if(rs.next()) {
-                    generatedId = rs.getLong(1);
-                } else {
-                    throw new CantInsertException("Could not Insert into Post table");
-                }
+            //fetch generated id
 
-                //insert answer reference
-                String addAsAnswer = "INSERT INTO Answer (idAnswer,rating,idQuestion) VALUES (?,?,?)";
-                PreparedStatement astmt = conn.prepareStatement(addAsAnswer);
-                astmt.setLong(1, generatedId);
-                astmt.setInt(2, answer.getRating().getValue());
-                astmt.setLong(3, answer.getQuestionId());
-                astmt.executeQuery();
+            if(rs.next()) {
+                generatedId = rs.getLong(1);
+            } else {
+                throw new CantInsertException("Could not Insert into Post table");
+            }
+
+            //insert answer reference
+            String addAsAnswer = "INSERT INTO Answer (idAnswer,rating,idQuestion) VALUES (?,?,?)";
+            PreparedStatement astmt = conn.prepareStatement(addAsAnswer);
+            astmt.setLong(1, generatedId);
+            astmt.setLong(2, answer.getRating().getValue());
+            astmt.setLong(3, answer.getQuestionId());
+            affectedRows = astmt.executeUpdate();
+            if(affectedRows == 1) {
+                answer.setId(generatedId);
+            } else {
+                throw new CantInsertException("Could not Insert into Post table");
             }
         }
         return generatedId;

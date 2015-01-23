@@ -5,6 +5,7 @@ import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
@@ -79,6 +80,10 @@ public class QuestionResource extends AbstractResource {
         } catch (SQLException e) {
             res = new HttpResponse("not found");
             res.setStatus(500);
+            return  res;
+        } catch (CantFindException e) {
+            res = new HttpResponse("not found");
+            res.setStatus(404);
             return  res;
         }
     }

@@ -23,8 +23,8 @@ public class AnswerManager extends AbstractManager {
         AnswerDTO answer = null;
         final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
                 "idUser as userId, rating as rating, idQuestion as idQuestion " +
-                "FROM Post p right join Question q on " +
-                "p.idPost = q.idQuestion WHERE id = " + answerId + ";";
+                "FROM Post p right join Answer a on " +
+                "p.idPost = a.idAnswer WHERE idAnswer = " + answerId + ";";
         try(Statement stmt = conn.createStatement();) {
             ResultSet rs = stmt.executeQuery(sql);
 
