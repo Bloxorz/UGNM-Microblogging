@@ -38,7 +38,7 @@
             });
         },
         getQuestions: function() {
-            var html, questions, errMsg, self = this,
+            var html, self = this,
                 tpl = 
                 '<div class="my-header">' +
                     '<h4>Alle Fragen</h4>' +
@@ -108,49 +108,50 @@
                 '</div>';
 
             var data = {};
-            data.logedin = client.isAnonymous();
+            data.logedin = !client.isAnonymous();
 
             html = Mustache.render(tpl, data);
             $('.content').html(html);
 
-            $('#submit').click(function(e) {
-                e.preventDefault();
-                var json = {}, list;
+            if(data.logedin) {
+                $('#submit').click(function(e) {
+                    e.preventDefault();
+                    var json = {}, list;
 
 
-                json.question = {'text': $('#frage').val()};
-                json.hashtags = [];
-                list = widget.getValue();
-                list.forEach(function(item) {
-                    json.hashtags.push({'text':item[0].value});
+                    json.question = {'text': $('#frage').val()};
+                    json.hashtags = [];
+                    list = widget.getValue();
+                    list.forEach(function(item) {
+                        json.hashtags.push({'text':item[0].value});
+                    });
+
+                    client.addQuestion(
+                        JSON.stringify(json),
+                        function(data, type) {
+                            $('.content').html(data);
+                        },
+                        function(error) {
+                            $('.content').html(error);
+                        }
+                    );
                 });
 
-                client.addQuestion(
-                    JSON.stringify(json),
+                client.getHashtags(
                     function(data, type) {
-                        $('.content').html(data);
+                        var list = [], hashtags;
+                        hashtags = JSON.parse(data);
+                        hashtags.forEach(function(hashtag) {
+                            list.push(hashtag.text);
+                        });
+                        widget = new AutoComplete('hashtags', list);
                     },
                     function(error) {
                         $('.content').html(error);
                     }
                 );
-            });
+        }
 
-            client.getHashtags(
-                function(data, type) {
-                    var list = [], hashtags;
-                    hashtags = JSON.parse(data);
-                    hashtags.forEach(function(hashtag) {
-                        list.push(hashtag.text);
-                    });
-                    widget = new AutoComplete('hashtags', list);
-                },
-                function(error) {
-                    $('.content').html(error);
-                }
-            );
-
-            
         },
         getAnswers: function() {
             var html, tpl =
@@ -212,7 +213,7 @@
             var data = {};
             data.question = {"text": "How old are you?", "timestamp": "heute"};
             data.answers =[{"text": "18", "timestamp": "gerade eben"},{"text": "15", "timestamp": "gerade"}];
-            data.logedin = client.isAnonymous();
+            data.logedin = !client.isAnonymous();
 
 
             html = Mustache.render(tpl, data);
