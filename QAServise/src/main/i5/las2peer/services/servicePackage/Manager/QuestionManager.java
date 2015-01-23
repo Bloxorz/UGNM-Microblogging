@@ -2,6 +2,7 @@ package i5.las2peer.services.servicePackage.Manager;
 
 import i5.las2peer.restMapper.RESTMapper;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
+import i5.las2peer.services.servicePackage.DTO.PostDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
@@ -135,14 +136,23 @@ public class QuestionManager extends AbstractManager{
     }
 
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        final String deleteFromQuestion = "DELETE FROM Question WHERE idQuestion = ?;";
+        final String deleteQuestion =
+                "DELETE Post\n" +
+                "FROM Answer\n" +
+                "JOIN Question\n" +
+                "ON Answer.idQuestion=Question.idQuestion\n" +
+                "JOIN Post\n" +
+                "ON Post.idPost=Question.idQuestion OR Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=?;";
 
-        try(PreparedStatement qstmt = conn.prepareStatement(deleteFromQuestion); ) {
+        // the values from tables Question and Answers are automatically deleted by ON CASCADE DELETE
+
+        try(PreparedStatement qstmt = conn.prepareStatement(deleteQuestion); ) {
 
             qstmt.setLong(1, questionId);
 
             if(qstmt.executeUpdate() == 0) {
-                throw new CantDeleteException("Cant delete from Question table");
+                throw new CantDeleteException("Cant delete question");
             }
         }
     }
@@ -176,6 +186,62 @@ public class QuestionManager extends AbstractManager{
             }
         }
         return answers;
+    }
+
+    /**
+     * Returns a Collection of the question and all answers to a given question in descending rating order
+     * @param conn
+     * @param questionId
+     * @return
+     * @throws SQLException
+     */
+    public List<PostDTO> getQuestionAndAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
+        List<PostDTO> resultDTOs = new ArrayList<PostDTO>();
+        final String sql =
+                "SELECT * \n" +
+                "FROM Post\n" +
+                "LEFT JOIN Question\n" +
+                "On Post.idPost=Question.idQuestion\n" +
+                "LEFT JOIN Answer\n" +
+                "ON Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=? OR Answer.idQuestion=?\n" +
+                "ORDER BY Post.idPost;";
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, questionId);
+            pstmt.setLong(2, questionId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(!rs.next()) {
+                throw new CantFindException();
+            } else {
+                do {
+                    PostDTO current;
+                    if (rs.getLong("Question.idQuestion") == rs.getLong("idPost")) {
+                        // post is a question
+                        current = new QuestionDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser")
+                        );
+                    } else {
+                        // post is an answer
+                        current = new AnswerDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser"),
+                                Rating.fromInt((int) rs.getLong("rating")),
+                                rs.getLong("Answer.idQuestion")
+                        );
+                    }
+
+                    resultDTOs.add(current);
+                } while(rs.next());
+            }
+        }
+        return resultDTOs;
     }
 
     /**

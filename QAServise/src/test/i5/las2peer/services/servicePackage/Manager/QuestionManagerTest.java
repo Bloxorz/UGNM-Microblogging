@@ -2,6 +2,7 @@ package i5.las2peer.services.servicePackage.Manager;
 
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
+import i5.las2peer.services.servicePackage.DTO.PostDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.General.Rating;
@@ -84,14 +85,24 @@ public class QuestionManagerTest {
 
     @Test
     public void testGetAnswersToQuestion() throws Exception {
-        Object[] result = manager.getAnswersToQuestion(conn, 4).toArray();
         AnswerDTO[] expected = new AnswerDTO[] {
                 DatabaseManagerTest.getTestAnswers()[2],
                 DatabaseManagerTest.getTestAnswers()[3],
                 DatabaseManagerTest.getTestAnswers()[4]
         };
 
-        assertArrayEquals( expected, result );
+        assertArrayEquals( expected, manager.getAnswersToQuestion(conn, 4).toArray() );
+    }
+
+    @Test
+    public void testGetQuestionAndAnswers() throws Exception {
+        PostDTO[] expected = new PostDTO[] {
+                DatabaseManagerTest.getTestQuestions()[2],
+                DatabaseManagerTest.getTestAnswers()[2],
+                DatabaseManagerTest.getTestAnswers()[3],
+                DatabaseManagerTest.getTestAnswers()[4]
+        };
+        assertArrayEquals(expected, manager.getQuestionAndAnswers(conn, 4).toArray());
     }
 
     @Test

@@ -363,6 +363,10 @@ public class ServiceClass extends Service {
 		return qr.deleteQuestion(questionId);
 	}
 
+	@GET
+	@Path("question/{questionId}/questionAndAnswers")
+	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) { return qr.getQuestionAndAnswers(questionId); }
+
     /*@GET
     @Path("answer/{id}/{token}")
     public HttpResponse getAnswer(@PathParam("id") long answerId) {

@@ -151,6 +151,9 @@ public class ManagerFacade {
     public List<AnswerDTO> getAnswersToQuestion( Connection conn, long questionId) throws SQLException {
         return questionManager.getAnswersToQuestion(conn, questionId);
     }
+    public List<PostDTO> getQuestionAndAnswers( Connection conn, long questionId) throws SQLException, CantFindException {
+        return questionManager.getQuestionAndAnswers(conn, questionId);
+    }
     public long addAnswerToQuestion( Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         return questionManager.addAnswerToQuestion(conn, answer);
     }

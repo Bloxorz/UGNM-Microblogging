@@ -27,4 +27,9 @@ public class QuestionDTO extends PostDTO {
                 && super.equals(other);
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
 }

@@ -40,7 +40,7 @@ CREATE TABLE Answer
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idAnswer),
 	FOREIGN KEY (idAnswer) REFERENCES Post(idPost) ON DELETE CASCADE,
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion)  -- no cascade: has to be deleted with deletion from Post
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE -- has to be deleted with deletion from Post
 );
 CREATE TABLE Hashtag
 (
