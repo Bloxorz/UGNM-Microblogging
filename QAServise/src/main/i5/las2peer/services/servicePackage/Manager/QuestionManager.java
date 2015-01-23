@@ -1,9 +1,7 @@
 package i5.las2peer.services.servicePackage.Manager;
 
 import i5.las2peer.restMapper.RESTMapper;
-import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
-import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
-import i5.las2peer.services.servicePackage.DTO.UserDTO;
+import i5.las2peer.services.servicePackage.DTO.*;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
@@ -89,6 +87,50 @@ public class QuestionManager extends AbstractManager{
     }
 
     /**
+     * Adds a question with hashtag-links
+     * @param conn
+     * @param question Text and userId
+     * @param hashtags Text of hashtags
+     * @return new question id
+     * @throws SQLException
+     * @throws CantInsertException
+     */
+    public long addQuestion(Connection conn, QuestionDTO question, HashtagDTO[] hashtags) throws SQLException, CantInsertException {
+
+        String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
+
+        //add all references in DB
+        try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
+            pstmt.setString(1, question.getText());
+            pstmt.setLong(2, question.getUserId());
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+
+            //fetch generated id
+            long generatedId = 0;
+            if(rs.next()) {
+                generatedId = rs.getLong(1);
+            } else {
+                throw new CantInsertException("Could not Insert into Post table");
+            }
+
+            //insert question reference
+            String addAsQuestion = "INSERT INTO Question (idQuestion) VALUES (?)";
+            PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
+            qstmt.setLong(1, generatedId);
+            rowsAffected = qstmt.executeUpdate();
+            if(rowsAffected == 0)
+                throw new CantInsertException("Could not Insert into Question table");
+
+            question.setId(generatedId);
+            return generatedId;
+        }
+
+    }
+
+    /**
      * Returns a well formed question if an entry exists or null if an entry does not exist in the databse
      * @param conn the given connection
      * @param questionId the questionId to look up
@@ -135,14 +177,23 @@ public class QuestionManager extends AbstractManager{
     }
 
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        final String deleteFromQuestion = "DELETE FROM Question WHERE idQuestion = ?;";
+        final String deleteQuestion =
+                "DELETE Post\n" +
+                "FROM Answer\n" +
+                "JOIN Question\n" +
+                "ON Answer.idQuestion=Question.idQuestion\n" +
+                "JOIN Post\n" +
+                "ON Post.idPost=Question.idQuestion OR Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=?;";
 
-        try(PreparedStatement qstmt = conn.prepareStatement(deleteFromQuestion); ) {
+        // the values from tables Question and Answers are automatically deleted by ON CASCADE DELETE
+
+        try(PreparedStatement qstmt = conn.prepareStatement(deleteQuestion); ) {
 
             qstmt.setLong(1, questionId);
 
             if(qstmt.executeUpdate() == 0) {
-                throw new CantDeleteException("Cant delete from Question table");
+                throw new CantDeleteException("Cant delete question");
             }
         }
     }
@@ -176,6 +227,62 @@ public class QuestionManager extends AbstractManager{
             }
         }
         return answers;
+    }
+
+    /**
+     * Returns a Collection of the question and all answers to a given question in descending rating order
+     * @param conn
+     * @param questionId
+     * @return
+     * @throws SQLException
+     */
+    public List<PostDTO> getQuestionAndAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
+        List<PostDTO> resultDTOs = new ArrayList<PostDTO>();
+        final String sql =
+                "SELECT * \n" +
+                "FROM Post\n" +
+                "LEFT JOIN Question\n" +
+                "On Post.idPost=Question.idQuestion\n" +
+                "LEFT JOIN Answer\n" +
+                "ON Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=? OR Answer.idQuestion=?\n" +
+                "ORDER BY Post.idPost;";
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, questionId);
+            pstmt.setLong(2, questionId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(!rs.next()) {
+                throw new CantFindException();
+            } else {
+                do {
+                    PostDTO current;
+                    if (rs.getLong("Question.idQuestion") == rs.getLong("idPost")) {
+                        // post is a question
+                        current = new QuestionDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser")
+                        );
+                    } else {
+                        // post is an answer
+                        current = new AnswerDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser"),
+                                Rating.fromInt((int) rs.getLong("rating")),
+                                rs.getLong("Answer.idQuestion")
+                        );
+                    }
+
+                    resultDTOs.add(current);
+                } while(rs.next());
+            }
+        }
+        return resultDTOs;
     }
 
     /**
