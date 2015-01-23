@@ -41,23 +41,12 @@ function ServiceClient(endpointUrl) {
 	}
 };
 
-ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
-	this.sendRequest("GET",
-		"ugnmMicro/questions/",
-		"",
-		"application/json",
-		{},
-		successCallback,
-		errorCallback
-	);
-};
-
 /**
 * An example function demonstrating a GET request on resource <endpointUrl>/example/validate
 */
 ServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"example/validate",
+		"ugnmMicro/validate",
 		"",
 		"application/json",
 		{},
@@ -92,6 +81,38 @@ ServiceClient.prototype.addQuestion = function(input, successCallback, errorCall
 	);
 };
 
+ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
+	this.sendRequest("GET",
+		"ugnmMicro/questions/",
+		"",
+		"application/json",
+		{},
+		successCallback,
+		errorCallback
+	);
+};
+
+ServiceClient.prototype.getAnswers = function(successCallback, errorCallback) {
+	this.sendRequest("GET",
+		"ugnmMicro/questions/",
+		"",
+		"application/json",
+		{},
+		successCallback,
+		errorCallback
+	);
+};
+
+ServiceClient.prototype.getHashtags = function(successCallback, errorCallback) {
+	this.sendRequest("GET",
+		"ugnmMicro/hashtag/",
+		"",
+		"application/json",
+		{},
+		successCallback,
+		errorCallback
+	);
+};
 
 /**
 * sends an AJAX request to a resource.

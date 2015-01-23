@@ -1,7 +1,7 @@
 (function () {
     // create new instance of ServiceClient, given its endpoint URL
     var client = new ServiceClient("http://localhost:8080/"),
-        active, 
+        active, widget,
 
     app = {
         init: function() {
@@ -10,8 +10,6 @@
                 addQ = $('.my-btn'),
                 addQ2 = $('#addq'),
                 myQ = $('#myquestions');
-
-                //console.log(addQ2);
 
             allQ.click(function(e) {
                 e.preventDefault();
@@ -31,154 +29,194 @@
 
             addQ2.click(function(e) {
                 e.preventDefault();
-                self.renderAddQuestinon();
+                self.addQuestion();
             });
 
             addQ.click(function(e) {
                 e.preventDefault();
-                self.renderAddQuestinon();
+                self.addQuestion();
             });
         },
-        getQuestions: function(){
+        getQuestions: function() {
+            var html, questions, errMsg, self = this,
+                tpl = 
+                '<div class="my-header">' +
+                    '<h4>Alle Fragen</h4>' +
+                    '<hr>' +
+                '</div>' +
+                '{{#.}}' +
+                    '<div class="question">' +
+                        '<p>' +
+                            '<a href="#">css</a>, ' +
+                        '</p>' +
+                        '<a href="#" class="my_links">' +
+                            '{{text}}' +
+                        '</a>' +
+                        '<div>' +
+                            '<span class="pull-left">{{timestamp}}</span>' +
+                            '<span class="pull-right">0x favorisiert</span>' +
+                        '<div class="clearfix"></div>' +
+                        '</div>' +
+                        '<hr>' +
+                    '</div>' +
+                '{{/.}}';
+
             client.getAllQuestions(
-                function(data,type){
-                   var questions = JSON.parse(data),
-                    div, question, tag, time, p, div2, span, span2, cont, hr, heading, header;
-
-                    header = document.createElement('div');
-                    header.className = 'my-header';
-                   
-                    heading = document.createElement('h4');
-                    $(heading).text('Alle Fragen');
-                   
-                    hr = document.createElement('hr');
-
-                    $(header).append(heading);
-                    $(header).append(hr);
-
-                    cont = document.createElement('div');
-                   
-                    $(cont).html(header);
-
-                    questions.forEach(function(item) {
-                        div = document.createElement('div');
-                        div.className = 'question';
-                        p = document.createElement('p');
-                        question = document.createElement('a');
-                        question.href = '';
-                        $(question).text(item.text);
-                        div2 = document.createElement('div');
-                        span = document.createElement('span');
-                        span.className = 'pull-left';
-                        $(span).text(item.timestamp);
-                        span2 = document.createElement('span');
-                        span2.className = 'pull-right';
-                        $(span2).text('0x favor');
-                        hr = document.createElement('hr');
-                        $(div).append(question);
-                        $(div2).append(span);
-                        $(div2).append(span2);
-                        $(div).append(div2);
-                        $(div).append(hr);
-                        $(cont).append(div);
-                        
+                function(data,type) {
+                    html = Mustache.render(tpl, JSON.parse(data));
+                    $('.content').html(html);
+                    
+                    $('.my_links').each(function () {
+                        $(this).click(function(e) {
+                            e.preventDefault();
+                            self.getAnswers();
+                        });
                     });
-
-                    $('.col-sm-9').html(cont);
                 },
                 function(error) {
-                    $('.col-sm-9').text('error');
+                    $('.content').html(error);
                 }
             );
         },
-        renderAddQuestinon: function() {
-            var header, heading, hr, div, form, divFormGroup, p, divFormGroup2, input, textarea, button, label;
+        addQuestion: function() {
+            var html, tpl =
+                '<div class="my-header">' +
+                    '<h4>Neue Frage</h4>' +
+                    '<hr>' +
+                '</div>' +
+                '<div>' +
+                '{{#logedin}}' +
+                    '<form role="form">' +
+                        '<div class="form-group">' +
+                            '<label for="hashtags">Hashtags</label>' +
+                            '<div id="hashtags"></div>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                            '<label for="frage">Ihre Frage</label>' +
+                            '<textarea id="frage" class="form-control" rows="5"></textarea>' +
+                        '</div>' +
+                        '<p>' +
+                            '<button id="submit" class="btn btn-success">Submit</button>' +
+                        '</p>' +
+                    '</form>' +
+                '{{/logedin}}' +
+                '{{^logedin}}' +
+                '<p>' +
+                    'Bitte einloggen!' +
+                '</p>' +
+                '{{/logedin}}' +
+                '</div>';
 
-            header = document.createElement('div');
-            header.setAttribute('class', 'my-header');
-           
-            heading = document.createElement('h4');
-            $(heading).text('New Question');
-           
-            hr = document.createElement('hr');
+            var data = {};
+            data.logedin = client.isAnonymous();
 
-            $(header).append(heading);
-            $(header).append(hr);
-
-            div = document.createElement('div');
-
-            form = document.createElement('form');
-            form.setAttribute('role', 'form');
-            //form.setAttribute('method', 'POST');
-
-
-
-            divFormGroup = document.createElement('div');
-            divFormGroup.setAttribute('class', 'form-group');
-
-            label = document.createElement('label');
-            label.setAttribute('for', 'hashtag');
-
-            input = document.createElement('input');
-            input.setAttribute('type', 'text');
-            input.setAttribute('class', 'form-control');
-            input.setAttribute('id', 'hashtag');
-            input.setAttribute('placeholder', 'Kompetenz');
-
-            $(divFormGroup).append(label);
-            $(divFormGroup).append(input);
-
-            divFormGroup2 = document.createElement('div');
-            divFormGroup2.setAttribute('class', 'form-group');
-
-            label2 = document.createElement('label');
-            label2.setAttribute('for', 'frage');
-
-            textarea = document.createElement('textarea');
-            textarea.setAttribute   ('class', 'form-control');
-            textarea.setAttribute('id', 'frage');
-            textarea.setAttribute('row', '5');
-
-            $(divFormGroup2).append(label2);
-            $(divFormGroup2).append(textarea);
-
-            $(form).append(divFormGroup);
-            $(form).append(divFormGroup2)
-
-            p = document.createElement('p');
-
-            button = document.createElement('button');
-            //button.setAttribute('type', 'submit');
-            button.setAttribute('class', 'btn btn-success');
-            button.setAttribute('id', 'submit');
-
-
-
-
-            $(p).append(button);
-
-            $(form).append(p);
-
-            $(div).append(form);
-
-            $('.col-sm-9').html(header);
-            $('.col-sm-9').append(div);
+            html = Mustache.render(tpl, data);
+            $('.content').html(html);
 
             $('#submit').click(function(e) {
                 e.preventDefault();
-                var expertise = $('#hashtag').val();
-                var question = $('#frage').val();
-                //var add = {'tag': hashtag, 'question': question};
-                
-                client.addQuestion('{"text": "How old are you?", "userId":"5"}', 
-                    function(data,type){
-                    
-                    $('.col-sm-9').html(data);
+                var json = {}, list;
+
+
+                json.question = {'text': $('#frage').val()};
+                json.hashtags = [];
+                list = widget.getValue();
+                list.forEach(function(item) {
+                    json.hashtags.push({'text':item[0].value});
+                });
+
+                client.addQuestion(
+                    JSON.stringify(json),
+                    function(data, type) {
+                        $('.content').html(data);
+                    },
+                    function(error) {
+                        $('.content').html(error);
+                    }
+                );
+            });
+
+            client.getHashtags(
+                function(data, type) {
+                    var list = [], hashtags;
+                    hashtags = JSON.parse(data);
+                    hashtags.forEach(function(hashtag) {
+                        list.push(hashtag.text);
+                    });
+                    widget = new AutoComplete('hashtags', list);
                 },
                 function(error) {
-                    $('.col-sm-9').text(error);
-                });
-            });
+                    $('.content').html(error);
+                }
+            );
+
+            
+        },
+        getAnswers: function() {
+            var html, tpl =
+                '<div class="my-header">' +
+                    '<h4>Frage</h4>' +
+                    '<hr>' +
+                    '</div>' +
+                '<div class="question">' +
+                    '<p>' +
+                        '<a href="#">css</a>, <a href="#">bootstrap</a>' +
+                    '</p>' +
+                    '<p>' +
+                        '{{question.text}}' +
+                    '</p>' +
+                    '<div>' +
+                        '<span class="pull-left">{{question.timestamp}}</span>' +
+                        '<span class="pull-right"><a href="#">favorisieren</a></span>' +
+                        '<div class="clearfix"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="my-header">' +
+                    '<h4>Antworten</h4>' +
+                    '<hr>' +
+                '</div>' +
+                '{{#answers}}' +
+                '<div class="answer">' +
+                    '<p>' +
+                       '{{text}}' +
+                    '</p>' +
+                    '<div>' +
+                        '<span class="pull-left">{{timestamp}}</span>' +
+                        '<span class="pull-right"><a href="#">Gefält mir | 1</a></span>' +
+                        '<div class="clearfix"></div>' +
+                    '</div>' +
+                    '<hr>' +
+                '</div>' +
+                '{{/answers}}' +
+                '<div class="my-header">' +
+                    '<h4>Ihr Antwort</h4>' +
+                    '<hr>' +
+                '</div>' +
+                '{{#logedin}}' +
+                '<form role="form">' +
+                    '<p>' +
+                        '<textarea class="form-control" rows="5"></textarea>' +
+                    '</p>' +
+                    '<p>' +
+                        '<button type="submit" class="btn btn-success">Submit</button>' +
+                    '</p>' +
+                '</form>' +
+                '{{/logedin}}' +
+                '{{^logedin}}' +
+                '<p>' +
+                    'Bitte einlogen!' +
+                '</p>' +
+                '{{/logedin}}';
+
+//dummy data
+            var data = {};
+            data.question = {"text": "How old are you?", "timestamp": "heute"};
+            data.answers =[{"text": "18", "timestamp": "gerade eben"},{"text": "15", "timestamp": "gerade"}];
+            data.logedin = client.isAnonymous();
+
+
+            html = Mustache.render(tpl, data);
+            $('.content').html(html);
         }
     };
 
