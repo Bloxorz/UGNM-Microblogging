@@ -8,6 +8,7 @@ import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
+import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
@@ -75,13 +76,6 @@ public class ServiceClass extends Service {
 		
 		HttpResponse res = new HttpResponse(returnString);
 		res.setStatus(200);
-
-		System.out.println(returnString);
-		System.out.println(((UserAgent) getActiveAgent()).getId());
-		System.out.println(((UserAgent) getActiveAgent()).getEmail());
-		System.out.println(((UserAgent) getActiveAgent()).getLoginName());
-		System.out.println(((UserAgent) getActiveAgent()).getUserData());
-
 		return res;
 	}
 
@@ -366,6 +360,12 @@ public class ServiceClass extends Service {
 	@GET
 	@Path("question/{questionId}/questionAndAnswers")
 	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) { return qr.getQuestionAndAnswers(questionId); }
+
+	@POST
+	@Path("question")
+	public HttpResponse addQuestion(@ContentParam String content) {
+		return qr.addQuestion(content);
+	}
 
     /*@GET
     @Path("answer/{id}/{token}")

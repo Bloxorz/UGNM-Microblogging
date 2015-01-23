@@ -43,24 +43,23 @@ public class QuestionResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse addQuestion(QuestionDTO question) {
+    public HttpResponse addQuestion(String content) {
         HttpResponse res;
         try {
+            QuestionDTO question = new Gson().fromJson(content, QuestionDTO.class);
             Long generatedId = ManagerFacade.getInstance().addQuestion(conn, question);
 
             res = new HttpResponse(generatedId.toString());
             res.setStatus(201);
             return res;
         } catch (SQLException e) {
-           res = new HttpResponse("");
+            res = new HttpResponse(e.toString());
             res.setStatus(500);
         } catch (CantInsertException e) {
-            res = new HttpResponse("");
+            res = new HttpResponse(e.getMessage());
             res.setStatus(500);
         }
 
-        res = new HttpResponse("");
-        res.setStatus(500);
         return res;
     }
 

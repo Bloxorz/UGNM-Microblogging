@@ -45,6 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="css/autocomplete-0.3.0.css">
 
 </head>
 <body>
@@ -54,7 +55,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <div class="sidebar-nav">
           <div class="navbar navbar-default" role="navigation">
             <div class="navbar-header">
-              <a class="btn btn-default my-btn hidden-lg hidden-md hidden-sm" href="new_question.html">
+              <a class="btn btn-default my-btn hidden-lg hidden-md hidden-sm" href="">
                 <span class="glyphicon glyphicon-plus"></span>
               </a>
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -68,10 +69,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
                 <li>
-                  <a href="http://buche.informatik.rwth-aachen.de" id="allquestions">Alle Fragen</a>
+                  <a href="" id="allquestions">Alle Fragen</a>
                 </li>
                 <li>
-                   <a href="http://buche.informatik.rwth-aachen.de" id="myquestions">Meine Fragen</a>
+                   <a href="" id="myquestions">Meine Fragen</a>
                 </li>
                 <li><a href="#url2">Meine Antworten</a></li>
                 <li><a href="#url2">Meine Favoriten</a></li>
@@ -89,137 +90,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 </span>
               </span>
             </div>
-            <a href="new_question.html" class="btn btn-success hidden-xs add-question-btn" role="button">neue Frage</a>
+            <a href="" class="btn btn-success hidden-xs add-question-btn" id="addq" role="button">neue Frage</a>
           </div>
         </div>
       </div>
       <!-- Container for actual page content -->
       <div class="col-sm-9">
-        <div class="my-header">
-          <h4>Alle Fragen</h4>
-          <hr>
+        <div class="content">
         </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">vor 10 Minuten</span>
-            <span class="pull-right">0x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">vor 11 Minuten</span>
-            <span class="pull-right">5x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">vor 18 Minuten</span>
-            <span class="pull-right">10x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">vor 18 Minuten</span>
-            <span class="pull-right">10x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">vor 42 Minuten</span>
-            <span class="pull-right">35x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">11.11.14</span>
-            <span class="pull-right">35x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <div class="question">
-          <p>
-            <a href="#">css</a>, <a href="#">bootstrap</a>
-          </p>
-          <h4>
-            <a href="answers.html">
-              Eveniet placeat sed iste quo atque quia obcaecati ipsa odio, labore molestias, ab pariatur?
-            </a>
-          </h4>
-          <div>
-            <span class="pull-left">11.11.14</span>
-            <span class="pull-right">35x favorisiert</span>
-            <div class="clearfix"></div>
-          </div>
-          <hr>
-        </div>
-        <p>
-          <span class="pull-left">
-            <a href="#">&larr; neuere Fragen</a>
-          </span>
-          <span class="pull-right">
-            <a href="#">ältere Fragen &rarr;</a>
-          </span>
-          <div class="clearfix"></div>
-        </p>
       </div>
     </div>
   </div>
@@ -229,6 +107,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   
   <!-- import Bootstrap for responsive UI (must) -->
   <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <!-- import mustache for templating -->
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.0/mustache.min.js"></script>
   
   <!-- import JWS and JSRSASIGN (must) -->
   <script type="text/javascript" src="js/jws-2.0.min.js"></script>
@@ -244,7 +124,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <script type="text/javascript" src="js/jsrsasign/rsasign-1.2.min.js"></script>
   <script type="text/javascript" src="js/jsrsasign/x509-1.1.min.js"></script>
   <script type="text/javascript" src="js/jsrsasign/crypto-1.1.min.js"></script>
-  
+
   <!-- import OpenID Connect Button -->
   <script type="text/javascript">
     
@@ -271,11 +151,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     
   </script>
-  
+
   <!-- import client library for service -->
   <script type="text/javascript" src="js/client.js"></script>
   
-  <!-- instantiate and use the client library -->
+  <!--  -->
   <script type="text/javascript" src="js/app.js"></script>
+
+      <!--  -->
+  <script type="text/javascript" src="js/autocomplete-0.3.0.min.js"></script>
 </body>
 </html>
