@@ -1,14 +1,18 @@
 package i5.las2peer.services.servicePackage.database;
 
+import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
+import i5.las2peer.services.servicePackage.General.Rating;
+import i5.las2peer.services.servicePackage.ServiceClass;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
@@ -77,6 +81,17 @@ public class DatabaseManagerTest {
         };
     }
 
+    public static AnswerDTO[] getTestAnswers() {
+        Date dummyDate = new Date() { @Override public boolean equals(Object o) { return true; } };
+        return new AnswerDTO[] {
+                new AnswerDTO(3, dummyDate, "In the building E2, first floor.", 2, Rating.fromInt(100), 2),
+                new AnswerDTO(5, dummyDate, "I think he is right", 5, Rating.fromInt(0), 2),
+                new AnswerDTO(6, dummyDate, "You should google for it.", 3, Rating.fromInt(0), 4),
+                new AnswerDTO(7, dummyDate, "I want to recherche it...", 5, Rating.fromInt(0), 4),
+                new AnswerDTO(8, dummyDate, "I already googled, but couldn'nt find anything :(", 2, Rating.fromInt(0), 4)
+        };
+    }
+
     public static Connection getTestTable() throws SQLException {
         if( dataSource == null ) {
             dataSource = new BasicDataSource();
@@ -99,5 +114,25 @@ public class DatabaseManagerTest {
     @Test
     public void connectionToLocalDatabase() throws Exception {
         Connection conn = getTestTable();
+    }
+
+    @Test
+    public void testDatabaseConfiguration() throws Exception {
+        ServiceClass s = new ServiceClass();
+        Class c = ServiceClass.class;
+        Field f;
+        f = c.getDeclaredField("jdbcDriverClassName"); f.setAccessible(true);
+        String jdbcDriverClassName = (String)f.get(s);
+        f = c.getDeclaredField("jdbcLogin"); f.setAccessible(true);
+        String jdbcLogin = (String)f.get(s);
+        f = c.getDeclaredField("jdbcPass"); f.setAccessible(true);
+        String jdbcPass = (String)f.get(s);
+        f = c.getDeclaredField("jdbcUrl"); f.setAccessible(true);
+        String jdbcUrl = (String)f.get(s);
+        f = c.getDeclaredField("jdbcSchema"); f.setAccessible(true);
+        String jdbcSchema = (String)f.get(s);
+
+        DatabaseManager dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl,jdbcSchema);
+        assertNotEquals(null, dbm.getConnection());
     }
 }

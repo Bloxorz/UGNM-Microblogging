@@ -23,10 +23,13 @@ public class QuestionDTO extends PostDTO {
 
     @Override
     public boolean equals(Object other) {
-        return (this.getId() == ((QuestionDTO)other).getId())
-                && (this.getText().equals(((QuestionDTO) other).getText()))
-                && (this.getTimestamp().equals(((QuestionDTO) other).getTimestamp()))
-                && (this.getUserId() == ((QuestionDTO) other).getUserId());
+        return (other instanceof QuestionDTO)
+                && super.equals(other);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 
 }

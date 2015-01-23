@@ -36,6 +36,18 @@
                 e.preventDefault();
                 self.addQuestion();
             });
+
+            var tmp = $('#megasuper');
+            tmp.click(function(e) {
+                e.preventDefault();
+                client.getMethod(
+                    function(data, type) {
+                        console.log(data);
+                    },
+                    function(error) {
+                        $('.content').html(error);
+                    });
+            });
         },
         getQuestions: function() {
             var html, self = this,

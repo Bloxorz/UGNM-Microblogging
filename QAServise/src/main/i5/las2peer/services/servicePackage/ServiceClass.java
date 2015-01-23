@@ -12,6 +12,7 @@ import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
+import org.bouncycastle.asn1.ua.UAObjectIdentifiers;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -51,10 +52,11 @@ public class ServiceClass extends Service {
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
 
 		try {
-			qr = new QuestionResource(dbm.getConnection());
-            exp = new ExpertiseResource(dbm.getConnection());
-            hr = new HashtagResource(dbm.getConnection());
-            use = new UserResource(dbm.getConnection());
+			Connection conn = dbm.getConnection();
+			qr = new QuestionResource(conn);
+            exp = new ExpertiseResource(conn);
+            hr = new HashtagResource(conn);
+            use = new UserResource(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -335,13 +337,7 @@ public class ServiceClass extends Service {
     @GET
 	@Path("questions")
 	public HttpResponse getQuestions() {
-		QuestionResource q = null;
-		try {
-			q = new QuestionResource(dbm.getConnection());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return q.getQuestionCollection();
+		return qr.getQuestionCollection();
 	}
 
 	@GET
@@ -355,6 +351,10 @@ public class ServiceClass extends Service {
 	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId) {
 		return qr.deleteQuestion(questionId);
 	}
+
+	@GET
+	@Path("question/{questionId}/questionAndAnswers")
+	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) { return qr.getQuestionAndAnswers(questionId); }
 
 	@POST
 	@Path("question")

@@ -123,24 +123,14 @@ public class HashtagManager extends AbstractManager {
 		
 		HashtagDTO hashtag = new HashtagDTO();
 		hashtag.setId(hashtagId);
-		
-		final String delFirstFkey = "DELETE FROM ugnm1415g2.HashtagToExpertise WHERE idHashtag = ?;";
-		final String delSecondFkey = "DELETE FROM ugnm1415g2.QuestionToHashtag WHERE idHashtag = ?;";
+
 		final String delFromHashtag = "DELETE FROM ugnm1415g2.Hashtag WHERE idHashtag = ?;";
 		
 		
-		try(PreparedStatement pstmt1 = conn.prepareStatement(delFirstFkey);
-			PreparedStatement pstmt2 = conn.prepareStatement(delSecondFkey);
-			PreparedStatement pstmt3 = conn.prepareStatement(delFromHashtag); ) {
-			
-			pstmt1.setLong(1, hashtag.getId());
-			pstmt1.executeUpdate();
+		try(PreparedStatement pstmt = conn.prepareStatement(delFromHashtag); ) {
 
-			pstmt2.setLong(1, hashtag.getId());
-			pstmt2.executeUpdate();
-
-			pstmt3.setLong(1, hashtag.getId());
-			int rowsAffected = pstmt3.executeUpdate();
+			pstmt.setLong(1, hashtag.getId());
+			int rowsAffected = pstmt.executeUpdate();
 			if( rowsAffected == 0 ) {
 				throw new CantFindException();
 			}

@@ -1,10 +1,13 @@
 package i5.las2peer.services.servicePackage.Resources;
 
 import com.google.gson.JsonParseException;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
+import i5.las2peer.services.servicePackage.DTO.PostDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
@@ -79,6 +82,10 @@ public class QuestionResource extends AbstractResource {
             res = new HttpResponse("not found");
             res.setStatus(500);
             return  res;
+        } catch (CantFindException e) {
+            res = new HttpResponse("not found");
+            res.setStatus(404);
+            return  res;
         }
     }
 
@@ -133,6 +140,28 @@ public class QuestionResource extends AbstractResource {
         } catch (SQLException e) {
             res = new HttpResponse("not found");
             res.setStatus(500);
+            return  res;
+        }
+    }
+
+    public HttpResponse getQuestionAndAnswers(long questionId) {
+        HttpResponse res;
+        try {
+            List<PostDTO> qAnda = ManagerFacade.getInstance().getQuestionAndAnswers(conn, questionId);
+
+            Gson gson = new Gson();
+
+            res = new HttpResponse(gson.toJson(qAnda));
+            res.setStatus(200);
+
+            return  res;
+        } catch (SQLException e) {
+            res = new HttpResponse(e.toString());
+            res.setStatus(500);
+            return  res;
+        } catch (CantFindException e) {
+            res = new HttpResponse(e.toString());
+            res.setStatus(404);
             return  res;
         }
     }

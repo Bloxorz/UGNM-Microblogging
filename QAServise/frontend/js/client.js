@@ -136,7 +136,7 @@ ServiceClient.prototype.sendRequest = function(method, relativePath, content, mi
 	
 	if(!this.isAnonymous()){
 		console.log("Authenticated request");
-		if(rurl.indexOf("\?") > 0){	
+		if(rurl.indexOf("\?") > 0){
 			rurl += "&access_token=" + window.localStorage["access_token"];
 		} else {
 			rurl += "?access_token=" + window.localStorage["access_token"];

@@ -14,4 +14,9 @@ public abstract class AbstractResource {
         this.conn = conn;
     }
 
+    public Connection setConnection(Connection newConn) {
+        Connection oldConn = conn;
+        conn = newConn;
+        return oldConn;
+    }
 }

@@ -50,4 +50,18 @@ public class PostDTO extends AbstractDTO{
     public boolean wellformed() {
         return false;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        PostDTO that = (PostDTO) other;
+        return (this.getId() == that.getId())
+                && (this.getText().equals(that.getText()))
+                && (this.getTimestamp().equals(that.getTimestamp()))
+                && (this.getUserId() == that.getUserId());
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+"{'timestamp':'"+getTimestamp()+"', 'text':'"+getText()+"', 'userId':'"+getUserId()+"'}";
+    }
 }

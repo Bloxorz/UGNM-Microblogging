@@ -111,6 +111,8 @@ public class ExpertiseResource extends AbstractResource {
             response.setStatus(500);
         } catch (CantDeleteException e) {
             response.setStatus(500);
+        } catch (CantFindException e) {
+            response.setStatus(404);
         }
 
         return response;

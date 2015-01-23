@@ -31,7 +31,7 @@ CREATE TABLE Question
 (
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idQuestion),
-	FOREIGN KEY (idQuestion) REFERENCES Post(idPost)
+	FOREIGN KEY (idQuestion) REFERENCES Post(idPost) ON DELETE CASCADE
 );
 CREATE TABLE Answer
 (
@@ -39,8 +39,8 @@ CREATE TABLE Answer
 	rating int NOT NULL,
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idAnswer),
-	FOREIGN KEY (idAnswer) REFERENCES Post(idPost),
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion)
+	FOREIGN KEY (idAnswer) REFERENCES Post(idPost) ON DELETE CASCADE,
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE -- has to be deleted with deletion from Post
 );
 CREATE TABLE Hashtag
 (
@@ -64,8 +64,8 @@ CREATE TABLE UserToQuestion
 	idUser int NOT NULL,
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idUserToQuestion),
-	FOREIGN KEY (idUser) REFERENCES User(idUser),
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion)
+	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE
 );
 CREATE TABLE UserToExpertise
 (
@@ -73,8 +73,8 @@ CREATE TABLE UserToExpertise
 	idUser int NOT NULL,
 	idExpertise int NOT NULL,
 	PRIMARY KEY (idUserToExpertise),
-	FOREIGN KEY (idUser) REFERENCES User(idUser),
-	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise)
+	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
+	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise) ON DELETE CASCADE
 );
 CREATE TABLE HashtagToExpertise
 (
@@ -82,23 +82,27 @@ CREATE TABLE HashtagToExpertise
 	idHashtag int NOT NULL,
 	idExpertise int NOT NULL,
 	PRIMARY KEY (idHashtagΤοΕxpertise),
-	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag),
-	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise)
+	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE,
+	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise) ON DELETE CASCADE
 );
 CREATE TABLE QuestionToHashtag (
 	idQuestionToHashtag int NOT NULL AUTO_INCREMENT,
 	idQuestion int NOT NULL,
 	idHashtag int NOT NULL,
 	PRIMARY KEY (idQuestionToHashtag),
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion),
-	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag)
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
+	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE
 );
 CREATE TABLE FavoriteQuestionsToUser (
 	idQuestion int NOT NULL,
 	idUser int NOT NULL,
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion),
-	FOREIGN KEY (idUser) REFERENCES User(idUser)
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
+	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE
 );
+
+
+
+
 
 
 

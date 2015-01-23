@@ -1,9 +1,9 @@
 package i5.las2peer.services.servicePackage.Manager;
 
-import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
-import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
-import i5.las2peer.services.servicePackage.DTO.UserDTO;
+import i5.las2peer.restMapper.RESTMapper;
+import i5.las2peer.services.servicePackage.DTO.*;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.General.Rating;
@@ -53,30 +53,83 @@ public class QuestionManager extends AbstractManager{
      */
     public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
 
-        String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
+            String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
+
+            //add all references in DB
+            try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
+                pstmt.setString(1, question.getText());
+                pstmt.setLong(2, question.getUserId());
+
+                int rowsAffected = pstmt.executeUpdate();
+
+                ResultSet rs = pstmt.getGeneratedKeys();
+
+                //fetch generated id
+                long generatedId = 0;
+                if(rs.next()) {
+                    generatedId = rs.getLong(1);
+                } else {
+                    throw new CantInsertException("Could not Insert into Post table");
+                }
+
+                //insert question reference
+                String addAsQuestion = "INSERT INTO Question (idQuestion) VALUES (?)";
+                PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
+                qstmt.setLong(1, generatedId);
+                rowsAffected = qstmt.executeUpdate();
+                if(rowsAffected == 0)
+                    throw new CantInsertException("Could not Insert into Question table");
+
+                question.setId(generatedId);
+                return generatedId;
+            }
+
+    }
+
+    /**
+     * Adds a question with hashtag-links
+     * @param conn
+     * @param question Text and userId
+     * @param hashtags Text of hashtags
+     * @return new question id
+     * @throws SQLException
+     * @throws CantInsertException
+     */
+    public long addQuestion(Connection conn, QuestionDTO question, HashtagDTO[] hashtags) throws SQLException, CantInsertException {
+
+        long generatedQuestionId = addQuestion(conn, question);
+
+        String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 
         //add all references in DB
         try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-            pstmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            pstmt.setString(2, question.getText());
-            pstmt.setLong(3, question.getUserId());
+            pstmt.setString(1, question.getText());
+            pstmt.setLong(2, question.getUserId());
 
-            int ind = pstmt.executeUpdate();
+            int rowsAffected = pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();
 
+            //fetch generated id
             long generatedId = 0;
             if(rs.next()) {
                 generatedId = rs.getLong(1);
+            } else {
+                throw new CantInsertException("Could not Insert into Post table");
             }
 
             //insert question reference
             String addAsQuestion = "INSERT INTO Question (idQuestion) VALUES (?)";
             PreparedStatement qstmt = conn.prepareStatement(addAsQuestion);
             qstmt.setLong(1, generatedId);
-            qstmt.executeUpdate();
+            rowsAffected = qstmt.executeUpdate();
+            if(rowsAffected == 0)
+                throw new CantInsertException("Could not Insert into Question table");
+
+            question.setId(generatedId);
             return generatedId;
         }
+
     }
 
     /**
@@ -86,22 +139,28 @@ public class QuestionManager extends AbstractManager{
      * @return a well formed question or null
      * @throws SQLException unknown Database error
      */
-    public QuestionDTO getQuestion(Connection conn, long questionId) throws SQLException {
-        QuestionDTO question = null;
+    public QuestionDTO getQuestion(Connection conn, long questionId) throws SQLException, CantFindException {
+        QuestionDTO question = new QuestionDTO();
+
         final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
                 "idUser as userId FROM Post p right join Question q on " +
-                "p.idPost = q.idQuestion WHERE idPost = " + questionId + ";";
-        try(Statement stmt = conn.createStatement();) {
-            ResultSet rs = stmt.executeQuery(sql);
+                "p.idPost = q.idQuestion WHERE idPost = ?;";
+
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, questionId);
+
+            ResultSet rs = pstmt.executeQuery();
 
             if(rs.next()) {
-                question = new QuestionDTO();
                 question.setId(rs.getLong("id"));
                 question.setTimestamp(rs.getTimestamp("timestamp"));
                 question.setText(rs.getString("text"));
                 question.setUserId(rs.getLong("userId"));
+            } else {
+                throw new CantFindException();
             }
         }
+
         return question;
     }
 
@@ -120,14 +179,23 @@ public class QuestionManager extends AbstractManager{
     }
 
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        final String deleteFromQuestion = "DELETE FROM Post WHERE idPost = ?;";
+        final String deleteQuestion =
+                "DELETE Post\n" +
+                "FROM Answer\n" +
+                "JOIN Question\n" +
+                "ON Answer.idQuestion=Question.idQuestion\n" +
+                "JOIN Post\n" +
+                "ON Post.idPost=Question.idQuestion OR Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=?;";
 
-        try(PreparedStatement qstmt = conn.prepareStatement(deleteFromQuestion); ) {
+        // the values from tables Question and Answers are automatically deleted by ON CASCADE DELETE
+
+        try(PreparedStatement qstmt = conn.prepareStatement(deleteQuestion); ) {
 
             qstmt.setLong(1, questionId);
 
             if(qstmt.executeUpdate() == 0) {
-                throw new CantDeleteException("Cant delete from Question table");
+                throw new CantDeleteException("Cant delete question");
             }
         }
     }
@@ -164,6 +232,62 @@ public class QuestionManager extends AbstractManager{
     }
 
     /**
+     * Returns a Collection of the question and all answers to a given question in descending rating order
+     * @param conn
+     * @param questionId
+     * @return
+     * @throws SQLException
+     */
+    public List<PostDTO> getQuestionAndAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
+        List<PostDTO> resultDTOs = new ArrayList<PostDTO>();
+        final String sql =
+                "SELECT * \n" +
+                "FROM Post\n" +
+                "LEFT JOIN Question\n" +
+                "On Post.idPost=Question.idQuestion\n" +
+                "LEFT JOIN Answer\n" +
+                "ON Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=? OR Answer.idQuestion=?\n" +
+                "ORDER BY Post.idPost;";
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, questionId);
+            pstmt.setLong(2, questionId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(!rs.next()) {
+                throw new CantFindException();
+            } else {
+                do {
+                    PostDTO current;
+                    if (rs.getLong("Question.idQuestion") == rs.getLong("idPost")) {
+                        // post is a question
+                        current = new QuestionDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser")
+                        );
+                    } else {
+                        // post is an answer
+                        current = new AnswerDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser"),
+                                Rating.fromInt((int) rs.getLong("rating")),
+                                rs.getLong("Answer.idQuestion")
+                        );
+                    }
+
+                    resultDTOs.add(current);
+                } while(rs.next());
+            }
+        }
+        return resultDTOs;
+    }
+
+    /**
      * Adds an answer to a given Question
      * @param conn the Connection
      * @param answer must be a well formed answer
@@ -173,32 +297,36 @@ public class QuestionManager extends AbstractManager{
      */
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         long generatedId = 0;
-        if(answer.wellformed()) {
-            String addAsPost = "INSERT INTO Post (timestamp,text,idUser) VALUES(?,?,?);";
+        String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 
-            //add all references in DB
-            try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-                pstmt.setTimestamp(1, new Timestamp(answer.getTimestamp().getTime()));
-                pstmt.setString(2, answer.getText());
-                pstmt.setLong(3, answer.getUserId());
+        //add all references in DB
+        try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
 
-                ResultSet rs = pstmt.executeQuery();
+            pstmt.setString(1, answer.getText());
+            pstmt.setLong(2, answer.getUserId());
 
-                //fetch generated id
+            int affectedRows = pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
 
-                if(rs.next()) {
-                    generatedId = rs.getLong(1);
-                } else {
-                    throw new CantInsertException("Could not Insert into Post table");
-                }
+            //fetch generated id
 
-                //insert answer reference
-                String addAsAnswer = "INSERT INTO Answer (idAnswer,rating,idQuestion) VALUES (?,?,?)";
-                PreparedStatement astmt = conn.prepareStatement(addAsAnswer);
-                astmt.setLong(1, generatedId);
-                astmt.setInt(2, answer.getRating().getValue());
-                astmt.setLong(3, answer.getQuestionId());
-                astmt.executeQuery();
+            if(rs.next()) {
+                generatedId = rs.getLong(1);
+            } else {
+                throw new CantInsertException("Could not Insert into Post table");
+            }
+
+            //insert answer reference
+            String addAsAnswer = "INSERT INTO Answer (idAnswer,rating,idQuestion) VALUES (?,?,?)";
+            PreparedStatement astmt = conn.prepareStatement(addAsAnswer);
+            astmt.setLong(1, generatedId);
+            astmt.setLong(2, answer.getRating().getValue());
+            astmt.setLong(3, answer.getQuestionId());
+            affectedRows = astmt.executeUpdate();
+            if(affectedRows == 1) {
+                answer.setId(generatedId);
+            } else {
+                throw new CantInsertException("Could not Insert into Post table");
             }
         }
         return generatedId;

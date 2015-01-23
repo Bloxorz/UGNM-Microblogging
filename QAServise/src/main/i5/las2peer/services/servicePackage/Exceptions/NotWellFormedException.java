@@ -5,5 +5,6 @@ package i5.las2peer.services.servicePackage.Exceptions;
  */
 public class NotWellFormedException extends Exception {
     public NotWellFormedException(String s) {
+        super(s);
     }
 }
