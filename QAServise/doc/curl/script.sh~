@@ -9,12 +9,6 @@ echo
 echo "PRESS RETURN TO CONTINUE..."
 read
 
-echo "get a hashtag anonymous"
-curl -v -X GET $URL/hashtag/3
-echo
-echo "PRESS RETURN TO CONTINUE..."
-read
-
 echo "get a hashtag"
 curl -v -X GET $URL/hashtag/3 --user alice:pwalice
 echo

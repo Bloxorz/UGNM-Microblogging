@@ -36,6 +36,18 @@
                 e.preventDefault();
                 self.addQuestion();
             });
+
+            var tmp = $('#megasuper');
+            tmp.click(function(e) {
+                e.preventDefault();
+                client.getMethod(
+                    function(data, type) {
+                        console.log(data);
+                    },
+                    function(error) {
+                        $('.content').html(error);
+                    });
+            });
         },
         getQuestions: function() {
             var html, questions, errMsg, self = this,
@@ -108,7 +120,7 @@
                 '</div>';
 
             var data = {};
-            data.logedin = client.isAnonymous();
+            data.logedin = true;
 
             html = Mustache.render(tpl, data);
             $('.content').html(html);
@@ -212,7 +224,7 @@
             var data = {};
             data.question = {"text": "How old are you?", "timestamp": "heute"};
             data.answers =[{"text": "18", "timestamp": "gerade eben"},{"text": "15", "timestamp": "gerade"}];
-            data.logedin = client.isAnonymous();
+            data.logedin = true;
 
 
             html = Mustache.render(tpl, data);

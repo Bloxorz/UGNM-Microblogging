@@ -97,6 +97,8 @@ public class QuestionManager extends AbstractManager{
      */
     public long addQuestion(Connection conn, QuestionDTO question, HashtagDTO[] hashtags) throws SQLException, CantInsertException {
 
+        long generatedQuestionId = addQuestion(conn, question);
+
         String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 
         //add all references in DB

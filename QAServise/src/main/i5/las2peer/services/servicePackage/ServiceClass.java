@@ -52,10 +52,11 @@ public class ServiceClass extends Service {
 		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
 
 		try {
-			qr = new QuestionResource(dbm.getConnection());
-            exp = new ExpertiseResource(dbm.getConnection());
-            hr = new HashtagResource(dbm.getConnection());
-            use = new UserResource(dbm.getConnection());
+			Connection conn = dbm.getConnection();
+			qr = new QuestionResource(conn);
+            exp = new ExpertiseResource(conn);
+            hr = new HashtagResource(conn);
+            use = new UserResource(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -336,13 +337,7 @@ public class ServiceClass extends Service {
     @GET
 	@Path("questions")
 	public HttpResponse getQuestions() {
-		QuestionResource q = null;
-		try {
-			q = new QuestionResource(dbm.getConnection());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return q.getQuestionCollection();
+		return qr.getQuestionCollection();
 	}
 
 	@GET
