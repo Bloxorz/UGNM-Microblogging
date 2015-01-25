@@ -46,7 +46,7 @@ function ServiceClient(endpointUrl) {
 */
 ServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"ugnmMicro/validate",
+		"api/validate",
 		"",
 		"application/json",
 		{},
@@ -60,7 +60,7 @@ ServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 */
 ServiceClient.prototype.postMethod = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
-		"example/myMethodPath/" + input,
+		"api/myMethodPath/" + input,
 		"",
 		"application/json",
 		{},
@@ -72,7 +72,7 @@ ServiceClient.prototype.postMethod = function(input, successCallback, errorCallb
 
 ServiceClient.prototype.addQuestion = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
-		"ugnmMicro/question/",
+		"api/question/",
 		input,
 		"application/json",
 		{},
@@ -83,7 +83,7 @@ ServiceClient.prototype.addQuestion = function(input, successCallback, errorCall
 
 ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"ugnmMicro/questions/",
+		"api/questions/",
 		"",
 		"application/json",
 		{},
@@ -92,9 +92,9 @@ ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallbac
 	);
 };
 
-ServiceClient.prototype.getAnswers = function(successCallback, errorCallback) {
+ServiceClient.prototype.getAnswersToQuestion = function(id, successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"ugnmMicro/questions/",
+		"answers/question/" + id,
 		"",
 		"application/json",
 		{},
@@ -105,7 +105,7 @@ ServiceClient.prototype.getAnswers = function(successCallback, errorCallback) {
 
 ServiceClient.prototype.getHashtags = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"ugnmMicro/hashtag/",
+		"api/hashtag/",
 		"",
 		"application/json",
 		{},

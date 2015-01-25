@@ -27,7 +27,7 @@ import java.sql.SQLException;
  * that uses the LAS2peer Web-Connector for RESTful access to it.
  * 
  */
-@Path("ugnmMicro")
+@Path("api")
 @Version("0.1")
 public class ServiceClass extends Service {
 
@@ -353,8 +353,10 @@ public class ServiceClass extends Service {
 	}
 
 	@GET
-	@Path("question/{questionId}/questionAndAnswers")
-	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) { return qr.getQuestionAndAnswers(questionId); }
+	@Path("answers/question/{questionId}")
+	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) {
+		return qr.getQuestionAndAnswers(questionId);
+	}
 
 	@POST
 	@Path("question")
