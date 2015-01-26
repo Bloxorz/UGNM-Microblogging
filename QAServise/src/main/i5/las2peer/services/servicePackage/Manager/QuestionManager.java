@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import i5.las2peer.restMapper.RESTMapper;
 import i5.las2peer.services.servicePackage.DTO.*;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
@@ -7,6 +8,11 @@ import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.General.Rating;
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +104,7 @@ public class QuestionManager extends AbstractManager{
     public long addQuestion(Connection conn, QuestionDTO question, HashtagDTO[] hashtags) throws SQLException, CantInsertException {
 
         long generatedQuestionId = addQuestion(conn, question);
+
 
         String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 
@@ -208,7 +215,7 @@ public class QuestionManager extends AbstractManager{
      * @throws SQLException
      */
     public List<AnswerDTO> getAnswersToQuestion(Connection conn, long questionId) throws SQLException {
-        List<AnswerDTO> answers = new ArrayList<AnswerDTO>();
+/*        List<AnswerDTO> answers = new ArrayList<AnswerDTO>();
         final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
                 "idUser as userId, a.rating as rating FROM Post p right join Answer a on p.idPost = a.idAnswer WHERE " +
                 "a.idQuestion = ? Order by rating desc;";
@@ -228,7 +235,14 @@ public class QuestionManager extends AbstractManager{
                 answers.add(answer);
             }
         }
-        return answers;
+        return answers;*/
+        final String sql = "SELECT idPost as id, timestamp as timestamp, text as text, " +
+                "idUser as userId, a.rating as rating FROM Post p right join Answer a on p.idPost = a.idAnswer WHERE " +
+                "a.idQuestion = ? Order by rating desc;";
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<List<AnswerDTO>> h = new BeanListHandler<AnswerDTO>(AnswerDTO.class);
+        return qr.query(conn, sql, h, questionId);
+
     }
 
     /**
@@ -286,6 +300,62 @@ public class QuestionManager extends AbstractManager{
         }
         return resultDTOs;
     }
+
+    /**
+     * Returns a Collection of the question and all hashtags and all answers to a given question in descending rating order
+     * @param conn
+     * @param questionId
+     * @return
+     * @throws SQLException
+     */
+   /* public QuestionHashtagsAnswersDTO getQuestionAndHashtagsAndAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
+        QuestionHashtagsAnswersDTO result;
+        final String sql =
+                "SELECT * \n" +
+                "FROM Post\n" +
+                "LEFT JOIN Question\n" +
+                "On Post.idPost=Question.idQuestion\n" +
+                "LEFT JOIN Answer\n" +
+                "ON Post.idPost=Answer.idAnswer\n" +
+                "WHERE Question.idQuestion=? OR Answer.idQuestion=?\n" +
+                "ORDER BY Post.idPost;";
+        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
+            pstmt.setLong(1, questionId);
+            pstmt.setLong(2, questionId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(!rs.next()) {
+                throw new CantFindException();
+            } else {
+                do {
+                    PostDTO current;
+                    if (rs.getLong("Question.idQuestion") == rs.getLong("idPost")) {
+                        // post is a question
+                        current = new QuestionDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser")
+                        );
+                    } else {
+                        // post is an answer
+                        current = new AnswerDTO(
+                                rs.getLong("idPost"),
+                                rs.getTimestamp("timestamp"),
+                                rs.getString("text"),
+                                rs.getLong("idUser"),
+                                Rating.fromInt((int) rs.getLong("rating")),
+                                rs.getLong("Answer.idQuestion")
+                        );
+                    }
+
+                    resultDTOs.add(current);
+                } while(rs.next());
+            }
+        }
+        return resultDTOs;
+    }*/
 
     /**
      * Adds an answer to a given Question

@@ -1,8 +1,7 @@
 package i5.las2peer.services.servicePackage.DTO;
 
-import i5.las2peer.services.servicePackage.General.Rating;
+import i5.las2peer.services.servicePackage.General.int;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -10,29 +9,24 @@ import java.util.Date;
  */
 public class AnswerDTO extends PostDTO {
 
-    private Rating rating;
+    private int rating;
     private long questionId;
 
-    public AnswerDTO(long id, Date timestamp, String text, long userId, Rating rating, long questionId) {
+    public AnswerDTO(long id, Date timestamp, String text, long userId, int rating, long questionId) {
         super(id, timestamp, text, userId);
         this.rating = rating;
         this.questionId = questionId;
     }
 
     public AnswerDTO(){
-
     }
 
-    @Override
-    public boolean wellformed() {
-        return false;
-    }
 
-    public Rating getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Rating  rating) {
+    public void setRating(int  rating) {
         this.rating = rating;
     }
 

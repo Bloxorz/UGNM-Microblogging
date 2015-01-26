@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import com.google.gson.Gson;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.PostDTO;
@@ -120,4 +121,5 @@ public class QuestionManagerTest {
     public void testGetBookmarkUsersToQuestion() throws Exception {
 
     }
+
 }

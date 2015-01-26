@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.database;
 
+import com.google.gson.Gson;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
@@ -135,4 +136,8 @@ public class DatabaseManagerTest {
         DatabaseManager dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl,jdbcSchema);
         assertNotEquals(null, dbm.getConnection());
     }
+
 }
+
+
+
