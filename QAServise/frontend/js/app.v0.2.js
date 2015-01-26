@@ -19,15 +19,14 @@ var app = (function () {
         '{{#.}}' +
             '<div class="question">' +
                 '<p>' +
-                    '<a href="#">css</a>, ' +
+                    '<a href="">css</a>, ' +
                 '</p>' +
-                '<a href="#" class="my_links">' +
+                '<a href="#" data-id="{{id}}" class="my_links">' +
                     '{{text}}' +
                 '</a>' +
-                '<div>' +
+                '<div class="clearfix>' +
                     '<span class="pull-left">{{timestamp}}</span>' +
                     '<span class="pull-right">0x favorisiert</span>' +
-                '<div class="clearfix"></div>' +
                 '</div>' +
                 '<hr>' +
             '</div>' +
@@ -41,7 +40,7 @@ var app = (function () {
                 $('.my_links').each(function () {
                     $(this).click(function(e) {
                         e.preventDefault();
-                        getAnswersToQuestion();
+                        getAnswersToQuestion($(this).attr('data-id'));
                     });
                 });
             },
@@ -97,11 +96,12 @@ var app = (function () {
                 },
                 function(error) {
                     $('.content').html(error);
-            });
+                }
+            );
         }
     };
 
-    getAnswersToQuestion = function() {
+    getAnswersToQuestion = function(id) {
         var html, tpl =
         '<div class="my-header">' +
             '<h4>Frage</h4>' +
@@ -114,10 +114,9 @@ var app = (function () {
             '<p>' +
                 '{{question.text}}' +
             '</p>' +
-            '<div>' +
+            '<div class="clearfix">' +
                 '<span class="pull-left">{{question.timestamp}}</span>' +
                 '<span class="pull-right"><a href="#">favorisieren</a></span>' +
-                '<div class="clearfix"></div>' +
             '</div>' +
         '</div>' +
         '<div class="my-header">' +
@@ -129,13 +128,17 @@ var app = (function () {
             '<p>' +
                '{{text}}' +
             '</p>' +
-            '<div>' +
+            '<div class="clearfix">' +
                 '<span class="pull-left">{{timestamp}}</span>' +
                 '<span class="pull-right"><a href="#">Gefält mir | 1</a></span>' +
-                '<div class="clearfix"></div>' +
             '</div>' +
             '<hr>' +
         '</div>' +
+        '{{/answers}}' +
+        '{{^answers}}' +
+        '<p>' +
+            'Es gibt noch kein Antwort.' +
+        '</p>' +
         '{{/answers}}' +
         '<div class="my-header">' +
             '<h4>Ihr Antwort</h4>' +
@@ -157,14 +160,28 @@ var app = (function () {
         '</p>' +
         '{{/logedin}}';
 
-//dummy data
-        var data = {};
-        data.question = {"text": "How old are you?", "timestamp": "heute"};
-        data.answers =[{"text": "18", "timestamp": "gerade eben"},{"text": "15", "timestamp": "gerade"}];
-        data.logedin = !client.isAnonymous();
-
-        html = Mustache.render(tpl, data);
-        $('.content').html(html);
+        client.getAnswersToQuestion(
+            id,
+            function(data,type) {
+                var json = JSON.parse(data), col = {};
+                col.question = json[0];
+                col.answers = [];
+                json.forEach(function(item, index) {
+                    if(index !== 0) {
+                        col.answers.push(item);
+                    }
+                });
+                if (col.answers.length === 0) {
+                    col.answers = false;
+                }
+                col.logedin = !client.isAnonymous();
+                html = Mustache.render(tpl, col);
+                $('.content').html(html);
+            },
+            function(error) {
+                $('.content').html(error);
+            }
+        );
     };
 
     return {

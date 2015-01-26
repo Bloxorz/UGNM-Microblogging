@@ -94,7 +94,7 @@ ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallbac
 
 ServiceClient.prototype.getAnswersToQuestion = function(id, successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"answers/question/" + id,
+		"api/answers/question/" + id,
 		"",
 		"application/json",
 		{},
