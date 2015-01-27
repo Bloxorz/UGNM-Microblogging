@@ -1,6 +1,6 @@
 package i5.las2peer.services.servicePackage.DTO;
 
-import i5.las2peer.services.servicePackage.General.int;
+import com.google.gson.Gson;
 
 import java.util.Date;
 
@@ -10,12 +10,12 @@ import java.util.Date;
 public class AnswerDTO extends PostDTO {
 
     private int rating;
-    private long questionId;
+    private long idQuestion;
 
-    public AnswerDTO(long id, Date timestamp, String text, long userId, int rating, long questionId) {
+    public AnswerDTO(long id, Date timestamp, String text, long userId, int rating, long idQuestion) {
         super(id, timestamp, text, userId);
         this.rating = rating;
-        this.questionId = questionId;
+        this.idQuestion = idQuestion;
     }
 
     public AnswerDTO(){
@@ -30,24 +30,22 @@ public class AnswerDTO extends PostDTO {
         this.rating = rating;
     }
 
-    public long getQuestionId() {
-        return questionId;
+    public long getIdQuestion() {
+        return idQuestion;
     }
 
-    public void setQuestionId(long questionId) {
-        this.questionId = questionId;
+    public void setIdQuestion(long idQuestion) {
+        this.idQuestion = idQuestion;
     }
 
     @Override
     public boolean equals(Object other) {
-        AnswerDTO that = (AnswerDTO) other;
-        return super.equals(other)
-                && (this.getQuestionId() == that.getQuestionId())
-                && (this.getRating().equals(that.getRating()));
+        Gson g = new Gson();
+        return g.toJson(this).equals(g.toJson(other));
     }
 
     @Override
     public String toString() {
-        return super.toString()+"{'rating':'"+getRating()+"', 'idQuestion':'"+getQuestionId()+"'}";
+        return (new Gson()).toJson(this);
     }
 }

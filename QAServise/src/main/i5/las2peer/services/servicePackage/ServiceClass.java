@@ -352,19 +352,19 @@ public class ServiceClass extends Service {
 		return qr.deleteQuestion(questionId);
 	}
 
-	@GET
-	@Path("answers/question/{questionId}")
-	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) {
-		return qr.getQuestionAndAnswers(questionId);
-	}
-
 	@POST
 	@Path("question")
 	public HttpResponse addQuestion(@ContentParam String content) {
-		return qr.addQuestion(content);
+		return qr.addQuestion(content, ((UserAgent)getActiveAgent()).getLoginName().equals("anonymous") ? 0 : getActiveAgent().getId());
 	}
 
-    /*@GET
+	@GET
+	@Path("answers/question/{questionId}")
+	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) {
+		return qr.getQuestionWithAnswers(questionId);
+	}
+
+	/*@GET
     @Path("answer/{id}/{token}")
     public HttpResponse getAnswer(@PathParam("id") long answerId) {
         return new AnswerResource(getConnection()).getAnswer(token, answerId);

@@ -1,5 +1,7 @@
 package i5.las2peer.services.servicePackage.Resources;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
@@ -43,21 +45,26 @@ public class QuestionResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse addQuestion(String content) {
+    public HttpResponse addQuestion(String content, long userId) {
         HttpResponse res;
-        try {
-            QuestionDTO question = new Gson().fromJson(content, QuestionDTO.class);
-            Long generatedId = ManagerFacade.getInstance().addQuestion(conn, question);
+        if(userId == 0) {
+            res = new HttpResponse("You are not logged in!");
+            res.setStatus(401);
+        } else {
+            try {
+                QuestionDTO question = new Gson().fromJson(content, QuestionDTO.class);
+                Long generatedId = ManagerFacade.getInstance().addQuestion(conn, question);
 
-            res = new HttpResponse(generatedId.toString());
-            res.setStatus(201);
-            return res;
-        } catch (SQLException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(500);
-        } catch (CantInsertException e) {
-            res = new HttpResponse(e.getMessage());
-            res.setStatus(500);
+                res = new HttpResponse(generatedId.toString());
+                res.setStatus(201);
+                return res;
+            } catch (SQLException e) {
+                res = new HttpResponse(e.toString());
+                res.setStatus(500);
+            } catch (CantInsertException e) {
+                res = new HttpResponse(e.getMessage());
+                res.setStatus(500);
+            }
         }
 
         return res;
@@ -144,27 +151,6 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
-    public HttpResponse getQuestionAndAnswers(long questionId) {
-        HttpResponse res;
-        try {
-            List<PostDTO> qAnda = ManagerFacade.getInstance().getQuestionAndAnswers(conn, questionId);
-
-            Gson gson = new Gson();
-
-            res = new HttpResponse(gson.toJson(qAnda));
-            res.setStatus(200);
-
-            return  res;
-        } catch (SQLException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(500);
-            return  res;
-        } catch (CantFindException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(404);
-            return  res;
-        }
-    }
 
     public HttpResponse addAnswerToQuestion(long questionId, String content) {
 
@@ -214,4 +200,29 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
+    public HttpResponse getQuestionWithAnswers(long questionId) {
+        HttpResponse res;
+        try {
+            JsonElement result = ManagerFacade.getInstance().getQuestionWithAnswers(conn, questionId);
+            if(result == null) {
+                res = new HttpResponse("null");
+                res.setStatus(404);
+                return res;
+            }
+            Gson gson = new Gson();
+
+            res = new HttpResponse(gson.toJson(result));
+            res.setStatus(200);
+
+            return  res;
+        } catch (SQLException e) {
+            res = new HttpResponse(e.toString());
+            res.setStatus(500);
+            return  res;
+        } catch (CantFindException e) {
+            res = new HttpResponse(e.toString());
+            res.setStatus(404);
+            return  res;
+        }
+    }
 }

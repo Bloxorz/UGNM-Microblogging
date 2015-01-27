@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import com.google.gson.JsonElement;
 import i5.las2peer.services.servicePackage.DTO.*;
 import i5.las2peer.services.servicePackage.Exceptions.*;
 
@@ -151,14 +152,14 @@ public class ManagerFacade {
     public List<AnswerDTO> getAnswersToQuestion( Connection conn, long questionId) throws SQLException {
         return questionManager.getAnswersToQuestion(conn, questionId);
     }
-    public List<PostDTO> getQuestionAndAnswers( Connection conn, long questionId) throws SQLException, CantFindException {
-        return questionManager.getQuestionAndAnswers(conn, questionId);
-    }
     public long addAnswerToQuestion( Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         return questionManager.addAnswerToQuestion(conn, answer);
     }
     public List<UserDTO> getBookmarkUsersToQuestion( Connection conn, long questionId) throws SQLException {
         return questionManager.getBookmarkUsersToQuestion(conn, questionId);
+    }
+    public JsonElement getQuestionWithAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
+        return questionManager.getQuestionWithAnswers(conn, questionId);
     }
     ////// answerManager //////
     public AnswerDTO getAnswer( Connection conn, long answerId) throws SQLException {
@@ -170,5 +171,6 @@ public class ManagerFacade {
     public void deleteAnswer( Connection conn, long answerId) throws SQLException, CantDeleteException {
         answerManager.deleteAnswer(conn, answerId);
     }
+
 }
 

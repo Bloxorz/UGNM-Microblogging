@@ -179,10 +179,10 @@ public class UserManager {
 
             while(rs.next()) {
                 QuestionDTO question = new QuestionDTO();
-                question.setId(rs.getLong("questionId"));
+                question.setIdPost(rs.getLong("questionId"));
                 question.setTimestamp(rs.getTimestamp("timestamp"));
                 question.setText(rs.getString("text"));
-                question.setUserId(userId);
+                question.setIdUser(userId);
 
                 questions.add(question);
             }

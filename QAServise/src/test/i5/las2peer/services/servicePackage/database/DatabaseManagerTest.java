@@ -16,7 +16,13 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -73,23 +79,25 @@ public class DatabaseManagerTest {
         };
     }
 
-    public static QuestionDTO[] getTestQuestions() {
-        Date dummyDate = new Date() { @Override public boolean equals(Object o) { return true; } };
+    public static QuestionDTO[] getTestQuestions() throws ParseException {
+        Date dummyDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2000-01-01 00:00:00");
+        HashtagDTO[] hs = getTestHashtags();
+        List<HashtagDTO> hashtags1 = Arrays.asList(new HashtagDTO[]{getTestHashtags()[0], getTestHashtags()[2]});
         return new QuestionDTO[] {
-                new QuestionDTO(1, dummyDate, "How do I write a for-loop?", 1), // #For-Loop #Java
-                new QuestionDTO(2, dummyDate, "Where can I find the toilet?", 4), // #All
-                new QuestionDTO(4, dummyDate, "How does the JFrame-constructor work?", 2) // #Java
+                new QuestionDTO(1, dummyDate, "How do I write a for-loop?", 1, Arrays.asList(new HashtagDTO[]{hs[0], hs[2]})), // #For-Loop #Java
+                new QuestionDTO(2, dummyDate, "Where can I find the toilet?", 4, Arrays.asList(new HashtagDTO[]{hs[3]})), // #All
+                new QuestionDTO(4, dummyDate, "How does the JFrame-constructor work?", 2, Arrays.asList(new HashtagDTO[]{hs[0]})) // #Java
         };
     }
 
-    public static AnswerDTO[] getTestAnswers() {
-        Date dummyDate = new Date() { @Override public boolean equals(Object o) { return true; } };
+    public static AnswerDTO[] getTestAnswers() throws ParseException {
+        Date dummyDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2000-01-01 00:00:00");
         return new AnswerDTO[] {
-                new AnswerDTO(3, dummyDate, "In the building E2, first floor.", 2, Rating.fromInt(100), 2),
-                new AnswerDTO(5, dummyDate, "I think he is right", 5, Rating.fromInt(0), 2),
-                new AnswerDTO(6, dummyDate, "You should google for it.", 3, Rating.fromInt(0), 4),
-                new AnswerDTO(7, dummyDate, "I want to recherche it...", 5, Rating.fromInt(0), 4),
-                new AnswerDTO(8, dummyDate, "I already googled, but couldn'nt find anything :(", 2, Rating.fromInt(0), 4)
+                new AnswerDTO(3, dummyDate, "In the building E2, first floor.", 2, 100, 2),
+                new AnswerDTO(5, dummyDate, "I think he is right", 5, 0, 2),
+                new AnswerDTO(6, dummyDate, "You should google for it.", 3, 0, 4),
+                new AnswerDTO(7, dummyDate, "I want to recherche it...", 5, 0, 4),
+                new AnswerDTO(8, dummyDate, "I already googled, but couldn'nt find anything :(", 2, 0, 4)
         };
     }
 

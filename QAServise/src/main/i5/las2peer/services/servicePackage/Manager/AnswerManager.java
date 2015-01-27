@@ -3,7 +3,6 @@ package i5.las2peer.services.servicePackage.Manager;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantDeleteException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
-import i5.las2peer.services.servicePackage.General.Rating;
 
 import java.sql.*;
 
@@ -30,13 +29,13 @@ public class AnswerManager extends AbstractManager {
 
             if(rs.next()) {
                 answer = new AnswerDTO();
-                answer.setId(rs.getLong("id"));
+                answer.setIdPost(rs.getLong("id"));
                 answer.setTimestamp(rs.getTimestamp("timestamp"));
                 answer.setText(rs.getString("text"));
-                answer.setUserId(rs.getLong("userId"));
+                answer.setIdUser(rs.getLong("userId"));
 
-                answer.setRating(Rating.fromInt(rs.getInt("rating")));
-                answer.setQuestionId(rs.getLong("idQuestion"));
+                answer.setRating(rs.getInt("rating"));
+                answer.setIdQuestion(rs.getLong("idQuestion"));
             }
         }
         return answer;

@@ -1,6 +1,7 @@
 package i5.las2peer.services.servicePackage.Manager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.PostDTO;
@@ -9,13 +10,19 @@ import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.General.Rating;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import i5.las2peer.services.servicePackage.database.DatabaseManagerTest;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -27,7 +34,7 @@ public class QuestionManagerTest {
     private Connection conn;
 
     @BeforeClass
-    public static void initClass() {
+    public static void initClass() throws ParseException {
         manager = new QuestionManager();
         testDTOs = DatabaseManagerTest.getTestQuestions();
     }
@@ -44,9 +51,11 @@ public class QuestionManagerTest {
 
     @Test
     public void testGetQuestionList() throws Exception {
+        System.out.println(manager.getQuestionList(conn));
         assertArrayEquals(testDTOs, manager.getQuestionList(conn).toArray());
     }
 
+    /* without hashtags
     @Test
     public void testAddQuestion() throws Exception {
         QuestionDTO dto = new QuestionDTO(0, null, "How are you?", 5);
@@ -56,17 +65,37 @@ public class QuestionManagerTest {
         assertEquals( getDto.getId(), dto.getId() );
         assertEquals( getDto.getText(), dto.getText() );
         assertEquals( getDto.getUserId(), dto.getUserId() );
+    }*/
+    @Test
+    public void testAddQuestion() throws Exception {
+        List<HashtagDTO> hashtags = new LinkedList<HashtagDTO>();
+        hashtags.add(DatabaseManagerTest.getTestHashtags()[2]);
+        hashtags.add(DatabaseManagerTest.getTestHashtags()[3]);
+        QuestionDTO dto = new QuestionDTO(0, null, "How are you?", 1, hashtags);
+        long newId = manager.addQuestion(conn, dto);
+        assertEquals(newId, 9);
+        QuestionDTO getDto = manager.getQuestion(conn, 9);
+        System.out.println(getDto);
+        assertEquals( getDto.getIdPost(), dto.getIdPost() );
+        assertEquals(getDto.getText(), dto.getText());
+        assertEquals( getDto.getIdUser(), dto.getIdUser() );
+        assertArrayEquals( getDto.getHashtags().toArray(), dto.getHashtags().toArray() );
     }
+
 
     @Test
     public void testGetQuestion() throws Exception {
-        QuestionDTO dto = manager.getQuestion(conn, 2);
-        assertEquals(testDTOs[1], dto);
+        QuestionDTO dto = manager.getQuestion(conn, 1);
+        assertEquals(testDTOs[0], dto);
     }
 
     @Test
     public void testEditQuestion() throws Exception {
-
+      /*  ResultSetHandler<Object> h = new BeanHandler<Object>(Object.class);
+        QueryRunner qr = new QueryRunner();
+        Object result = qr.query(conn, "SELECT (idHashtag) FROM Hashtag WHERE text=?", h, "Java");
+        System.out.println(Object.class.);
+        System.out.println(Object.class.getDeclaredField("idHashtag").getInt(result));*/
     }
 
     @Test
@@ -91,24 +120,28 @@ public class QuestionManagerTest {
                 DatabaseManagerTest.getTestAnswers()[3],
                 DatabaseManagerTest.getTestAnswers()[4]
         };
-
+        System.out.println( manager.getAnswersToQuestion(conn, 4));
         assertArrayEquals( expected, manager.getAnswersToQuestion(conn, 4).toArray() );
     }
 
     @Test
-    public void testGetQuestionAndAnswers() throws Exception {
-        PostDTO[] expected = new PostDTO[] {
-                DatabaseManagerTest.getTestQuestions()[2],
+    public void testGetQuestionWithAnswers() throws Exception {
+        Gson g = new Gson();
+        JsonObject jo = new JsonObject();
+        AnswerDTO[] expectedAnswers = new AnswerDTO[] {
                 DatabaseManagerTest.getTestAnswers()[2],
                 DatabaseManagerTest.getTestAnswers()[3],
                 DatabaseManagerTest.getTestAnswers()[4]
         };
-        assertArrayEquals(expected, manager.getQuestionAndAnswers(conn, 4).toArray());
+        jo.add("question", g.toJsonTree(DatabaseManagerTest.getTestQuestions()[2]));
+        jo.add("answers", g.toJsonTree(expectedAnswers));
+
+        assertEquals(jo.toString(), manager.getQuestionWithAnswers(conn, 4).toString());
     }
 
     @Test
     public void testAddAnswerToQuestion() throws Exception {
-        AnswerDTO dto = new AnswerDTO(-1, new Date(){ @Override public boolean equals(Object o){return true;}}, "Geh in den Vorkurs!", 5, Rating.fromInt(0), 1);
+        AnswerDTO dto = new AnswerDTO(-1, null, "Geh in den Vorkurs!", 5, 0, 1);
         manager.addAnswerToQuestion(conn, dto);
         Object[] result = manager.getAnswersToQuestion(conn, 1).toArray();
         AnswerDTO[] expected = new AnswerDTO[] {dto};

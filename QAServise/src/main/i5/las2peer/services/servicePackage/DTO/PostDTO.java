@@ -1,21 +1,24 @@
 package i5.las2peer.services.servicePackage.DTO;
 
+import com.google.gson.Gson;
+
 import java.util.Date;
 
 /**
  * Created by Marv on 05.11.2014.
  */
-public class PostDTO extends AbstractDTO{
+public class PostDTO {
 
     private Date timestamp;
     private String text;
-    private long userId;
+    private long idUser;
+    private long idPost;
 
-    public PostDTO(long id, Date date, String text, long userId) {
-        super(id);
+    public PostDTO(long idPost, Date date, String text, long idUser) {
+        this.idPost = idPost;
         this.timestamp = date;
         this.text = text;
-        this.userId = userId;
+        this.idUser = idUser;
     }
 
     public PostDTO() {
@@ -38,30 +41,30 @@ public class PostDTO extends AbstractDTO{
         this.text = text;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getIdPost() {
+        return idPost;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setIdPost(long idPost) {
+        this.idPost = idPost;
     }
 
-    @Override
-    public boolean wellformed() {
-        return false;
+    public long getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(long idUser) {
+        this.idUser = idUser;
     }
 
     @Override
     public boolean equals(Object other) {
-        PostDTO that = (PostDTO) other;
-        return (this.getId() == that.getId())
-                && (this.getText().equals(that.getText()))
-                && (this.getTimestamp().equals(that.getTimestamp()))
-                && (this.getUserId() == that.getUserId());
+        Gson g = new Gson();
+        return g.toJson(this).equals(g.toJson(other));
     }
 
     @Override
     public String toString() {
-        return super.toString()+"{'timestamp':'"+getTimestamp()+"', 'text':'"+getText()+"', 'userId':'"+getUserId()+"'}";
+        return (new Gson()).toJson(this);
     }
 }

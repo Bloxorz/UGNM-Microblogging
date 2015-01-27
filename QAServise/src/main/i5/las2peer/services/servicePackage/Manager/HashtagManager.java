@@ -33,7 +33,7 @@ public class HashtagManager extends AbstractManager {
             while(rs.next()) {
             	
             	HashtagDTO hashtagDTO = new HashtagDTO();
-            	hashtagDTO.setId(rs.getLong("idHashtag"));
+            	hashtagDTO.setIdHashtag(rs.getLong("idHashtag"));
             	hashtagDTO.setText(rs.getString("text"));
             	
             	hashtag.add(hashtagDTO);
@@ -49,7 +49,7 @@ public class HashtagManager extends AbstractManager {
 	public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException, CantFindException {
 		
 		 HashtagDTO hashtag = new HashtagDTO();
-		 hashtag.setId(hashtagId);
+		 hashtag.setIdHashtag(hashtagId);
 		 
 	     final String sql = "SELECT text FROM ugnm1415g2.Hashtag " + "Where idHashtag = ?";
 
@@ -102,7 +102,7 @@ public class HashtagManager extends AbstractManager {
         }
 		
 		String text = hashtag.getText();
-		Long id = hashtag.getId();
+		Long id = hashtag.getIdHashtag();
 		
 		try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
 			
@@ -122,14 +122,14 @@ public class HashtagManager extends AbstractManager {
 	public void deleteHashtag(Connection conn, long hashtagId) throws SQLException, CantDeleteException, CantFindException {
 		
 		HashtagDTO hashtag = new HashtagDTO();
-		hashtag.setId(hashtagId);
+		hashtag.setIdHashtag(hashtagId);
 
 		final String delFromHashtag = "DELETE FROM ugnm1415g2.Hashtag WHERE idHashtag = ?;";
 		
 		
 		try(PreparedStatement pstmt = conn.prepareStatement(delFromHashtag); ) {
 
-			pstmt.setLong(1, hashtag.getId());
+			pstmt.setLong(1, hashtag.getIdHashtag());
 			int rowsAffected = pstmt.executeUpdate();
 			if( rowsAffected == 0 ) {
 				throw new CantFindException();
@@ -159,10 +159,10 @@ public class HashtagManager extends AbstractManager {
             
             while (rs.next()) {
                 QuestionDTO question = new QuestionDTO();
-                question.setId(rs.getLong("fragenID"));
+                question.setIdPost(rs.getLong("fragenID"));
                 question.setTimestamp(rs.getTimestamp("timestamp"));
                 question.setText(rs.getString("text"));
-                question.setUserId(rs.getLong("userID"));
+                question.setIdUser(rs.getLong("userID"));
 
                 res.add(question);
             }

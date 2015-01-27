@@ -60,11 +60,6 @@ public class QuestionResourceTest {
     }
 
     @Test
-    public void testGetQuestionAndAnswers() throws Exception {
-        System.out.println(resource.getQuestionAndAnswers(4).getResult());
-    }
-
-    @Test
     public void testAddAnswerToQuestion() throws Exception {
 
     }

@@ -52,7 +52,7 @@ public class AnswerResource extends AbstractResource {
         HttpResponse response = new HttpResponse("");
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
-            ManagerFacade.getInstance().editAnswer(conn, answerID, answer.getText(), answer.getRating().getValue());
+            ManagerFacade.getInstance().editAnswer(conn, answerID, answer.getText(), answer.getRating());
 
             response.setStatus(200);
 

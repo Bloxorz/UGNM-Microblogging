@@ -45,13 +45,13 @@ CREATE TABLE Answer
 CREATE TABLE Hashtag 
 (
 	idHashtag int NOT NULL AUTO_INCREMENT,
-	text varchar(45) NOT NULL,
+	text varchar(45) NOT NULL UNIQUE,
 	PRIMARY KEY (idHashtag)
 );
 CREATE TABLE Expertise
 (
 	idExpertise int NOT NULL AUTO_INCREMENT,
-	text varchar(45) NOT NULL,
+	text varchar(45) NOT NULL UNIQUE,
 	PRIMARY KEY (idExpertise)
 );
 

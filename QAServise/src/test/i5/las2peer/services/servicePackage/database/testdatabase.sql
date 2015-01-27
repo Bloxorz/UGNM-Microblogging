@@ -21,7 +21,7 @@ CREATE TABLE User
 CREATE TABLE Post
 (
 	idPost int NOT NULL AUTO_INCREMENT,
-	timestamp timestamp NOT NULL,
+	timestamp timestamp NOT NULL DEFAULT '2000-01-01 00:00:00', -- not timestamp for tests
 	text varchar(255) NOT NULL,
 	idUser int NOT NULL,
 	PRIMARY KEY (idPost),
@@ -45,13 +45,13 @@ CREATE TABLE Answer
 CREATE TABLE Hashtag
 (
 	idHashtag int NOT NULL AUTO_INCREMENT,
-	text varchar(45) NOT NULL,
+	text varchar(45) NOT NULL UNIQUE,
 	PRIMARY KEY (idHashtag)
 );
 CREATE TABLE Expertise
 (
 	idExpertise int NOT NULL AUTO_INCREMENT,
-	text varchar(45) NOT NULL,
+	text varchar(45) NOT NULL UNIQUE,
 	PRIMARY KEY (idExpertise)
 );
 

@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
+import java.text.ParseException;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +22,7 @@ public class AnswerManagerTest {
     private Connection conn;
 
     @BeforeClass
-    public static void initClass() {
+    public static void initClass() throws ParseException {
         manager = new AnswerManager();
         testDTOs = DatabaseManagerTest.getTestAnswers();
     }
