@@ -19,9 +19,11 @@ var app = (function () {
         '{{#.}}' +
             '<div class="question">' +
                 '<p>' +
-                    '<a href="">css</a>, ' +
+                '{{#hashtags}}'+
+                    '<a href="">{{text}}</a> ' +
+                '{{/hashtags}}'+
                 '</p>' +
-                '<a href="#" data-id="{{id}}" class="my_links">' +
+                '<a href="#" data-id="{{idPost}}" class="my_links">' +
                     '{{text}}' +
                 '</a>' +
                 '<div class="clearfix>' +
@@ -109,7 +111,9 @@ var app = (function () {
             '</div>' +
         '<div class="question">' +
             '<p>' +
-                '<a href="#">css</a>, <a href="#">bootstrap</a>' +
+                '{{#question.hashtags}}' +
+                '<a href="#">{{text}}</a> ' +
+                '{{/question.hashtags}}' +
             '</p>' +
             '<p>' +
                 '{{question.text}}' +
@@ -163,19 +167,9 @@ var app = (function () {
         client.getAnswersToQuestion(
             id,
             function(data,type) {
-                var json = JSON.parse(data), col = {};
-                col.question = json[0];
-                col.answers = [];
-                json.forEach(function(item, index) {
-                    if(index !== 0) {
-                        col.answers.push(item);
-                    }
-                });
-                if (col.answers.length === 0) {
-                    col.answers = false;
-                }
-                col.logedin = !client.isAnonymous();
-                html = Mustache.render(tpl, col);
+                var json = JSON.parse(data);
+                json.logedin = !client.isAnonymous();
+                html = Mustache.render(tpl, json);
                 $('.content').html(html);
             },
             function(error) {
@@ -216,7 +210,7 @@ var app = (function () {
                     h.push({'text':item[0].value});
                 });
 
-                json = {'question':{'text': q}, 'hashtags': h};
+                json = {'question':{'text': q, 'hashtags': h}};
 
                 client.addQuestion(
                     JSON.stringify(json),
