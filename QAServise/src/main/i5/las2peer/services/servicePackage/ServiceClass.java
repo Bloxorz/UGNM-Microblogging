@@ -364,6 +364,12 @@ public class ServiceClass extends Service {
 		return qr.getQuestionWithAnswers(questionId);
 	}
 
+	@POST
+	@Path("answers/question/{questionId}")
+	public HttpResponse addAnswerToQuestion(@PathParam("questionId") long questionId, @ContentParam String content) {
+		return qr.addAnswerToQuestion(questionId, content, ((UserAgent)getActiveAgent()).getLoginName().equals("anonymous") ? 0 : getActiveAgent().getId());
+	}
+
 	/*@GET
     @Path("answer/{id}/{token}")
     public HttpResponse getAnswer(@PathParam("id") long answerId) {

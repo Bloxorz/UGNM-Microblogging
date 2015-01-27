@@ -154,6 +154,7 @@ public class QuestionManager extends AbstractManager{
      * @throws CantInsertException Can't insert into Databse, see message for further detail;
      */
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
+        System.out.println(answer);
         long generatedId = 0;
         String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
 

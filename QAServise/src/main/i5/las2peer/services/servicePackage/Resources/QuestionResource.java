@@ -152,29 +152,30 @@ public class QuestionResource extends AbstractResource {
     }
 
 
-    public HttpResponse addAnswerToQuestion(long questionId, String content) {
+    public HttpResponse addAnswerToQuestion(long questionId, String content, long userId) {
 
         HttpResponse res;
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
+            System.out.println(answer);
+            answer.setIdQuestion(questionId);
+            answer.setIdUser(userId);
             Long generatedId = ManagerFacade.getInstance().addAnswerToQuestion(conn, answer);
 
             res = new HttpResponse(generatedId.toString());
             res.setStatus(201);
             return res;
         } catch (JsonParseException e) {
-            res = new HttpResponse("");
+            res = new HttpResponse(e.toString());
             res.setStatus(400);
         } catch (SQLException e) {
-            res = new HttpResponse("");
+            res = new HttpResponse(e.toString());
             res.setStatus(500);
         } catch (CantInsertException e) {
-            res = new HttpResponse("");
+            res = new HttpResponse(e.toString());
             res.setStatus(500);
         }
 
-        res = new HttpResponse("");
-        res.setStatus(500);
         return res;
     }
 

@@ -152,7 +152,7 @@ public class ManagerFacade {
     public List<AnswerDTO> getAnswersToQuestion( Connection conn, long questionId) throws SQLException {
         return questionManager.getAnswersToQuestion(conn, questionId);
     }
-    public long addAnswerToQuestion( Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
+    public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         return questionManager.addAnswerToQuestion(conn, answer);
     }
     public List<UserDTO> getBookmarkUsersToQuestion( Connection conn, long questionId) throws SQLException {

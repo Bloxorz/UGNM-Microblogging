@@ -141,7 +141,7 @@ public class QuestionManagerTest {
 
     @Test
     public void testAddAnswerToQuestion() throws Exception {
-        AnswerDTO dto = new AnswerDTO(-1, null, "Geh in den Vorkurs!", 5, 0, 1);
+        AnswerDTO dto = new AnswerDTO(-1, DatabaseManagerTest.getDummyDate(), "Geh in den Vorkurs!", 5, 0, 1);
         manager.addAnswerToQuestion(conn, dto);
         Object[] result = manager.getAnswersToQuestion(conn, 1).toArray();
         AnswerDTO[] expected = new AnswerDTO[] {dto};

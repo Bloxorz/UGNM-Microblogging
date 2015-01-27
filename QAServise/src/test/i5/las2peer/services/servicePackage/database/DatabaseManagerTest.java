@@ -59,6 +59,15 @@ public class DatabaseManagerTest {
         }
     }
 
+    public static Date getDummyDate() {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2000-01-01 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static HashtagDTO[] getTestHashtags() {
         return new HashtagDTO[] {
                 new HashtagDTO(1,"Java"),
@@ -80,24 +89,22 @@ public class DatabaseManagerTest {
     }
 
     public static QuestionDTO[] getTestQuestions() throws ParseException {
-        Date dummyDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2000-01-01 00:00:00");
         HashtagDTO[] hs = getTestHashtags();
         List<HashtagDTO> hashtags1 = Arrays.asList(new HashtagDTO[]{getTestHashtags()[0], getTestHashtags()[2]});
         return new QuestionDTO[] {
-                new QuestionDTO(1, dummyDate, "How do I write a for-loop?", 1, Arrays.asList(new HashtagDTO[]{hs[0], hs[2]})), // #For-Loop #Java
-                new QuestionDTO(2, dummyDate, "Where can I find the toilet?", 4, Arrays.asList(new HashtagDTO[]{hs[3]})), // #All
-                new QuestionDTO(4, dummyDate, "How does the JFrame-constructor work?", 2, Arrays.asList(new HashtagDTO[]{hs[0]})) // #Java
+                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(new HashtagDTO[]{hs[0], hs[2]})), // #For-Loop #Java
+                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, Arrays.asList(new HashtagDTO[]{hs[3]})), // #All
+                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(new HashtagDTO[]{hs[0]})) // #Java
         };
     }
 
-    public static AnswerDTO[] getTestAnswers() throws ParseException {
-        Date dummyDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2000-01-01 00:00:00");
+    public static AnswerDTO[] getTestAnswers() {
         return new AnswerDTO[] {
-                new AnswerDTO(3, dummyDate, "In the building E2, first floor.", 2, 100, 2),
-                new AnswerDTO(5, dummyDate, "I think he is right", 5, 0, 2),
-                new AnswerDTO(6, dummyDate, "You should google for it.", 3, 0, 4),
-                new AnswerDTO(7, dummyDate, "I want to recherche it...", 5, 0, 4),
-                new AnswerDTO(8, dummyDate, "I already googled, but couldn'nt find anything :(", 2, 0, 4)
+                new AnswerDTO(3, getDummyDate(), "In the building E2, first floor.", 2, 100, 2),
+                new AnswerDTO(5, getDummyDate(), "I think he is right", 5, 0, 2),
+                new AnswerDTO(6, getDummyDate(), "You should google for it.", 3, 0, 4),
+                new AnswerDTO(7, getDummyDate(), "I want to recherche it...", 5, 0, 4),
+                new AnswerDTO(8, getDummyDate(), "I already googled, but couldn'nt find anything :(", 2, 0, 4)
         };
     }
 

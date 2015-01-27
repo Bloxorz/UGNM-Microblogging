@@ -61,7 +61,7 @@ public class QuestionResourceTest {
 
     @Test
     public void testAddAnswerToQuestion() throws Exception {
-
+        System.out.println(resource.addAnswerToQuestion(2, "{\"text\": \"How old are you?\", \"idQuestion\" : 2}", 4).getResult());
     }
 
     @Test
