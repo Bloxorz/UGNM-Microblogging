@@ -9,6 +9,7 @@ import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
+import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Resources.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import net.minidev.json.JSONObject;
@@ -62,6 +63,18 @@ public class ServiceClass extends Service {
 		}
 	}
 
+	private boolean isAnonymous() {
+		return getActiveAgent().getId() == getActiveNode().getAnonymous().getId();
+	}
+
+	private HttpResponse registerUser() {
+		if(isAnonymous()) {
+			return new HttpResponse("User is anonymous", 200);
+		} else  {
+			return use.registerUser(new UserDTO(getActiveAgent().getId(), 0, null, null, null));
+		}
+	}
+
 	/**
 	 * Simple function to validate a user login.
 	 * Basically it only serves as a "calling point" and does not really validate a user
@@ -80,191 +93,8 @@ public class ServiceClass extends Service {
 		return res;
 	}
 
-	/**
-	 * Another example method.
-	 * 
-	 * @param myInput
-	 * 
-	 */
-	@POST
-	@Path("myMethodPath/{input}")
-	public HttpResponse exampleMethod(@PathParam("input") String myInput) {
-		String returnString = "";
-		returnString += "You have entered " + myInput + "!";
-		
-		HttpResponse res = new HttpResponse(returnString);
-		res.setStatus(200);
-		return res;
-		
-	}
 
-	/**
-	 * Example method that shows how to retrieve a user email address from a database 
-	 * and return an HTTP response including a JSON object.
-	 * 
-	 * WARNING: THIS METHOD IS ONLY FOR DEMONSTRATIONAL PURPOSES!!! 
-	 * IT WILL REQUIRE RESPECTIVE DATABASE TABLES IN THE BACKEND, WHICH DON'T EXIST IN THE TEMPLATE.
-	 * 
-	 */
-	@GET
-	@Path("getUserEmail/{username}")
-	public HttpResponse getUserEmail(@PathParam("username") String username) {
-		String result = "";
-		Connection conn = null;
-		PreparedStatement stmnt = null;
-		ResultSet rs = null;
-		try {
-			// get connection from connection pool
-			conn = dbm.getConnection();
-			
-			// prepare statement
-			stmnt = conn.prepareStatement("SELECT email FROM users WHERE username = ?;");
-			stmnt.setString(1, username);
-			
-			// retrieve result set
-			rs = stmnt.executeQuery();
-			
-			// process result set
-			if (rs.next()) {
-				result = rs.getString(1);
-				
-				// setup resulting JSON Object
-				JSONObject ro = new JSONObject();
-				ro.put("email", result);
-				
-				// return HTTP Response on success
-				HttpResponse r = new HttpResponse(ro.toJSONString());
-				r.setStatus(200);
-				return r;
-				
-			} else {
-				result = "No result for username " + username;
-				
-				// return HTTP Response on error
-				HttpResponse er = new HttpResponse(result);
-				er.setStatus(404);
-				return er;
-			}
-		} catch (Exception e) {
-			// return HTTP Response on error
-			HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-			er.setStatus(500);
-			return er;
-		} finally {
-			// free resources
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e) {
-					Context.logError(this, e.getMessage());
-					
-					// return HTTP Response on error
-					HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-					er.setStatus(500);
-					return er;
-				}
-			}
-			if (stmnt != null) {
-				try {
-					stmnt.close();
-				} catch (Exception e) {
-					Context.logError(this, e.getMessage());
-					
-					// return HTTP Response on error
-					HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-					er.setStatus(500);
-					return er;
-				}
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (Exception e) {
-					Context.logError(this, e.getMessage());
-					
-					// return HTTP Response on error
-					HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-					er.setStatus(500);
-					return er;
-				}
-			}
-		}
-	}
 
-	/**
-	 * Example method that shows how to change a user email address in a database.
-	 * 
-	 * WARNING: THIS METHOD IS ONLY FOR DEMONSTRATIONAL PURPOSES!!! 
-	 * IT WILL REQUIRE RESPECTIVE DATABASE TABLES IN THE BACKEND, WHICH DON'T EXIST IN THE TEMPLATE.
-	 * 
-	 */
-	@POST
-	@Path("setUserEmail/{username}/{email}")
-	public HttpResponse setUserEmail(@PathParam("username") String username, @PathParam("email") String email) {
-		
-		String result = "";
-		Connection conn = null;
-		PreparedStatement stmnt = null;
-		ResultSet rs = null;
-		try {
-			conn = dbm.getConnection();
-			stmnt = conn.prepareStatement("UPDATE users SET email = ? WHERE username = ?;");
-			stmnt.setString(1, email);
-			stmnt.setString(2, username);
-			int rows = stmnt.executeUpdate(); // same works for insert
-			result = "Database updated. " + rows + " rows affected";
-			
-			// return 
-			HttpResponse r = new HttpResponse(result);
-			r.setStatus(200);
-			return r;
-			
-		} catch (Exception e) {
-			// return HTTP Response on error
-			HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-			er.setStatus(500);
-			return er;
-		} finally {
-			// free resources if exception or not
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e) {
-					Context.logError(this, e.getMessage());
-					
-					// return HTTP Response on error
-					HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-					er.setStatus(500);
-					return er;
-				}
-			}
-			if (stmnt != null) {
-				try {
-					stmnt.close();
-				} catch (Exception e) {
-					Context.logError(this, e.getMessage());
-					
-					// return HTTP Response on error
-					HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-					er.setStatus(500);
-					return er;
-				}
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (Exception e) {
-					Context.logError(this, e.getMessage());
-					
-					// return HTTP Response on error
-					HttpResponse er = new HttpResponse("Internal error: " + e.getMessage());
-					er.setStatus(500);
-					return er;
-				}
-			}
-		}
-	}
-	
 	@GET
 	@Path("user/")
 	public HttpResponse getUsers() {
@@ -275,6 +105,22 @@ public class ServiceClass extends Service {
 	@Path("user/{userId}")
 	public HttpResponse getUser(@PathParam("userId") Long userId){
 		return use.getUser(userId);
+	}
+
+	@POST
+	@Path("user/bookmark/{questionId}")
+	public HttpResponse bookmark(@PathParam("questionId") long questionId) {
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return use.addBookmark(isAnonymous() ? 0 : getActiveAgent().getId(), questionId);
+	}
+
+	@GET
+	@Path("user/favouriteQuestions")
+	public HttpResponse getBookmarkedQuestions() {
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return use.bookmarkedQuestions(isAnonymous() ? 0 : getActiveAgent().getId());
 	}
 	
 	/*@DELETE
@@ -355,7 +201,9 @@ public class ServiceClass extends Service {
 	@POST
 	@Path("question")
 	public HttpResponse addQuestion(@ContentParam String content) {
-		return qr.addQuestion(content, ((UserAgent)getActiveAgent()).getLoginName().equals("anonymous") ? 0 : getActiveAgent().getId());
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return qr.addQuestion(content, isAnonymous() ? 0 : getActiveAgent().getId());
 	}
 
 	@GET
@@ -367,7 +215,9 @@ public class ServiceClass extends Service {
 	@POST
 	@Path("answers/question/{questionId}")
 	public HttpResponse addAnswerToQuestion(@PathParam("questionId") long questionId, @ContentParam String content) {
-		return qr.addAnswerToQuestion(questionId, content, ((UserAgent)getActiveAgent()).getLoginName().equals("anonymous") ? 0 : getActiveAgent().getId());
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return qr.addAnswerToQuestion(questionId, content, isAnonymous() ? 0 : getActiveAgent().getId());
 	}
 
 	/*@GET

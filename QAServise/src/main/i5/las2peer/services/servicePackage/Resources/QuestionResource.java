@@ -48,11 +48,12 @@ public class QuestionResource extends AbstractResource {
     public HttpResponse addQuestion(String content, long userId) {
         HttpResponse res;
         if(userId == 0) {
-            res = new HttpResponse("You are not logged in!");
+            res = new HttpResponse("Your login is not valid!");
             res.setStatus(401);
         } else {
             try {
                 QuestionDTO question = new Gson().fromJson(content, QuestionDTO.class);
+                question.setIdUser(userId);
                 Long generatedId = ManagerFacade.getInstance().addQuestion(conn, question);
 
                 res = new HttpResponse(generatedId.toString());
@@ -162,21 +163,14 @@ public class QuestionResource extends AbstractResource {
             answer.setIdUser(userId);
             Long generatedId = ManagerFacade.getInstance().addAnswerToQuestion(conn, answer);
 
-            res = new HttpResponse(generatedId.toString());
-            res.setStatus(201);
-            return res;
+            return new HttpResponse(generatedId.toString(), 201);
         } catch (JsonParseException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(400);
+            return new HttpResponse(e.toString(), 400);
         } catch (SQLException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(500);
+            return new HttpResponse(e.toString(), 500);
         } catch (CantInsertException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(500);
+            return new HttpResponse(e.toString(), 500);
         }
-
-        return res;
     }
 
     public HttpResponse getBookmarkUsersToQuestion(long questionId) {
@@ -195,9 +189,7 @@ public class QuestionResource extends AbstractResource {
 
             return  res;
         } catch (SQLException e) {
-            res = new HttpResponse("not found");
-            res.setStatus(500);
-            return  res;
+            return new HttpResponse("not found", 500);
         }
     }
 
@@ -212,18 +204,11 @@ public class QuestionResource extends AbstractResource {
             }
             Gson gson = new Gson();
 
-            res = new HttpResponse(gson.toJson(result));
-            res.setStatus(200);
-
-            return  res;
+            return new HttpResponse(gson.toJson(result), 200);
         } catch (SQLException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(500);
-            return  res;
+            return new HttpResponse(e.toString(), 500);
         } catch (CantFindException e) {
-            res = new HttpResponse(e.toString());
-            res.setStatus(404);
-            return  res;
+            return new HttpResponse(e.toString(), 404);
         }
     }
 }

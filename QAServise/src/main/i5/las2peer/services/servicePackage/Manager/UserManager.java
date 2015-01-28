@@ -1,19 +1,28 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import com.sun.mail.util.logging.MailHandler;
+import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
+import org.apache.commons.dbutils.BaseResultSetHandler;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.MapHandler;
+
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Marv on 05.11.2014.
  */
 public class UserManager {
 
+    private QuestionManager qm = new QuestionManager();
 
     public List<UserDTO> getUserList(Connection conn) throws SQLException {
         final String sql = "SELECT idUser as userId, rating as rat, image as img, contact as con, " +
@@ -26,12 +35,11 @@ public class UserManager {
 
             while(rs.next()) {
                 UserDTO user = new UserDTO();
-                user.setId(rs.getLong("userId"));
+                user.setIdUser(rs.getLong("userId"));
                 user.setElo(rs.getInt("rat"));
                 user.setImagePath(rs.getString("img"));
                 user.setContactInfo(rs.getString("con"));
                 user.setEmail(rs.getString("mail"));
-                user.setPass(rs.getString("pass"));
 
                 users.add(user);
             }
@@ -49,7 +57,6 @@ public class UserManager {
             pstmt.setString(2, user.getImagePath());
             pstmt.setString(3, user.getContactInfo());
             pstmt.setString(4, user.getEmail());
-            pstmt.setString(5, user.getPass());
 
             if(pstmt.executeUpdate() == 0) {
                 throw new CantInsertException("Can't insert into User");
@@ -80,70 +87,17 @@ public class UserManager {
             //resultset has at least one entry
             if(rs.next()) {
                 user = new UserDTO();
-                user.setId(userId);
+                user.setIdUser(userId);
                 user.setElo(rs.getInt("rat"));
                 user.setImagePath(rs.getString("img"));
                 user.setContactInfo(rs.getString("con"));
                 user.setEmail(rs.getString("mail"));
-                user.setPass(rs.getString("pass"));
             }
         }
 
         return user;
     }
 
-    /**
-     * Edits a user in the DB, user must have a valid id (id >= 0)
-     * @param conn the Connection
-     * @param user the UserDTO, valid id required ( >= 0)
-     * @throws SQLException unknown DB error, see msg for further detail
-     * @throws NotWellFormedException invalid id (<=0)
-     * @throws CantUpdateException 0 rows were effected
-     */
-    public void editUser(Connection conn, UserDTO user) throws SQLException, NotWellFormedException, CantUpdateException {
-
-        final String sql = buildUserEditSQL(user);
-
-        /* language level 7, ensures that preparedstatement will be closed, and throws exception, if fails */
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-
-
-            if(pstmt.executeUpdate() == 0) {
-                throw new CantUpdateException();
-            }
-
-        }
-    }
-
-    /**
-     * builds an SQL Update String relative to the UserDTO's set parameters
-     * @param user UserDTO must at least hold a valid id
-     * @return An Update SQL Statement
-     * @throws NotWellFormedException id was invalid (id <= 0)
-     */
-    private String buildUserEditSQL(UserDTO user) throws NotWellFormedException {
-
-        StringBuilder sb = new StringBuilder("Update User u SET ");
-        if(user.getId() <= 0 )
-            throw new NotWellFormedException("Invalid user id");
-        if(user.getElo() >= 0) {
-            sb.append("u.rating = " + user.getElo() + " , ");
-        }
-        if(user.getContactInfo() != null) {
-            sb.append("u.contact = " + user.getContactInfo() + " , ");
-        }
-        if(user.getEmail() != null) {
-            sb.append("u.email = " + user.getEmail() + " , ");
-        }
-        if(user.getPass() != null) {
-            sb.append("u.pass = " + user.getPass() + " , ");
-        }
-        if(user.getImagePath() != null) {
-            sb.append("u.image = " + user.getImagePath() + " , ");
-        }
-
-        return sb.toString();
-    }
 
     /**
      * Archives a user
@@ -161,6 +115,15 @@ public class UserManager {
         }
     }
 
+    public List<QuestionDTO>  getUserQuestions(Connection conn, final long userId) throws SQLException {
+        List<QuestionDTO> allQuestions = qm.getQuestionList(conn);
+        Iterator<QuestionDTO> iter = allQuestions.iterator();
+        while (iter.hasNext() && (iter.next().getIdUser() != userId)) {
+            iter.remove();
+        }
+        return allQuestions;
+    }
+
     /**
      * Returns all Questions, well formed, a user has bookmarked
      * @param conn the Connection
@@ -169,25 +132,15 @@ public class UserManager {
      * @throws SQLException unknown Server Error
      */
     public List<QuestionDTO>  bookmarkedQuestions(Connection conn, long userId) throws SQLException {
-        final String sql = "SELECT idPost as questionId, timestamp as timestamp, text as text FROM " +
-                "Post p right join Question q on p.idPost = q.idQuestion WHERE p.idUser = ?;";
-        List<QuestionDTO> questions = new ArrayList<QuestionDTO>();
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-            pstmt.setLong(1, userId);
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<List<QuestionDTO>> hq = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
+        List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, Post.idUser FROM Post JOIN Question ON idQuestion=idPost JOIN FavoriteQuestionsToUser ON Question.idQuestion=FavoriteQuestionsToUser.idQuestion WHERE FavoriteQuestionsToUser.idUser=? ORDER BY idPost", hq, userId);
+        if(res == null) return new LinkedList<>();
 
-            ResultSet rs = pstmt.executeQuery();
-
-            while(rs.next()) {
-                QuestionDTO question = new QuestionDTO();
-                question.setIdPost(rs.getLong("questionId"));
-                question.setTimestamp(rs.getTimestamp("timestamp"));
-                question.setText(rs.getString("text"));
-                question.setIdUser(userId);
-
-                questions.add(question);
-            }
+        for(QuestionDTO question : res) {
+            question.setHashtags( qm.getHashtagsToQuestion(conn, question.getIdPost()) );
         }
-        return questions;
+        return res;
     }
 
     /**
@@ -198,16 +151,24 @@ public class UserManager {
      * @throws SQLException unknown Server Error, see msg for further detail
      * @throws CantInsertException zero rows effected
      */
-    public void bookmark(Connection conn, long userId,long questionId) throws SQLException, CantInsertException {
-        final String sql = "INSERT INTO UserToQuestion (idUser, idQuestion) VALUES (?,?);";
+    public void bookmark(Connection conn, long userId,long questionId) throws SQLException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> h = new MapHandler();
+        qr.insert(conn, "INSERT INTO FavoriteQuestionsToUser (idUser, idQuestion) VALUES (?,?)", h, userId, questionId);
+    }
 
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-            pstmt.setLong(1, userId);
-            pstmt.setLong(2, questionId);
-
-            if(pstmt.executeUpdate() == 0) {
-                throw new CantInsertException("Could not insert into UserToQuestion");
+    // returns true if the user has an entry in the User-table after this functioncall, else false
+    public boolean registerUser(Connection conn, UserDTO userDTO) throws SQLException, CantInsertException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> h = new MapHandler();
+        boolean userHasNoEntry = null == qr.query(conn, "SELECT * FROM User WHERE idUser=?", h, userDTO.getIdUser());
+        if(userHasNoEntry) {
+            try {
+                qr.insert(conn, "INSERT INTO User (idUser, rating, image, contact, email) VALUES (?,?,?,?,?)", h, userDTO.getIdUser(), userDTO.getElo(), userDTO.getImagePath(), userDTO.getContactInfo(), userDTO.getEmail());
+            } catch(SQLException e) {
+                throw new CantInsertException(e.toString());
             }
         }
+        return true;
     }
 }

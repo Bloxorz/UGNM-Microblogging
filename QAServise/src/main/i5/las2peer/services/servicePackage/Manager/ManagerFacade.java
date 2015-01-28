@@ -59,10 +59,6 @@ public class ManagerFacade {
         return userManager.getUser(conn, userId);
     }
 
-    public void editUser(Connection conn, UserDTO user) throws SQLException, NotWellFormedException, CantUpdateException {
-        userManager.editUser(conn, user);
-    }
-
     public void deleteUser(Connection conn, long userId) throws SQLException, CantUpdateException {
         userManager.deleteUser(conn, userId);
     }
@@ -172,5 +168,8 @@ public class ManagerFacade {
         answerManager.deleteAnswer(conn, answerId);
     }
 
+    public boolean registerUser(Connection conn, UserDTO userDTO) throws SQLException, CantInsertException {
+        return userManager.registerUser(conn, userDTO);
+    }
 }
 

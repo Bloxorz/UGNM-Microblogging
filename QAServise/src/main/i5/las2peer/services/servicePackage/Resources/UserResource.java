@@ -77,31 +77,7 @@ public class UserResource extends AbstractResource {
         }
         return response;
     }
-    
 
-    public HttpResponse editUser(UserDTO user) {
-    	
-    	HttpResponse response = new HttpResponse("");
-        try {
-            ManagerFacade.getInstance().editUser(conn, user);
-            response.setStatus(200);
-
-        } catch (SQLException e) {
-           response.setStatus(500);
-        }
-        
-          catch (CantUpdateException e){
-        	  response.setStatus(304);
-          }
-        
-          catch (NotWellFormedException e){
-        	  
-        	  response.setStatus(400);
-          }
-        
-        return response;
-    	
-    }
 
     public HttpResponse deleteUser(long UserId) {
     	
@@ -121,38 +97,42 @@ public class UserResource extends AbstractResource {
         return response;
     }
 
-    public HttpResponse questionBookmarks(long UserId) {
-    	
-    	HttpResponse response = new HttpResponse("");
+    public HttpResponse bookmarkedQuestions(long userId) {
+        if(userId == 0)
+           return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
-            List<QuestionDTO> user = ManagerFacade.getInstance().bookmarkedQuestions(conn, UserId);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(user);
-            response = new HttpResponse(json);
-            response.setStatus(200);
-
+            String json = new Gson().toJson(ManagerFacade.getInstance().bookmarkedQuestions(conn, userId));
+            return new HttpResponse(json, 200);
         } catch (SQLException e) {
-           response.setStatus(500);
+            return new HttpResponse(e.toString(), 500);
         }
-        return response;
     }
 
-    public HttpResponse addBookmark(long UserId, long QuestionId) {
-    	
-    	HttpResponse response = new HttpResponse("");
+    public HttpResponse addBookmark(long userId, long questionId) {
+        if(userId == 0)
+            return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
-            ManagerFacade.getInstance().bookmark(conn, UserId, QuestionId);
-            response.setStatus(200);
-
+            ManagerFacade.getInstance().bookmark(conn, userId, questionId);
+            return new HttpResponse("Bookmark added.", 201);
         } catch (SQLException e) {
-           response.setStatus(500);
+            return new HttpResponse(e.toString(), 500);
+        } catch (CantInsertException e) {
+            return new HttpResponse(e.toString(), 500);
         }
-        
-          catch (CantInsertException e){
-        	  response.setStatus(304);
-          }
-        
-        return response;
+    }
+
+    // function that adds a user if he does not exist yet
+    public HttpResponse registerUser(UserDTO userDTO) {
+
+        try {
+            if(ManagerFacade.getInstance().registerUser(conn, userDTO))
+                return new HttpResponse("User is registered in User-table.", 200);
+            else
+                return new HttpResponse("User is no registered in User-table.", 500);
+        } catch (SQLException e) {
+            return new HttpResponse(e.toString(), 500);
+        } catch (CantInsertException e) {
+            return new HttpResponse(e.toString(), 500);
+        }
     }
 }

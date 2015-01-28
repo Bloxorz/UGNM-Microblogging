@@ -33,6 +33,11 @@ public class HashtagDTO {
         return g.toJson(this).equals(g.toJson(other));
     }
 
+    @Override
+    public String toString() {
+        return (new Gson()).toJson(this);
+    }
+
     public long getIdHashtag() {
         return idHashtag;
     }

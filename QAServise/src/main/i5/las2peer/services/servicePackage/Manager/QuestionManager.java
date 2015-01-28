@@ -37,11 +37,8 @@ public class QuestionManager extends AbstractManager{
         if(res == null)
             throw new SQLException("No questions were found in database.");
 
-        ResultSetHandler<List<HashtagDTO>> hh = new BeanListHandler<HashtagDTO>(HashtagDTO.class);
         for(QuestionDTO question : res) {
-            question.setHashtags(
-                    qr.query(conn, "SELECT * FROM Hashtag JOIN QuestionToHashtag ON Hashtag.idHashtag=QuestionToHashtag.idHashtag WHERE idQuestion=? ORDER BY Hashtag.idHashtag", hh, question.getIdPost())
-            );
+            question.setHashtags( getHashtagsToQuestion(conn, question.getIdPost() ) );
         }
         return res;
     }
@@ -111,16 +108,12 @@ public class QuestionManager extends AbstractManager{
     public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
         QueryRunner qr = new QueryRunner();
         int rowsAffected = qr.update(conn,
-                "DELETE Post\n" +
-                "FROM Answer\n" +
-                "JOIN Question\n" +
-                "ON Answer.idQuestion=Question.idQuestion\n" +
-                "JOIN Post\n" +
-                "ON Post.idPost=Question.idQuestion OR Post.idPost=Answer.idAnswer\n" +
+                "DELETE Post FROM Answer JOIN Question ON Answer.idQuestion=Question.idQuestion\n" +
+                "JOIN Post ON Post.idPost=Question.idQuestion OR Post.idPost=Answer.idAnswer\n" +
                 "WHERE Question.idQuestion=?", questionId);
         // the values from tables Question and Answers are automatically deleted by ON CASCADE DELETE
         if(rowsAffected == 0)
-            throw new CantDeleteException("Cant delete question");
+            throw new CantDeleteException("Can't delete question");
     }
 
     /**
@@ -203,17 +196,22 @@ public class QuestionManager extends AbstractManager{
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()) {
                 UserDTO user = new UserDTO();
-                user.setId(rs.getLong("userId"));
+                user.setIdUser(rs.getLong("userId"));
                 user.setElo(rs.getInt("elo"));
                 user.setImagePath(rs.getString("img"));
                 user.setContactInfo(rs.getString("contact"));
                 user.setEmail(rs.getString("email"));
-                user.setPass(rs.getString("pass"));
 
                 users.add(user);
             }
         }
         return users;
+    }
+
+    public List<HashtagDTO> getHashtagsToQuestion(Connection conn, long questionId) throws SQLException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<List<HashtagDTO>> hh = new BeanListHandler<HashtagDTO>(HashtagDTO.class);
+        return qr.query(conn, "SELECT * FROM Hashtag JOIN QuestionToHashtag ON Hashtag.idHashtag=QuestionToHashtag.idHashtag WHERE idQuestion=? ORDER BY Hashtag.idHashtag", hh, questionId);
     }
 
 }

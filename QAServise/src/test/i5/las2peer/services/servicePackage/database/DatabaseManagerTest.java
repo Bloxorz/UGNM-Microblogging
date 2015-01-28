@@ -13,16 +13,14 @@ import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -68,15 +66,27 @@ public class DatabaseManagerTest {
         return null;
     }
 
-    public static HashtagDTO[] getTestHashtags() {
-        return new HashtagDTO[] {
+    private static Object[] subArray(Object[] all, int... indices) {
+        if(indices.length == 0)
+            return all;
+        else {
+            LinkedList<Object> result = new LinkedList<>();
+            for (int i : indices) {
+                result.add(all[i]);
+            }
+            return result.toArray((Object[]) Array.newInstance(all[0].getClass(), indices.length));
+        }
+    }
+
+    public static HashtagDTO[] getTestHashtags(int... indices) {
+        return (HashtagDTO[]) subArray( new HashtagDTO[] {
                 new HashtagDTO(1,"Java"),
                 new HashtagDTO(2,"Assembler"),
                 new HashtagDTO(3,"For-Loop"),
                 new HashtagDTO(4,"All"),
                 new HashtagDTO(5,"Analysis"),
                 new HashtagDTO(6,"Polynome")
-        };
+        }, indices);
     }
 
     public static ExpertiseDTO[] getTestExpertises() {
@@ -88,24 +98,22 @@ public class DatabaseManagerTest {
         };
     }
 
-    public static QuestionDTO[] getTestQuestions() throws ParseException {
-        HashtagDTO[] hs = getTestHashtags();
-        List<HashtagDTO> hashtags1 = Arrays.asList(new HashtagDTO[]{getTestHashtags()[0], getTestHashtags()[2]});
-        return new QuestionDTO[] {
-                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(new HashtagDTO[]{hs[0], hs[2]})), // #For-Loop #Java
-                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, Arrays.asList(new HashtagDTO[]{hs[3]})), // #All
-                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(new HashtagDTO[]{hs[0]})) // #Java
-        };
+    public static QuestionDTO[] getTestQuestions(int... indices) throws ParseException {
+        return (QuestionDTO[]) subArray( new QuestionDTO[] {
+                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(getTestHashtags(0,2))), // #For-Loop #Java
+                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, Arrays.asList(getTestHashtags(3))), // #All
+                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(getTestHashtags(0))) // #Java
+        }, indices);
     }
 
-    public static AnswerDTO[] getTestAnswers() {
-        return new AnswerDTO[] {
+    public static AnswerDTO[] getTestAnswers(int... indices) {
+        return (AnswerDTO[]) subArray( new AnswerDTO[] {
                 new AnswerDTO(3, getDummyDate(), "In the building E2, first floor.", 2, 100, 2),
                 new AnswerDTO(5, getDummyDate(), "I think he is right", 5, 0, 2),
                 new AnswerDTO(6, getDummyDate(), "You should google for it.", 3, 0, 4),
                 new AnswerDTO(7, getDummyDate(), "I want to recherche it...", 5, 0, 4),
                 new AnswerDTO(8, getDummyDate(), "I already googled, but couldn'nt find anything :(", 2, 0, 4)
-        };
+        }, indices);
     }
 
     public static Connection getTestTable() throws SQLException {

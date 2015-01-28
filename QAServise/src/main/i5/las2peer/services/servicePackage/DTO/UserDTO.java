@@ -3,23 +3,21 @@ package i5.las2peer.services.servicePackage.DTO;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class UserDTO extends AbstractDTO {
+public class UserDTO {
+    private long idUser;
     private int elo;
     private String imagePath, contactInfo,email, pass;
 
-    public UserDTO(long id, int elo, String imagePath, String contactInfo, String email, String pass) {
-        super(id);
+    public UserDTO(long idUser, int elo, String imagePath, String contactInfo, String email) {
+        this.idUser = idUser;
         this.elo = elo;
         this.imagePath = imagePath;
         this.contactInfo = contactInfo;
         this.email = email;
-        this.pass = pass;
     }
 
     public UserDTO() {
-        super();
-        setId(-1);
-        setElo(-1);
+        this(0, 0, null, null, null);
     }
 
     public int getElo() {
@@ -54,11 +52,12 @@ public class UserDTO extends AbstractDTO {
         this.email = email;
     }
 
-    public String getPass() {
-        return pass;
+    public long getIdUser() {
+        return idUser;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setIdUser(long idUser) {
+        this.idUser = idUser;
     }
+
 }

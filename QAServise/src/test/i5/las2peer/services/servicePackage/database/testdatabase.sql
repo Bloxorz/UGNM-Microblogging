@@ -10,20 +10,21 @@ SET FOREIGN_KEY_CHECKS=1;
 -- entities
 CREATE TABLE User
 (
-	idUser int NOT NULL AUTO_INCREMENT,
+	idUser bigint NOT NULL,
 	rating int NOT NULL,
-	image varchar(255) NOT NULL,
-	contact varchar(255) NOT NULL,
-	email varchar(255) NOT NULL,
-	pass varchar(255) NOT NULL,
+	image varchar(255),
+	contact varchar(255),
+	email varchar(255),
 	PRIMARY KEY (idUser)
 );
 CREATE TABLE Post
 (
 	idPost int NOT NULL AUTO_INCREMENT,
-	timestamp timestamp NOT NULL DEFAULT '2000-01-01 00:00:00', -- not timestamp for tests
+	-- not timestamp for tests
+	-- original: "timestamp timestamp NOT NULL,"
+	timestamp timestamp NOT NULL DEFAULT '2000-01-01 00:00:00',
 	text varchar(255) NOT NULL,
-	idUser int NOT NULL,
+	idUser bigint NOT NULL,
 	PRIMARY KEY (idPost),
 	FOREIGN KEY (idUser) REFERENCES User(idUser)
 );
@@ -61,7 +62,7 @@ CREATE TABLE Expertise
 CREATE TABLE UserToQuestion
 (
 	idUserToQuestion int NOT NULL AUTO_INCREMENT,
-	idUser int NOT NULL,
+	idUser bigint NOT NULL,
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idUserToQuestion),
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
@@ -70,7 +71,7 @@ CREATE TABLE UserToQuestion
 CREATE TABLE UserToExpertise
 (
 	idUserToExpertise int NOT NULL AUTO_INCREMENT,
-	idUser int NOT NULL,
+	idUser bigint NOT NULL,
 	idExpertise int NOT NULL,
 	PRIMARY KEY (idUserToExpertise),
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
@@ -94,8 +95,10 @@ CREATE TABLE QuestionToHashtag (
 	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE
 );
 CREATE TABLE FavoriteQuestionsToUser (
+	idFavoriteQuestionToUser int NOT NULL AUTO_INCREMENT,
 	idQuestion int NOT NULL,
-	idUser int NOT NULL,
+	idUser bigint NOT NULL,
+	PRIMARY KEY (idFavoriteQuestionToUser),
 	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE
 );
@@ -108,13 +111,13 @@ CREATE TABLE FavoriteQuestionsToUser (
 
 
 
-INSERT INTO User (rating, image, contact, email, pass)
+INSERT INTO User (idUser, rating, image, contact, email)
 VALUES
-	(0, 'http://link/to/frank/celler.jpg', 'http://mathe.de/frank/celler.html', 'f.celler@gmail.com', '4fd5ab'),
-	(0, 'http://link/to/mike/leblanche.png', 'http://mathe.de/micky/conta.html', 'micky.l@web.de', 'ac8d90'),
-	(0, 'http://imagebank/4d6age6/es.jpg', 'http://progra.com/how/jelly.html', 'howDickson@gmail.com', '56d0ef'),
-	(0, 'http://dome.com/celler.jpg', 'http://student.org/isoe/random.html', 'my.M.a.i.l@rwth-aachen.de', 'f098bc'),
-	(0, 'http://wow/it/is/houston.svg', 'http://alleskoenner.de/whp/huhu.html', 'another.adresse@web.com', '87ade9');
+	(1, 0, 'http://link/to/frank/celler.jpg', 'http://mathe.de/frank/celler.html', 'f.celler@gmail.com'),
+	(2, 0, 'http://link/to/mike/leblanche.png', 'http://mathe.de/micky/conta.html', 'micky.l@web.de'),
+	(3, 0, 'http://imagebank/4d6age6/es.jpg', 'http://progra.com/how/jelly.html', 'howDickson@gmail.com'),
+	(4, 0, 'http://dome.com/celler.jpg', 'http://student.org/isoe/random.html', 'my.M.a.i.l@rwth-aachen.de'),
+	(5, 0, 'http://wow/it/is/houston.svg', 'http://alleskoenner.de/whp/huhu.html', 'another.adresse@web.com');
 
 INSERT INTO Hashtag (text)
 VALUES ('Java'),('Assembler'),('For-Loop'),('All'),('Analysis'),('Polynome');
