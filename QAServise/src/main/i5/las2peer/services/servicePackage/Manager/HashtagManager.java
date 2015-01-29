@@ -9,15 +9,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import i5.las2peer.services.servicePackage.Exceptions.*;
 
 import com.mysql.jdbc.Statement;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 
 public class HashtagManager extends AbstractManager {
-	
+
+	private QuestionManager qm = new QuestionManager();
+
 	public List<HashtagDTO> getHashtagCollection(Connection conn) throws SQLException {
 		
 		List<HashtagDTO> hashtag = new ArrayList<HashtagDTO>();		
@@ -140,34 +146,16 @@ public class HashtagManager extends AbstractManager {
 	}
 	
 	public List<QuestionDTO> getAllQuestionsToHashtag(Connection conn, long hashtagId) throws SQLException {
-		
-		List<QuestionDTO> res = new ArrayList<QuestionDTO>();
-		
-		
-		final String sql = "select fragenID, timestamp, text, userID From " + 
-				"(select q.idQuestion as fragenID, timestamp as timestamp, text as text, idUser as userID From " + 
-				"Post p join Question q on p.idPost = q.idQuestion) as t1 join " + 
-				"( select idHashtag, idQuestion from QuestionToHashtag where idHashtag = ? ) as t2 " + 
-				"on fragenID = idQuestion;";
+		QueryRunner qr = new QueryRunner();
+		ResultSetHandler<List<QuestionDTO>> hq = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
+		List<QuestionDTO> questions = qr.query(conn, "SELECT idPost, timestamp, text, idUser FROM Post JOIN Question on idPost=idQuestion JOIN QuestionToHashtag ON idPost=QuestionToHashtag.idQuestion WHERE idHashtag=?", hq, hashtagId);
 
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-        	
-        	
-        	pstmt.setLong(1,hashtagId);
+		if(questions == null) return new LinkedList<>();
 
-            ResultSet rs = pstmt.executeQuery();
-            
-            while (rs.next()) {
-                QuestionDTO question = new QuestionDTO();
-                question.setIdPost(rs.getLong("fragenID"));
-                question.setTimestamp(rs.getTimestamp("timestamp"));
-                question.setText(rs.getString("text"));
-                question.setIdUser(rs.getLong("userID"));
-
-                res.add(question);
-            }
-        }
-        return res;
+		for(QuestionDTO question : questions) {
+			question.setHashtags( qm.getHashtagsToQuestion(conn, question.getIdPost()) );
+		}
+		return questions;
 	}
 	
 	public List<ExpertiseDTO> getAllExpertiseToHashtag(Connection conn, long hashtagId) throws SQLException {
@@ -190,7 +178,7 @@ public class HashtagManager extends AbstractManager {
 		            while (rs.next()) {
 		            	ExpertiseDTO ex = new ExpertiseDTO();
 		            	
-		            	ex.setId(rs.getLong("id"));
+		            	ex.setIdExpertise(rs.getLong("id"));
 		            	ex.setText(rs.getString("text"));
 		            			                
 		            	

@@ -39,7 +39,7 @@ public class ExpertiseManagerTest {
 
     @Test
     public void testGetExpertiseList() throws Exception {
-        assertArrayEquals( manager.getExpertiseList(conn).toArray(), testDTOs );
+        assertArrayEquals( testDTOs, manager.getExpertiseList(conn).toArray() );
     }
 
     @Test

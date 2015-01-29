@@ -3,19 +3,15 @@ package i5.las2peer.services.servicePackage.DTO;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class ExpertiseDTO extends AbstractDTO{
+public class ExpertiseDTO extends AbstractDTO {
 
+    private  long idExpertise;
     private String text;
 
     public ExpertiseDTO() {
-        super();
     }
 
-    public ExpertiseDTO(long id) {
-        super(id);
-    }
-
-    public ExpertiseDTO(long id, String text) { super(id); setText(text); }
+    public ExpertiseDTO(long id, String text) { setIdExpertise(id); setText(text); }
 
     public String getText() {
         return text;
@@ -25,9 +21,11 @@ public class ExpertiseDTO extends AbstractDTO{
         this.text = name;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        return this.getText().equals(((ExpertiseDTO)other).getText())
-                && (this.getId() == ((AbstractDTO)other).getId());
+    public long getIdExpertise() {
+        return idExpertise;
+    }
+
+    public void setIdExpertise(long idExpertise) {
+        this.idExpertise = idExpertise;
     }
 }

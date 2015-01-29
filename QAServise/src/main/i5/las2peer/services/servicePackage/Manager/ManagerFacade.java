@@ -47,21 +47,21 @@ public class ManagerFacade {
     }
 
     ////// userManager //////
-    public List<UserDTO> getUserList(Connection conn) throws SQLException {
+    /*public List<UserDTO> getUserList(Connection conn) throws SQLException {
         return userManager.getUserList(conn);
-    }
+    }*/
 
-    public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException {
+    /*public long addUser(Connection conn, UserDTO user) throws SQLException, CantInsertException {
         return userManager.addUser(conn, user);
-    }
+    }*/
 
-    public UserDTO getUser(Connection conn, long userId) throws SQLException {
+    public UserDTO getUser(Connection conn, long userId) throws SQLException, CantFindException {
         return userManager.getUser(conn, userId);
     }
 
-    public void deleteUser(Connection conn, long userId) throws SQLException, CantUpdateException {
+    /*public void deleteUser(Connection conn, long userId) throws SQLException, CantUpdateException {
         userManager.deleteUser(conn, userId);
-    }
+    }*/
 
     public List<QuestionDTO> bookmarkedQuestions( Connection conn, long userId) throws SQLException {
         return userManager.bookmarkedQuestions(conn, userId);
@@ -71,7 +71,7 @@ public class ManagerFacade {
         userManager.bookmark(conn, userId, questionId);
     }
     ////// expertiseManager //////
-    public List<ExpertiseDTO> getExpertiseList( Connection conn) throws SQLException {
+    public List<ExpertiseDTO> getExpertiseList( Connection conn) throws SQLException, CantFindException {
         return expertiseManager.getExpertiseList(conn);
     }
 
@@ -151,9 +151,9 @@ public class ManagerFacade {
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
         return questionManager.addAnswerToQuestion(conn, answer);
     }
-    public List<UserDTO> getBookmarkUsersToQuestion( Connection conn, long questionId) throws SQLException {
+    /*public List<UserDTO> getBookmarkUsersToQuestion( Connection conn, long questionId) throws SQLException {
         return questionManager.getBookmarkUsersToQuestion(conn, questionId);
-    }
+    }*/
     public JsonElement getQuestionWithAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
         return questionManager.getQuestionWithAnswers(conn, questionId);
     }
@@ -170,6 +170,14 @@ public class ManagerFacade {
 
     public boolean registerUser(Connection conn, UserDTO userDTO) throws SQLException, CantInsertException {
         return userManager.registerUser(conn, userDTO);
+    }
+
+    public void editUser(Connection conn, long userId, UserDTO data) throws SQLException, CantUpdateException {
+        userManager.editUser(conn, userId, data);
+    }
+
+    public List<QuestionDTO> getExpertiseQuestions(Connection conn, long userId) throws SQLException {
+        return userManager.getExpertQuestions(conn, userId);
     }
 }
 

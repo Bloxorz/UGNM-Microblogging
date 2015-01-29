@@ -1,32 +1,20 @@
 package i5.las2peer.services.servicePackage.DTO;
 
+import com.google.gson.Gson;
+
 /**
  * Created by Marv on 05.11.2014.
  */
-public abstract class AbstractDTO implements IDTO {
+public abstract class AbstractDTO {
 
-    public long id;
-
-    public AbstractDTO(long id) {
-        this.id = id;
-    }
-
-    public AbstractDTO() {
-
+    @Override
+    public boolean equals(Object other) {
+        Gson g = new Gson();
+        return g.toJson(this).equals(g.toJson(other));
     }
 
     @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public boolean wellformed() {
-        return false;
-    }
-
-    @Override
-    public void setId(long id) {
-        this.id = id;
+    public String toString() {
+        return (new Gson()).toJson(this);
     }
 }

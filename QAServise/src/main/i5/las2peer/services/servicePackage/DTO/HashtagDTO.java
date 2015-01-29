@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class HashtagDTO {
+public class HashtagDTO extends AbstractDTO {
 
     private String text;
     private long idHashtag;
@@ -25,17 +25,6 @@ public class HashtagDTO {
 
     public void setText(String name) {
         this.text = name;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        Gson g = new Gson();
-        return g.toJson(this).equals(g.toJson(other));
-    }
-
-    @Override
-    public String toString() {
-        return (new Gson()).toJson(this);
     }
 
     public long getIdHashtag() {

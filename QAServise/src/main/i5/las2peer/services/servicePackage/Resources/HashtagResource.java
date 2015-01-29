@@ -141,21 +141,12 @@ public class HashtagResource extends AbstractResource {
     }
     
     public HttpResponse getAllQuestionsToHashtag(long hashtagId) {
-    	
-    	HttpResponse response = new HttpResponse("");
-    	try {
-    		List<QuestionDTO> quest = ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId);
-    		  
-    		  Gson gson = new Gson();
-              String json = gson.toJson(quest);
-              response = new HttpResponse(json);
-              response.setStatus(200);
-
-         } catch (SQLException e) {
-             response.setStatus(500);
-            }
-    	
-    	return response;
+        try {
+            String json = new Gson().toJson(ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId));
+            return new HttpResponse(json, 200);
+        } catch (SQLException e) {
+            return new HttpResponse(e.toString(), 500);
+        }
     }
     
     public HttpResponse getAllExpertisesToHashtag(long hashtagId) {

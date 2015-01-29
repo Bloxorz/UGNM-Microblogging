@@ -95,16 +95,26 @@ public class ServiceClass extends Service {
 
 
 
-	@GET
-	@Path("user/")
+	/*@GET
+	@Path("users/")
 	public HttpResponse getUsers() {
 		return use.getUserCollection();
-	}
+	}*/
 	
 	@GET
-	@Path("user/{userId}")
-	public HttpResponse getUser(@PathParam("userId") Long userId){
-		return use.getUser(userId);
+	@Path("user/")
+	public HttpResponse getUser(){
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return use.getUser(isAnonymous() ? 0 : getActiveAgent().getId());
+	}
+
+	@PUT
+	@Path("user/")
+	public HttpResponse editUser(@ContentParam String content) {
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return use.editUser(isAnonymous() ? 0 : getActiveAgent().getId(), content);
 	}
 
 	@POST
@@ -122,7 +132,15 @@ public class ServiceClass extends Service {
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return use.bookmarkedQuestions(isAnonymous() ? 0 : getActiveAgent().getId());
 	}
-	
+
+	@GET
+	@Path("user/expertQuestions")
+	public HttpResponse getExpertQuestions() {
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return use.getExpertiseQuestions(isAnonymous() ? 0 : getActiveAgent().getId());
+	}
+
 	/*@DELETE
 	@Path("user/{userId}/{token}")
 	public HttpResponse deleteUser(@PathParam("userId") Long userId){
@@ -142,11 +160,11 @@ public class ServiceClass extends Service {
 		return hr.getAllQuestionsToHashtag(hashtagId);
 	}
 	
-	@GET
+	/*@GET
 	@Path("hashtag/{id}/expertises")
 	public HttpResponse getAllExpertiseToHashtag(@PathParam("id") Long hashtagId){
 		return hr.getAllExpertisesToHashtag(hashtagId);
-	}
+	}*/
 	
 	/*@POST
 	@Path("hashtag/")
@@ -155,11 +173,11 @@ public class ServiceClass extends Service {
 		
 	}*/
 	
-	@GET
+	/*@GET
 	@Path("hashtag/{hashtagId}")
 	public HttpResponse getOneHashtag(@PathParam("hashtagId") Long hashtagId){
 		return hr.getOneHashtag(hashtagId);
-	}
+	}*/
 	
 	/*@DELETE
 	@Path("hashtag/{hashtagId}/{token}")
@@ -168,16 +186,16 @@ public class ServiceClass extends Service {
 	}*/
 
     @GET
-    @Path("expertises/{token}")
+    @Path("expertises")
     public HttpResponse getExpertises() {
         return exp.getExpertiseCollection();
     }
 
-    @GET
+    /*@GET
     @Path("expertise/{id}")
     public HttpResponse getExpertise(@PathParam("id") long id) {
         return exp.getExpertise(id);
-    }
+    }*/
 
 
     @GET
@@ -186,17 +204,17 @@ public class ServiceClass extends Service {
 		return qr.getQuestionCollection();
 	}
 
-	@GET
+	/*@GET
 	@Path("question/{questionId}")
 	public HttpResponse getQuestion(@PathParam("questionId") long questionId) {
 		return qr.getQuestion(questionId);
-	}
+	}*/
 
-	@DELETE
+	/*@DELETE
 	@Path("question/{questionId}")
 	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId) {
 		return qr.deleteQuestion(questionId);
-	}
+	}*/
 
 	@POST
 	@Path("question")

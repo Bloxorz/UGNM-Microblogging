@@ -102,4 +102,12 @@ public class HashtagManagerTest {
         assertTrue(manager.existsHashtag(conn, "Assembler"));
         assertFalse( manager.existsHashtag(conn, "Haifisch") );
     }
+
+    @Test
+    public void testGetAllQuestionsToHashtag1() throws Exception {
+        assertArrayEquals(
+                DatabaseManagerTest.getTestQuestions(0,2),
+                manager.getAllQuestionsToHashtag(conn, 1).toArray()
+        );
+    }
 }

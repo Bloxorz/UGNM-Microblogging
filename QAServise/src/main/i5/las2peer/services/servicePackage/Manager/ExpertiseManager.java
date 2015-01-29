@@ -3,6 +3,9 @@ package i5.las2peer.services.servicePackage.Manager;
 import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.Exceptions.*;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,22 +22,12 @@ public class ExpertiseManager extends  AbstractManager {
      * @return A Collection of Expertises
      * @throws SQLException unknown Server error, see msg for further detail
      */
-    public List<ExpertiseDTO> getExpertiseList(Connection conn) throws SQLException {
-        final String sql = "SELECT idExpertise as id, text as text FROM Expertise;";
-        List<ExpertiseDTO> expertises = new ArrayList<ExpertiseDTO>();
-
-        try(Statement stmt = conn.createStatement(); ) {
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while(rs.next()) {
-                ExpertiseDTO expertise = new ExpertiseDTO();
-                expertise.setId(rs.getLong("id"));
-                expertise.setText(rs.getString("text"));
-
-                expertises.add(expertise);
-            }
-        }
-
+    public List<ExpertiseDTO> getExpertiseList(Connection conn) throws SQLException, CantFindException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<List<ExpertiseDTO>> h = new BeanListHandler<ExpertiseDTO>(ExpertiseDTO.class);
+        List<ExpertiseDTO> expertises = qr.query(conn, "SELECT idExpertise, text FROM Expertise ORDER BY idExpertise", h);
+        if(expertises == null)
+            throw new CantFindException("Can not find any expertises.");
         return expertises;
     }
 
@@ -98,7 +91,7 @@ public class ExpertiseManager extends  AbstractManager {
             if(rs.next()) {
                 ExpertiseDTO expertise = new ExpertiseDTO();
                 expertise.setText(rs.getString("text"));
-                expertise.setId(expertiseId);
+                expertise.setIdExpertise(expertiseId);
                 return expertise;
             } else {
                 throw new CantFindException();
@@ -114,7 +107,7 @@ public class ExpertiseManager extends  AbstractManager {
         }
         try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
             pstmt.setString(1, expertise.getText());
-            pstmt.setLong(2,expertise.getId());
+            pstmt.setLong(2,expertise.getIdExpertise());
 
             if(pstmt.executeUpdate() == 0) {
                 throw new CantUpdateException("Could not update Data");
@@ -125,7 +118,7 @@ public class ExpertiseManager extends  AbstractManager {
     public void deleteExpertise(Connection conn, long expertiseId) throws SQLException, CantDeleteException, CantFindException {
 
         ExpertiseDTO expertise = new ExpertiseDTO();
-        expertise.setId(expertiseId);
+        expertise.setIdExpertise(expertiseId);
 
         final String sqlRequest = "DELETE FROM Expertise WHERE idExpertise = ?";
 

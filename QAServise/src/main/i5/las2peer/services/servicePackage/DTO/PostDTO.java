@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by Marv on 05.11.2014.
  */
-public class PostDTO {
+public class PostDTO extends AbstractDTO{
 
     private Date timestamp;
     private String text;
@@ -57,14 +57,4 @@ public class PostDTO {
         this.idUser = idUser;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        Gson g = new Gson();
-        return g.toJson(this).equals(g.toJson(other));
-    }
-
-    @Override
-    public String toString() {
-        return (new Gson()).toJson(this);
-    }
 }

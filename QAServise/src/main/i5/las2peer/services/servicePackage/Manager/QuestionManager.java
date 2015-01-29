@@ -184,7 +184,7 @@ public class QuestionManager extends AbstractManager{
         return generatedId;
     }
 
-    public List<UserDTO> getBookmarkUsersToQuestion(Connection conn, long questionId) throws SQLException {
+    /*public List<UserDTO> getBookmarkUsersToQuestion(Connection conn, long questionId) throws SQLException {
         List<UserDTO> users = new ArrayList<UserDTO>();
 
         final String sql = "SELECT u.idUser as userId, rating as elo, image as img, contact as contact, email as email, " +
@@ -206,7 +206,7 @@ public class QuestionManager extends AbstractManager{
             }
         }
         return users;
-    }
+    }*/
 
     public List<HashtagDTO> getHashtagsToQuestion(Connection conn, long questionId) throws SQLException {
         QueryRunner qr = new QueryRunner();

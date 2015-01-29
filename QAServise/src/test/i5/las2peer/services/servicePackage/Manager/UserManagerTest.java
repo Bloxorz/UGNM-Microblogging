@@ -63,4 +63,31 @@ public class UserManagerTest {
                 manager.getUserQuestions(conn, 4).toArray()
         );
     }
+
+    @Test
+    public void testGetUser() throws Exception {
+        assertEquals(
+                DatabaseManagerTest.getTestUsers()[2],
+                manager.getUser(conn, 3)
+        );
+    }
+
+    @Test
+    public void testEditUser() throws Exception {
+        UserDTO expected = new UserDTO(4, 777, "image.com", "contact.de", "email.org");
+        manager.editUser(conn, 4, expected);
+        expected.setElo(0);
+        assertEquals(
+                expected,
+                manager.getUser(conn, 4)
+        );
+    }
+
+    @Test
+    public void testGetExpertQuestions() throws Exception {
+        assertArrayEquals(
+                DatabaseManagerTest.getTestQuestions(1),
+                manager.getExpertQuestions(conn, 2).toArray()
+        );
+    }
 }

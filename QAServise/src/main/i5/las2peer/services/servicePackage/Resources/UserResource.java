@@ -2,6 +2,7 @@ package i5.las2peer.services.servicePackage.Resources;
 
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
+import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.Exceptions.CantUpdateException;
 import i5.las2peer.services.servicePackage.Exceptions.NotWellFormedException;
@@ -22,7 +23,7 @@ public class UserResource extends AbstractResource {
         super(conn);
     }
 
-    public HttpResponse getUserCollection() {
+    /*public HttpResponse getUserCollection() {
     	
     	HttpResponse response = new HttpResponse("");
         try {
@@ -37,9 +38,9 @@ public class UserResource extends AbstractResource {
            response.setStatus(500);
         }
         return response;
-    }
+    }*/
 
-    public HttpResponse addUser(UserDTO user) {
+    /*public HttpResponse addUser(UserDTO user) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
@@ -51,35 +52,30 @@ public class UserResource extends AbstractResource {
             response.setStatus(200);
 
         } catch (SQLException e) {
-           response.setStatus(500);
+            response.setStatus(500);
         }
-        
           catch (CantInsertException e){
         	  response.setStatus(304);
           }
 
         return response;
-    }
+    }*/
 
     public HttpResponse getUser(long userId) {
-    	
-    	HttpResponse response = new HttpResponse("");
+        if(userId == 0)
+            return new HttpResponse("You have to be logged in to retrieve your profile.", 401);
         try {
             UserDTO user = ManagerFacade.getInstance().getUser(conn, userId);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(user);
-            response = new HttpResponse(json);
-            response.setStatus(200);
-
+            return new HttpResponse(new Gson().toJson(user), 200);
         } catch (SQLException e) {
-           response.setStatus(500);
+           return new HttpResponse(e.toString(), 500);
+        } catch (CantFindException e) {
+            return new HttpResponse(e.toString(), 404);
         }
-        return response;
     }
 
 
-    public HttpResponse deleteUser(long UserId) {
+    /*public HttpResponse deleteUser(long UserId) {
     	
     	HttpResponse response = new HttpResponse("");
         try {
@@ -95,6 +91,20 @@ public class UserResource extends AbstractResource {
           }
         
         return response;
+    }*/
+
+    public HttpResponse editUser(long userId, String content) {
+        if(userId == 0)
+            return new HttpResponse("You have to be logged in to change your profile.", 401);
+        try {
+            UserDTO data = new Gson().fromJson(content, UserDTO.class);
+            ManagerFacade.getInstance().editUser(conn, userId, data);
+            return new HttpResponse("Profile successfully changed.", 200);
+        } catch (SQLException e) {
+            return new HttpResponse(e.toString(), 500);
+        } catch (CantUpdateException e) {
+            return new HttpResponse(e.toString(), 500);
+        }
     }
 
     public HttpResponse bookmarkedQuestions(long userId) {
@@ -102,6 +112,17 @@ public class UserResource extends AbstractResource {
            return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
             String json = new Gson().toJson(ManagerFacade.getInstance().bookmarkedQuestions(conn, userId));
+            return new HttpResponse(json, 200);
+        } catch (SQLException e) {
+            return new HttpResponse(e.toString(), 500);
+        }
+    }
+
+    public HttpResponse getExpertiseQuestions(long userId) {
+        if(userId == 0)
+            return new HttpResponse("You have to be logged in to favour a question.", 401);
+        try {
+            String json = new Gson().toJson(ManagerFacade.getInstance().getExpertiseQuestions(conn, userId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);

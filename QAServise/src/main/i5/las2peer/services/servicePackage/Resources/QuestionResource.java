@@ -173,7 +173,7 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
-    public HttpResponse getBookmarkUsersToQuestion(long questionId) {
+    /*public HttpResponse getBookmarkUsersToQuestion(long questionId) {
         HttpResponse res;
         try {
             List<UserDTO> users = ManagerFacade.getInstance().getBookmarkUsersToQuestion(conn, questionId);
@@ -191,7 +191,7 @@ public class QuestionResource extends AbstractResource {
         } catch (SQLException e) {
             return new HttpResponse("not found", 500);
         }
-    }
+    }*/
 
     public HttpResponse getQuestionWithAnswers(long questionId) {
         HttpResponse res;

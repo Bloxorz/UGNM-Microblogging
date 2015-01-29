@@ -1,10 +1,7 @@
 package i5.las2peer.services.servicePackage.database;
 
 import com.google.gson.Gson;
-import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
-import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
-import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
-import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
+import i5.las2peer.services.servicePackage.DTO.*;
 import i5.las2peer.services.servicePackage.General.Rating;
 import i5.las2peer.services.servicePackage.ServiceClass;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -38,6 +35,7 @@ public class DatabaseManagerTest {
             ps.redirectErrorStream(true);
             ps.redirectInput(new File("./src/test/i5/las2peer/services/servicePackage/database/testdatabase.sql"));
 
+            System.out.println("Start local mysql-program...");
             Process pr = ps.start();
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(pr.getInputStream()));
@@ -116,6 +114,16 @@ public class DatabaseManagerTest {
         }, indices);
     }
 
+    public static UserDTO[] getTestUsers(int... indices) {
+        return (UserDTO[]) subArray( new UserDTO[] {
+                new UserDTO(1, 0, "http://link/to/frank/celler.jpg", "http://mathe.de/frank/celler.html", "f.celler@gmail.com"),
+                new UserDTO(2, 0, "http://link/to/mike/leblanche.png", "http://mathe.de/micky/conta.html", "micky.l@web.de"),
+                new UserDTO(3, 0, "http://imagebank/4d6age6/es.jpg", "http://progra.com/how/jelly.html", "howDickson@gmail.com"),
+                new UserDTO(4, 0, "http://dome.com/celler.jpg", "http://student.org/isoe/random.html", "my.M.a.i.l@rwth-aachen.de"),
+                new UserDTO(5, 0, "http://wow/it/is/houston.svg", "http://alleskoenner.de/whp/huhu.html", "another.adresse@web.com")
+        }, indices);
+    }
+
     public static Connection getTestTable() throws SQLException {
         if( dataSource == null ) {
             dataSource = new BasicDataSource();
@@ -159,7 +167,6 @@ public class DatabaseManagerTest {
         DatabaseManager dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl,jdbcSchema);
         assertNotEquals(null, dbm.getConnection());
     }
-
 }
 
 

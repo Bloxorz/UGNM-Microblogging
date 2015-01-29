@@ -11,7 +11,7 @@ SET FOREIGN_KEY_CHECKS=1;
 CREATE TABLE User
 (
 	idUser bigint NOT NULL,
-	rating int NOT NULL,
+	elo int NOT NULL,
 	image varchar(255),
 	contact varchar(255),
 	email varchar(255),
@@ -111,7 +111,7 @@ CREATE TABLE FavoriteQuestionsToUser (
 
 
 
-INSERT INTO User (idUser, rating, image, contact, email)
+INSERT INTO User (idUser, elo, image, contact, email)
 VALUES
 	(1, 0, 'http://link/to/frank/celler.jpg', 'http://mathe.de/frank/celler.html', 'f.celler@gmail.com'),
 	(2, 0, 'http://link/to/mike/leblanche.png', 'http://mathe.de/micky/conta.html', 'micky.l@web.de'),

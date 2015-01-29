@@ -1,18 +1,20 @@
 package i5.las2peer.services.servicePackage.DTO;
 
+import com.google.gson.Gson;
+
 /**
  * Created by Marv on 05.11.2014.
  */
-public class UserDTO {
+public class UserDTO extends  AbstractDTO {
     private long idUser;
     private int elo;
-    private String imagePath, contactInfo,email, pass;
+    private String image, contact,email;
 
-    public UserDTO(long idUser, int elo, String imagePath, String contactInfo, String email) {
+    public UserDTO(long idUser, int elo, String image, String contact, String email) {
         this.idUser = idUser;
         this.elo = elo;
-        this.imagePath = imagePath;
-        this.contactInfo = contactInfo;
+        this.image = image;
+        this.contact = contact;
         this.email = email;
     }
 
@@ -26,22 +28,6 @@ public class UserDTO {
 
     public void setElo(int elo) {
         this.elo = elo;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public String getContactInfo() {
-        return contactInfo;
-    }
-
-    public void setContactInfo(String contactInfo) {
-        this.contactInfo = contactInfo;
     }
 
     public String getEmail() {
@@ -60,4 +46,19 @@ public class UserDTO {
         this.idUser = idUser;
     }
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

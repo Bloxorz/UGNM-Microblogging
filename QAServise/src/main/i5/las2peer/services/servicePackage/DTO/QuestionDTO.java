@@ -25,17 +25,6 @@ public class QuestionDTO extends PostDTO {
         super();
     }
 
-    @Override
-    public boolean equals(Object other) {
-        Gson g = new Gson();
-        return g.toJson(this).equals(g.toJson(other));
-    }
-
-    @Override
-    public String toString() {
-        return (new Gson()).toJson(this);
-    }
-
     public List<HashtagDTO> getHashtags() {
         return hashtags;
     }

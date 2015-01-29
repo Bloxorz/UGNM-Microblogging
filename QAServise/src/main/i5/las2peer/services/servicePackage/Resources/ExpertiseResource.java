@@ -22,19 +22,14 @@ public class ExpertiseResource extends AbstractResource {
     }
 
     public HttpResponse getExpertiseCollection() {
-        HttpResponse response = new HttpResponse("");
         try {
-            List<ExpertiseDTO> expertise = ManagerFacade.getInstance().getExpertiseList(conn);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(expertise);
-            response = new HttpResponse(json);
-            response.setStatus(200);
-
+            List<ExpertiseDTO> expertises = ManagerFacade.getInstance().getExpertiseList(conn);
+            return new HttpResponse(new Gson().toJson(expertises), 200);
         } catch (SQLException e) {
-            response.setStatus(500);
+            return new HttpResponse(e.toString(), 500);
+        } catch (CantFindException e) {
+            return new HttpResponse(e.toString(), 404);
         }
-        return response;
     }
 
     public HttpResponse addExpertise(ExpertiseDTO expertise) {
