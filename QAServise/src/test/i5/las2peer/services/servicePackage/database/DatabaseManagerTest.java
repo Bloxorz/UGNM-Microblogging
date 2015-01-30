@@ -2,7 +2,6 @@ package i5.las2peer.services.servicePackage.database;
 
 import com.google.gson.Gson;
 import i5.las2peer.services.servicePackage.DTO.*;
-import i5.las2peer.services.servicePackage.General.Rating;
 import i5.las2peer.services.servicePackage.ServiceClass;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
@@ -81,26 +80,17 @@ public class DatabaseManagerTest {
                 new HashtagDTO(1,"Java"),
                 new HashtagDTO(2,"Assembler"),
                 new HashtagDTO(3,"For-Loop"),
-                new HashtagDTO(4,"All"),
-                new HashtagDTO(5,"Analysis"),
-                new HashtagDTO(6,"Polynome")
+                new HashtagDTO(4,"Analysis"),
+                new HashtagDTO(5,"Polynome"),
+                new HashtagDTO(6,"Lagrange-Restglied")
         }, indices);
-    }
-
-    public static ExpertiseDTO[] getTestExpertises() {
-        return new ExpertiseDTO[] {
-                new ExpertiseDTO(1,"Lineare Algebra"),
-                new ExpertiseDTO(2,"Analysis für Informatiker"),
-                new ExpertiseDTO(3,"Einführung in die Programmierung"),
-                new ExpertiseDTO(4,"Praktikum Unternehmensgründung und Neue Medie")
-        };
     }
 
     public static QuestionDTO[] getTestQuestions(int... indices) throws ParseException {
         return (QuestionDTO[]) subArray( new QuestionDTO[] {
-                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(getTestHashtags(0,2)), 1), // #For-Loop #Java
-                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, Arrays.asList(getTestHashtags(3)), 2), // #All
-                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(getTestHashtags(0)), 1) // #Java
+                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(getTestHashtags(0,2)), 1),
+                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, new LinkedList<HashtagDTO>(), 2),
+                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(getTestHashtags(0)), 1)
         }, indices);
     }
 

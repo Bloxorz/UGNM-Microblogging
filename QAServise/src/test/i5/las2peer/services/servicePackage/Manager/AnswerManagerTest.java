@@ -19,29 +19,12 @@ import static org.junit.Assert.*;
 public class AnswerManagerTest extends AbstractManagerTest {
 
     private static AnswerManager manager;
-    private static AnswerDTO[] testDTOs;
 
     @BeforeClass
     public static void initClass() throws ParseException {
         manager = new AnswerManager();
-        testDTOs = DatabaseManagerTest.getTestAnswers();
     }
 
-    /*@Test
-    public void testGetAnswer() throws Exception {
-        AnswerDTO dto = manager.getAnswer(conn, 5);
-        assertEquals(testDTOs[1], dto);
-    }*/
-
-    /*@Test
-    public void testEditAnswer() throws Exception {
-
-    }*/
-
-    /*@Test
-    public void testDeleteAnswer() throws Exception {
-
-    }*/
 
     @Test
     public void testUprateAnswer() throws Exception {

@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Resources;
 
+import com.google.gson.GsonBuilder;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
@@ -23,75 +24,19 @@ public class UserResource extends AbstractResource {
         super(conn);
     }
 
-    /*public HttpResponse getUserCollection() {
-    	
-    	HttpResponse response = new HttpResponse("");
-        try {
-            List<UserDTO> user = ManagerFacade.getInstance().getUserList(conn);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(user);
-            response = new HttpResponse(json);
-            response.setStatus(200);
-
-        } catch (SQLException e) {
-           response.setStatus(500);
-        }
-        return response;
-    }*/
-
-    /*public HttpResponse addUser(UserDTO user) {
-    	
-    	HttpResponse response = new HttpResponse("");
-        try {
-            Long users = ManagerFacade.getInstance().addUser(conn, user);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(users);
-            response = new HttpResponse(json);
-            response.setStatus(200);
-
-        } catch (SQLException e) {
-            response.setStatus(500);
-        }
-          catch (CantInsertException e){
-        	  response.setStatus(304);
-          }
-
-        return response;
-    }*/
-
     public HttpResponse getUser(long userId) {
         if(userId == 0)
             return new HttpResponse("You have to be logged in to retrieve your profile.", 401);
         try {
             UserDTO user = ManagerFacade.getInstance().getUser(conn, userId);
-            return new HttpResponse(new Gson().toJson(user), 200);
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            return new HttpResponse(gson.toJson(user), 200);
         } catch (SQLException e) {
            return new HttpResponse(e.toString(), 500);
         } catch (CantFindException e) {
             return new HttpResponse(e.toString(), 404);
         }
     }
-
-
-    /*public HttpResponse deleteUser(long UserId) {
-    	
-    	HttpResponse response = new HttpResponse("");
-        try {
-            ManagerFacade.getInstance().deleteUser(conn, UserId);
-            response.setStatus(200);
-
-        } catch (SQLException e) {
-           response.setStatus(500);
-        }
-        
-          catch (CantUpdateException e){
-        	  response.setStatus(304);
-          }
-        
-        return response;
-    }*/
 
     public HttpResponse editUser(long userId, String content) {
         if(userId == 0)
@@ -111,7 +56,8 @@ public class UserResource extends AbstractResource {
         if(userId == 0)
            return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
-            String json = new Gson().toJson(ManagerFacade.getInstance().bookmarkedQuestions(conn, userId));
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            String json = gson.toJson(ManagerFacade.getInstance().bookmarkedQuestions(conn, userId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
@@ -122,7 +68,8 @@ public class UserResource extends AbstractResource {
         if(userId == 0)
             return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
-            String json = new Gson().toJson(ManagerFacade.getInstance().getExpertiseQuestions(conn, userId));
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            String json = gson.toJson(ManagerFacade.getInstance().getExpertiseQuestions(conn, userId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);

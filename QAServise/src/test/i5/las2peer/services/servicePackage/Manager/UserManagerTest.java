@@ -38,6 +38,8 @@ public class UserManagerTest extends AbstractManagerTest {
         manager.bookmark(conn, 5, 2);
         QuestionDTO[] expected = DatabaseManagerTest.getTestQuestions(1, 2);
         expected[0].setFavourCount(expected[0].getFavourCount()+1);
+        expected[0].setFavourite(true);
+        expected[1].setFavourite(true);
         assertArrayEquals(
                 expected,
                 manager.bookmarkedQuestions(conn, 5).toArray()
@@ -46,8 +48,10 @@ public class UserManagerTest extends AbstractManagerTest {
 
     @Test
     public void testGetUserQuestions() throws Exception {
+        QuestionDTO[] expected = DatabaseManagerTest.getTestQuestions(1);
+        expected[0].setFavourite(true);
         assertArrayEquals(
-                DatabaseManagerTest.getTestQuestions(1),
+                expected,
                 manager.getUserQuestions(conn, 4).toArray()
         );
     }
@@ -73,9 +77,10 @@ public class UserManagerTest extends AbstractManagerTest {
 
     @Test
     public void testGetExpertQuestions() throws Exception {
+        QuestionDTO[] expected = DatabaseManagerTest.getTestQuestions(0,2);
         assertArrayEquals(
-                DatabaseManagerTest.getTestQuestions(1),
-                manager.getExpertQuestions(conn, 2).toArray()
+                expected,
+                manager.getExpertQuestions(conn, 3).toArray()
         );
     }
 

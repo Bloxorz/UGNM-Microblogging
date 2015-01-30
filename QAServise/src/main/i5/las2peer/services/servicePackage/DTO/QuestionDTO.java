@@ -1,6 +1,7 @@
 package i5.las2peer.services.servicePackage.DTO;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -11,8 +12,11 @@ import java.util.List;
  */
 public class QuestionDTO extends PostDTO {
 
+    @Expose
     private List<HashtagDTO> hashtags;
+    @Expose
     private int favourCount;
+    @Expose
     private boolean isFavourite;
 
     public QuestionDTO(long id, Date date, String text, long userId) {

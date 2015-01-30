@@ -1,6 +1,6 @@
 package i5.las2peer.services.servicePackage.Resources;
 
-import i5.las2peer.services.servicePackage.DTO.ExpertiseDTO;
+import com.google.gson.GsonBuilder;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.*;
@@ -22,12 +22,11 @@ public class HashtagResource extends AbstractResource {
         super(conn);
     }
 
-    //TODO in der serviceclass wrappen
-	
     public HttpResponse getHashtagCollection() {
         try {
             List<HashtagDTO> hashtags = ManagerFacade.getInstance().getHashtagCollection(conn);
-            return new HttpResponse(new Gson().toJson(hashtags), 200);
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            return new HttpResponse(gson.toJson(hashtags), 200);
         } catch (SQLException e) {
            return new HttpResponse(e.toString(), 500);
         } catch (CantFindException e) {
@@ -35,134 +34,13 @@ public class HashtagResource extends AbstractResource {
         }
     }
     
-    public HttpResponse addNewHashtag(String text) {
-    	
-    	HttpResponse response = new HttpResponse("");
-    	try {
-              Long hashtag = ManagerFacade.getInstance().addNewHashtag(conn, text);
-
-              Gson gson = new Gson();
-              String json = gson.toJson(hashtag);
-              response = new HttpResponse(json);
-              response.setStatus(200);
-
-         } catch (SQLException e) {
-             response.setStatus(500);
-            }
-    		
-    		catch (CantInsertException e){
-    			response.setStatus(304);
-    		}
-    	
-    		catch (NotWellFormedException e){
-    		
-    			response.setStatus(400);
-    		}
-    		
-    	return response;
-    	
-    }
-    
-    public HttpResponse getOneHashtag(long hashtagId) {
-    	
-    	HttpResponse response = new HttpResponse("");
-    	try {
-    		  HashtagDTO hashtag = ManagerFacade.getInstance().getHashtag(conn, hashtagId);
-
-              Gson gson = new Gson();
-              String json = gson.toJson(hashtag);
-              response = new HttpResponse(json);
-              response.setStatus(200);
-
-         } catch (SQLException e) {
-             response.setStatus(500);
-        } catch (CantFindException e) {
-            response.setStatus(404);
-        }
-    		
-    	return response;
-    }
-    
-    public HttpResponse updateHashtag(HashtagDTO hashtagDTO) {
-    	
-    	HttpResponse response = new HttpResponse("");
-    	try {
-              ManagerFacade.getInstance().updateHashtag(conn, hashtagDTO);
-              response.setStatus(200);
-
-         } catch (SQLException e) {
-             response.setStatus(500);
-            }
-    		
-    		catch (CantUpdateException e){
-    			response.setStatus(304);
-    		}
-    		
-    		catch (NotWellFormedException e){
-    			response.setStatus(400);
-    		}
-
-            catch (CantFindException e) {
-                response.setStatus(404);
-            }
-    	return response;
-    	
-    }
-    
-    public HttpResponse deleteHashtag(long hashtagId) {
-    	
-    	HttpResponse response = new HttpResponse("");
-    	try {
-    		  ManagerFacade.getInstance().deleteHashtag(conn, hashtagId);
-
-              response.setStatus(200);
-
-         } catch (SQLException e) {
-             response.setStatus(500);
-            }
-    		
-    		catch (CantDeleteException e){
-    			response.setStatus(304);
-    		}
-        catch (CantFindException e) {
-            response.setStatus(404);
-        }
-    	
-
-    		
-    	return response;
-    }
-    
-    public HttpResponse getAllQuestionsToHashtag(long hashtagId) {
+    public HttpResponse getAllQuestionsToHashtag(long hashtagId, long userThatAsksId) {
         try {
-            String json = new Gson().toJson(ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId));
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            String json = gson.toJson(ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId, userThatAsksId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
         }
     }
-    
-    public HttpResponse getAllExpertisesToHashtag(long hashtagId) {
-    	
-    	HttpResponse response = new HttpResponse("");
-    	try {
-    		  List<ExpertiseDTO> ex = ManagerFacade.getInstance().getAllExpertiseToHashtag(conn, hashtagId);
-
-    		  Gson gson = new Gson();
-              String json = gson.toJson(ex);
-              response = new HttpResponse(json);
-              response.setStatus(200);
-
-         } catch (SQLException e) {
-             response.setStatus(500);
-            }
-    	
-    	return response;
-    }
-    
-    public HttpResponse addExpertiseToHashtag(long expertiseId) {
-    	
-    	throw new NotImplementedException();
-    }
-
 }

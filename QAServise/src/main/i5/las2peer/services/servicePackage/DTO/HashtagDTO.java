@@ -1,12 +1,14 @@
 package i5.las2peer.services.servicePackage.DTO;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 /**
  * Created by Marv on 05.11.2014.
  */
 public class HashtagDTO extends AbstractDTO {
 
+    @Expose
     private String text;
     private long idHashtag;
     

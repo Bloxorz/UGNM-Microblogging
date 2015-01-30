@@ -146,7 +146,7 @@ public class ServiceTest {
 		
     }
 
-    @Test
+    /*@Test
     public void testExampleMethod()
     {
         MiniClient c = new MiniClient();
@@ -166,7 +166,7 @@ public class ServiceTest {
             fail ( "Exception: " + e );
         }
 
-    }
+    }*/
 
 	/**
 	 * Test the ServiceClass for valid rest mapping.
@@ -303,4 +303,7 @@ public class ServiceTest {
     }
     
     */
+
+    // some test jsons:
+    // api/
 }

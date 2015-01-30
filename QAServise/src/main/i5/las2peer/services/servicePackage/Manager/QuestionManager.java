@@ -15,9 +15,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Marv on 12.11.2014.
@@ -26,25 +24,22 @@ public class QuestionManager extends AbstractManager{
 
     private static UserManager um = new UserManager();
 
-    /**
-     * Returns a Collection of all Questions stored in the Databse
-     * @param conn the connection
-     * @return  List<QuestionDTO>  a Collection of well formed QuestionDTOs
-     * @throws SQLException unknown DB error
-     */
-    public List<QuestionDTO> getQuestionList(Connection conn) throws SQLException {
+    public List<QuestionDTO> getQuestionList(Connection conn, long userWhoAsksId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<QuestionDTO>> h = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
         List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, idUser, idQuestion FROM Post JOIN Question ON idPost=idQuestion", h);
         if(res.size() == 0)
             throw new SQLException("No questions were found in database.");
-        fillOutHashtagsAndFavourCount(conn, res);
+        fillOutHashtagsAndFavourCountAndIsFavourite(conn, res, userWhoAsksId);
         return res;
     }
 
 
     // Attention, following function only considers the fields "text" from hashtags, not their id. This way is easier to implement at frontend.
     public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException, CantFindException, CantUpdateException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> mapHandler = new MapHandler();
+        Map<String, Object> resultMap;
 
         // check elo
         if (um.getElo(conn, question.getIdUser()) <= 0) {
@@ -52,14 +47,12 @@ public class QuestionManager extends AbstractManager{
         }
 
         // insert into Post
-        QueryRunner qr = new QueryRunner();
-        ResultSetHandler<Map<String, Object>> h = new MapHandler();
-        Map<String, Object> result = qr.insert(conn, "INSERT INTO Post (text,idUser) VALUES (?,?)", h, question.getText(), question.getIdUser());
+        resultMap = qr.insert(conn, "INSERT INTO Post (text,idUser) VALUES (?,?)", mapHandler, question.getText(), question.getIdUser());
         long generatedId;
-        if (result == null)
+        if (resultMap == null)
             throw new CantInsertException("Could not Insert into Post table");
         else
-            generatedId = (Long) result.get("GENERATED_KEY");
+            generatedId = (Long) resultMap.get("GENERATED_KEY");
 
         // insert into Question
         int rowsAffected = qr.update(conn, "INSERT INTO Question (idQuestion) VALUES (?)", generatedId);
@@ -70,8 +63,15 @@ public class QuestionManager extends AbstractManager{
         // insert hashtags
         ResultSetHandler<HashtagDTO> hh = new BeanHandler<HashtagDTO>(HashtagDTO.class);
         for (int i = 0; i < question.getHashtags().size(); i++) {
-            HashtagDTO hashtag = qr.query(conn, "SELECT idHashtag FROM Hashtag WHERE text = ?", hh, question.getHashtags().get(i).getText());
-            rowsAffected = qr.update(conn, "INSERT INTO QuestionToHashtag (idQuestion, idHashtag) VALUES (?,?)", generatedId, hashtag.getIdHashtag());
+            long hashtagId;
+            HashtagDTO hashtag = qr.query(conn, "SELECT idHashtag FROM Hashtag WHERE text=?", hh, question.getHashtags().get(i).getText());
+            if (hashtag == null) {
+                resultMap = qr.insert(conn, "INSERT INTO Hashtag (text) VALUES (?)", mapHandler, question.getHashtags().get(i).getText());
+                hashtagId = (Long) resultMap.get("GENERATED_KEY");
+            } else {
+                hashtagId = hashtag.getIdHashtag();
+            }
+            rowsAffected = qr.update(conn, "INSERT INTO QuestionToHashtag (idQuestion, idHashtag) VALUES (?,?)", generatedId, hashtagId);
         }
 
         // update elo
@@ -80,59 +80,17 @@ public class QuestionManager extends AbstractManager{
         return generatedId;
     }
 
-    /**
-     * Returns a well formed question if an entry exists or null if an entry does not exist in the databse
-     * @param conn the given connection
-     * @param questionId the questionId to look up
-     * @return a well formed question or null
-     * @throws SQLException unknown Database error
-     */
-    public QuestionDTO getQuestion(Connection conn, long questionId) throws SQLException, CantFindException {
+    public QuestionDTO getQuestion(Connection conn, long questionId, long userWhoAsksId) throws SQLException, CantFindException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<QuestionDTO> hq = new BeanHandler<QuestionDTO>(QuestionDTO.class);
         QuestionDTO question = qr.query(conn, "SELECT idPost, timestamp, text, idUser FROM Post JOIN Question ON idPost=idQuestion WHERE idQuestion=?", hq, questionId);
         if(question == null)
             throw new CantFindException();
-
-        ResultSetHandler<List<HashtagDTO>> h = new BeanListHandler<HashtagDTO>(HashtagDTO.class);
-        question.setHashtags( qr.query(conn, "SELECT Hashtag.idHashtag, Hashtag.text FROM Hashtag JOIN QuestionToHashtag WHERE Hashtag.idHashtag = QuestionToHashtag.idHashtag AND idQuestion = ? ORDER BY idHashtag", h, questionId) );
-        question.setFavourCount( getBookmarkCount(conn, questionId ));
+        List<QuestionDTO> questionList = new LinkedList<QuestionDTO>(); questionList.add(question);
+        fillOutHashtagsAndFavourCountAndIsFavourite(conn, questionList, userWhoAsksId);
 
         return question;
     }
-
-
-    public void editQuestion(Connection conn, long questionId, String questionText) throws SQLException, CantUpdateException {
-        final String sql = "UPDATE Post p RIGHT JOIN Question q ON p.idPost = q.idQuestion " +
-                "SET p.text = ? WHERE q.idQuestion = " + questionId + ";";
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-            pstmt.setString(1, questionText);
-
-            //if 0 rows were effected
-            if(pstmt.executeUpdate() == 0) {
-                throw new CantUpdateException("No rows affected");
-            }
-        }
-    }
-
-    public void deleteQuestion(Connection conn, long questionId) throws SQLException, CantDeleteException {
-        QueryRunner qr = new QueryRunner();
-        int rowsAffected = qr.update(conn,
-                "DELETE Post FROM Answer JOIN Question ON Answer.idQuestion=Question.idQuestion\n" +
-                "JOIN Post ON Post.idPost=Question.idQuestion OR Post.idPost=Answer.idAnswer\n" +
-                "WHERE Question.idQuestion=?", questionId);
-        // the values from tables Question and Answers are automatically deleted by ON CASCADE DELETE
-        if(rowsAffected == 0)
-            throw new CantDeleteException("Can't delete question");
-    }
-
-    /**
-     * Returns a Collection of all answers (well formed) to a given question in descending rating order
-     * @param conn
-     * @param questionId
-     * @return
-     * @throws SQLException
-     */
 
     public List<AnswerDTO> getAnswersToQuestion(Connection conn, long questionId) throws SQLException {
         QueryRunner qr = new QueryRunner();
@@ -140,57 +98,27 @@ public class QuestionManager extends AbstractManager{
         return qr.query(conn, "SELECT idPost, idQuestion, timestamp, text, idUser, rating FROM Post JOIN Answer ON idPost=idAnswer WHERE idQuestion = ? ORDER BY rating DESC", h, questionId);
     }
 
-    public JsonElement getQuestionWithAnswers(Connection conn, long questionId) throws SQLException, CantFindException {
-        Gson g = new Gson();
-        JsonObject jo = new JsonObject();
-        jo.add("question", g.toJsonTree(getQuestion(conn, questionId)));
-        jo.add("answers", g.toJsonTree(getAnswersToQuestion(conn, questionId)));
-        return jo;
+    public Map<String, Object> getQuestionWithAnswers(Connection conn, long questionId, long userWhoAsksId) throws SQLException, CantFindException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("question", getQuestion(conn, questionId, userWhoAsksId));
+        map.put("answers", getAnswersToQuestion(conn, questionId));
+        return map;
     }
 
-    /**
-     * Adds an answer to a given Question
-     * @param conn the Connection
-     * @param answer must be a well formed answer
-     * @return the generated answerId
-     * @throws SQLException a Database occurred
-     * @throws CantInsertException Can't insert into Databse, see message for further detail;
-     */
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
-        System.out.println(answer);
-        long generatedId = 0;
-        String addAsPost = "INSERT INTO Post (text,idUser) VALUES(?,?);";
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> mapHandler = new MapHandler();
+        Map<String, Object> resultMap;
 
-        //add all references in DB
-        try(PreparedStatement pstmt = conn.prepareStatement(addAsPost, Statement.RETURN_GENERATED_KEYS);) {
-
-            pstmt.setString(1, answer.getText());
-            pstmt.setLong(2, answer.getIdUser());
-
-            int affectedRows = pstmt.executeUpdate();
-            ResultSet rs = pstmt.getGeneratedKeys();
-
-            //fetch generated id
-
-            if(rs.next()) {
-                generatedId = rs.getLong(1);
-            } else {
-                throw new CantInsertException("Could not Insert into Post table");
-            }
-
-            //insert answer reference
-            String addAsAnswer = "INSERT INTO Answer (idAnswer,rating,idQuestion) VALUES (?,?,?)";
-            PreparedStatement astmt = conn.prepareStatement(addAsAnswer);
-            astmt.setLong(1, generatedId);
-            astmt.setLong(2, answer.getRating());
-            astmt.setLong(3, answer.getIdQuestion());
-            affectedRows = astmt.executeUpdate();
-            if(affectedRows == 1) {
-                answer.setIdPost(generatedId);
-            } else {
-                throw new CantInsertException("Could not Insert into Post table");
-            }
+        resultMap = qr.insert(conn, "INSERT INTO Post (text,idUser) VALUES(?,?)", mapHandler, answer.getText(), answer.getIdUser());
+        if (resultMap == null) {
+            throw new CantInsertException("Could not Insert into Post table");
         }
+        long generatedId = (Long) resultMap.get("GENERATED_KEY");
+
+        qr.insert(conn, "INSERT INTO Answer (idAnswer,idQuestion) VALUES (?,?)", mapHandler, generatedId, answer.getIdQuestion());
+        answer.setIdPost(generatedId);
+
         return generatedId;
     }
 
@@ -210,7 +138,7 @@ public class QuestionManager extends AbstractManager{
         return qr.query(conn, "SELECT * FROM Hashtag JOIN QuestionToHashtag ON Hashtag.idHashtag=QuestionToHashtag.idHashtag WHERE idQuestion=? ORDER BY Hashtag.idHashtag", hh, questionId);
     }
 
-    void fillOutHashtagsAndFavourCountAndIsFavourite(Connection conn, List<QuestionDTO> questions/*, long userToCheckForFavourite*/) throws SQLException {
+    void fillOutHashtagsAndFavourCountAndIsFavourite(Connection conn, List<QuestionDTO> questions, long userToCheckForFavourite) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<Map<String, Object>> mapHandler = new MapHandler();
 

@@ -41,7 +41,6 @@ public class ServiceClass extends Service {
 
 	// resources
 	private QuestionResource qr;
-    private ExpertiseResource exp;
     private HashtagResource hr;
     private UserResource use;
 
@@ -55,7 +54,6 @@ public class ServiceClass extends Service {
 		try {
 			Connection conn = dbm.getConnection();
 			qr = new QuestionResource(conn);
-            exp = new ExpertiseResource(conn);
             hr = new HashtagResource(conn);
             use = new UserResource(conn);
 		} catch (SQLException e) {
@@ -95,11 +93,6 @@ public class ServiceClass extends Service {
 
 
 
-	/*@GET
-	@Path("users/")
-	public HttpResponse getUsers() {
-		return use.getUserCollection();
-	}*/
 	
 	@GET
 	@Path("user/")
@@ -140,12 +133,6 @@ public class ServiceClass extends Service {
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return use.getExpertiseQuestions(isAnonymous() ? 0 : getActiveAgent().getId());
 	}
-
-	/*@DELETE
-	@Path("user/{userId}/{token}")
-	public HttpResponse deleteUser(@PathParam("userId") Long userId){
-		return use.deleteUser(token, userId);
-	}*/
 	
 	
 	@GET
@@ -156,65 +143,27 @@ public class ServiceClass extends Service {
 	
 	@GET
 	@Path("hashtag/{id}/questions")
-	public HttpResponse getAllQuestionsToHashtag(@PathParam("id") Long hashtagId){	
-		return hr.getAllQuestionsToHashtag(hashtagId);
+	public HttpResponse getAllQuestionsToHashtag(@PathParam("id") Long hashtagId){
+		long userThatAsksId;
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() == 200)
+			userThatAsksId = isAnonymous() ? 0 : getActiveAgent().getId();
+		else
+			userThatAsksId = 0;
+		return hr.getAllQuestionsToHashtag(hashtagId, userThatAsksId);
 	}
-	
-	/*@GET
-	@Path("hashtag/{id}/expertises")
-	public HttpResponse getAllExpertiseToHashtag(@PathParam("id") Long hashtagId){
-		return hr.getAllExpertisesToHashtag(hashtagId);
-	}*/
-	
-	/*@POST
-	@Path("hashtag/")
-	public HttpResponse addHashtag(@ContentParam String name){
-		return hr.addNewHashtag(token, name);
-		
-	}*/
-	
-	/*@GET
-	@Path("hashtag/{hashtagId}")
-	public HttpResponse getOneHashtag(@PathParam("hashtagId") Long hashtagId){
-		return hr.getOneHashtag(hashtagId);
-	}*/
-	
-	/*@DELETE
-	@Path("hashtag/{hashtagId}/{token}")
-	public HttpResponse deleteHashtag(@PathParam("hashtagId") Long hashtagId){
-		return hr.deleteHashtag(token, hashtagId);
-	}*/
-
-    @GET
-    @Path("expertises")
-    public HttpResponse getExpertises() {
-        return exp.getExpertiseCollection();
-    }
-
-    /*@GET
-    @Path("expertise/{id}")
-    public HttpResponse getExpertise(@PathParam("id") long id) {
-        return exp.getExpertise(id);
-    }*/
-
 
     @GET
 	@Path("questions")
 	public HttpResponse getQuestions() {
-		return qr.getQuestionCollection();
+		long userThatAsksId;
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() == 200)
+			userThatAsksId = isAnonymous() ? 0 : getActiveAgent().getId();
+		else
+			userThatAsksId = 0;
+		return qr.getQuestionCollection(userThatAsksId);
 	}
-
-	/*@GET
-	@Path("question/{questionId}")
-	public HttpResponse getQuestion(@PathParam("questionId") long questionId) {
-		return qr.getQuestion(questionId);
-	}*/
-
-	/*@DELETE
-	@Path("question/{questionId}")
-	public HttpResponse deleteQuestion(@PathParam("questionId") long questionId) {
-		return qr.deleteQuestion(questionId);
-	}*/
 
 	@POST
 	@Path("question")
@@ -227,7 +176,13 @@ public class ServiceClass extends Service {
 	@GET
 	@Path("answers/question/{questionId}")
 	public HttpResponse getQuestionAndAnswers(@PathParam("questionId") long questionId) {
-		return qr.getQuestionWithAnswers(questionId);
+		long userThatAsksId;
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() == 200)
+			userThatAsksId = isAnonymous() ? 0 : getActiveAgent().getId();
+		else
+			userThatAsksId = 0;
+		return qr.getQuestionWithAnswers(questionId, userThatAsksId);
 	}
 
 	@POST
@@ -237,24 +192,6 @@ public class ServiceClass extends Service {
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return qr.addAnswerToQuestion(questionId, content, isAnonymous() ? 0 : getActiveAgent().getId());
 	}
-
-	/*@GET
-    @Path("answer/{id}/{token}")
-    public HttpResponse getAnswer(@PathParam("id") long answerId) {
-        return new AnswerResource(getConnection()).getAnswer(token, answerId);
-    }
-
-    @DELETE
-    @Path("answer/{id}/{token}")
-    public HttpResponse deleteAnswer(@PathParam("id") long answerId) {
-        return new AnswerResource(getConnection()).deleteAnswer(token, answerId);
-    }
-
-    @PUT
-    @Path("answer/{id}/{token}")
-    public HttpResponse deleteAnswer(@PathParam("id") long answerId, @ContentParam String content) {
-        return new AnswerResource(getConnection()).editAnswer(token, answerId, content);
-    }*/
 
     private Connection getConnection() {
         try { return dbm.getConnection(); }

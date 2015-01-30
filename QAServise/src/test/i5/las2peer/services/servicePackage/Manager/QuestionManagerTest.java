@@ -8,7 +8,6 @@ import i5.las2peer.services.servicePackage.DTO.PostDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
 import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
-import i5.las2peer.services.servicePackage.General.Rating;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import i5.las2peer.services.servicePackage.database.DatabaseManagerTest;
 import org.apache.commons.dbutils.QueryRunner;
@@ -31,18 +30,18 @@ import static org.junit.Assert.*;
 public class QuestionManagerTest extends AbstractManagerTest {
 
     private static QuestionManager manager;
-    private static QuestionDTO[] testDTOs;
 
     @BeforeClass
     public static void initClass() throws ParseException {
         manager = new QuestionManager();
-        testDTOs = DatabaseManagerTest.getTestQuestions();
     }
 
     @Test
-    public void testGetQuestionList() throws Exception {
-        System.out.println(manager.getQuestionList(conn));
-        assertArrayEquals(testDTOs, manager.getQuestionList(conn).toArray());
+    public void testGetQuestionList() throws Exception {;
+        assertArrayEquals(
+                DatabaseManagerTest.getTestQuestions(),
+                manager.getQuestionList(conn, 0).toArray()
+        );
     }
 
     @Test
@@ -50,7 +49,7 @@ public class QuestionManagerTest extends AbstractManagerTest {
         QuestionDTO dto = new QuestionDTO(0, DatabaseManagerTest.getDummyDate(), "How are you?", 1, Arrays.asList(DatabaseManagerTest.getTestHashtags(2,3)));
         long newId = manager.addQuestion(conn, dto);
         assertEquals(newId, 9);
-        QuestionDTO getDto = manager.getQuestion(conn, 9);
+        QuestionDTO getDto = manager.getQuestion(conn, 9, 0);
         assertEquals(dto, getDto);
         assertEquals( new UserManager().getElo(conn, 1), 9 );
         for( int i=1; i<10; i++)
@@ -67,32 +66,19 @@ public class QuestionManagerTest extends AbstractManagerTest {
 
     @Test
     public void testGetQuestion() throws Exception {
-        QuestionDTO dto = manager.getQuestion(conn, 1);
-        assertEquals(testDTOs[0], dto);
+        assertEquals(
+                DatabaseManagerTest.getTestQuestions()[1],
+                manager.getQuestion(conn, 2, 0)
+        );
     }
 
-    @Test
-    public void testDeleteQuestion() throws Exception {
-        manager.deleteQuestion(conn, 4);
-        try {
-            manager.getQuestion(conn, 4);
-            fail("an excepton should be thrown");
-        } catch (CantFindException e) {
-            // OK
-        } catch (Exception e) {
-            fail("wrong exception thrown");
-        }
-
-        assertArrayEquals( manager.getAnswersToQuestion(conn, 4).toArray(), new AnswerDTO[]{} );
-    }
-
-    @Test
+    /*@Test
     public void testGetAnswersToQuestion() throws Exception {
         assertArrayEquals(
                 DatabaseManagerTest.getTestAnswers(2,3,4),
                 manager.getAnswersToQuestion(conn, 4).toArray()
         );
-    }
+    }*/
 
     @Test
     public void testGetQuestionWithAnswers() throws Exception {
@@ -101,7 +87,7 @@ public class QuestionManagerTest extends AbstractManagerTest {
         jo.add("question", g.toJsonTree(DatabaseManagerTest.getTestQuestions()[2]));
         jo.add("answers", g.toJsonTree(DatabaseManagerTest.getTestAnswers(2,3,4)));
 
-        assertEquals(jo.toString(), manager.getQuestionWithAnswers(conn, 4).toString());
+        assertEquals(jo.toString(), manager.getQuestionWithAnswers(conn, 4, 0).toString());
     }
 
     @Test

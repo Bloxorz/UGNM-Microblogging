@@ -1,6 +1,7 @@
 package i5.las2peer.services.servicePackage.DTO;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 import java.util.Date;
 
@@ -9,9 +10,12 @@ import java.util.Date;
  */
 public class PostDTO extends AbstractDTO{
 
+    @Expose
     private Date timestamp;
+    @Expose
     private String text;
     private long idUser;
+    @Expose
     private long idPost;
 
     public PostDTO(long idPost, Date date, String text, long idUser) {

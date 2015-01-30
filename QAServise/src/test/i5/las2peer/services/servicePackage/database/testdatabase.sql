@@ -2,9 +2,8 @@ USE ugnm1415g2;
 
 -- delete all:
 SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS User, Post, Question, Answer, Hashtag, Expertise,
-					QuestionToHashtag, HashtagToExpertise, UserToExpertise,
-					UserToRatedAnswer, FavouriteQuestionToUser;
+DROP TABLE IF EXISTS User, Post, Question, Answer, Hashtag,
+					QuestionToHashtag, UserToHashtag, UserToRatedAnswer, FavouriteQuestionToUser;
 SET FOREIGN_KEY_CHECKS=1;
 
 -- entities
@@ -37,7 +36,7 @@ CREATE TABLE Question
 CREATE TABLE Answer
 (
 	idAnswer int NOT NULL,
-	rating int NOT NULL,
+	rating int NOT NULL DEFAULT 0,
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idAnswer),
 	FOREIGN KEY (idAnswer) REFERENCES Post(idPost) ON DELETE CASCADE,
@@ -48,12 +47,6 @@ CREATE TABLE Hashtag
 	idHashtag int NOT NULL AUTO_INCREMENT,
 	text varchar(45) NOT NULL UNIQUE,
 	PRIMARY KEY (idHashtag)
-);
-CREATE TABLE Expertise
-(
-	idExpertise int NOT NULL AUTO_INCREMENT,
-	text varchar(45) NOT NULL UNIQUE,
-	PRIMARY KEY (idExpertise)
 );
 
 
@@ -68,23 +61,14 @@ CREATE TABLE UserToRatedAnswer
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
 	FOREIGN KEY (idAnswer) REFERENCES Answer(idAnswer) ON DELETE CASCADE
 );
-CREATE TABLE UserToExpertise
+CREATE TABLE UserToHashtag
 (
-	idUserToExpertise int NOT NULL AUTO_INCREMENT,
+	idUserToHashtag int NOT NULL AUTO_INCREMENT,
 	idUser bigint NOT NULL,
-	idExpertise int NOT NULL,
-	PRIMARY KEY (idUserToExpertise),
-	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
-	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise) ON DELETE CASCADE
-);
-CREATE TABLE HashtagToExpertise
-(
-	idHashtagΤοΕxpertise int NOT NULL AUTO_INCREMENT,
 	idHashtag int NOT NULL,
-	idExpertise int NOT NULL,
-	PRIMARY KEY (idHashtagΤοΕxpertise),
-	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE,
-	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise) ON DELETE CASCADE
+	PRIMARY KEY (idUserToHashtag),
+	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
+	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE
 );
 CREATE TABLE QuestionToHashtag (
 	idQuestionToHashtag int NOT NULL AUTO_INCREMENT,
@@ -120,16 +104,10 @@ VALUES
 	(5, 10, 'http://wow/it/is/houston.svg', 'http://alleskoenner.de/whp/huhu.html', 'another.adresse@web.com');
 
 INSERT INTO Hashtag (text)
-VALUES ('Java'),('Assembler'),('For-Loop'),('All'),('Analysis'),('Polynome');
+VALUES ('Java'),('Assembler'),('For-Loop'),('Analysis'),('Polynome'),('Lagrange-Restglied');
 
-INSERT INTO Expertise (text)
-VALUES ('Lineare Algebra'),('Analysis für Informatiker'),('Einführung in die Programmierung'),('Praktikum Unternehmensgründung und Neue Medien');
-
-INSERT INTO HashtagToExpertise (idHashtag, idExpertise)
-VALUES (1,3),(1,4),(3,3),(3,4),(4,1),(4,2),(4,3),(4,4),(5,1),(5,2),(6,1),(6,2);
-
-INSERT INTO UserToExpertise (idUser, idExpertise)
-VALUES (1,1),(1,2),(2,1),(2,2),(3,3),(3,4),(4,1),(4,4),(5,1),(5,2),(5,3),(5,4);
+INSERT INTO UserToHashtag (idUser, idHashtag)
+VALUES (1,4),(1,5),(1,6),(2,4),(2,5),(2,6),(3,1),(3,2),(3,3),(4,1),(4,3),(5,1),(5,2),(5,3),(5,4),(5,5),(5,6);
 
 INSERT INTO Post (text, idUser)
 VALUES
@@ -147,6 +125,6 @@ VALUES (1),(2),(4);
 INSERT INTO Answer (idAnswer, rating, idQuestion)
 VALUES (3,100,2),(5,0,2),(6,0,4),(7,0,4),(8,0,4);
 INSERT INTO QuestionToHashtag (idQuestion, idHashtag)
-VALUES (1,3),(1,1),(2,4),(4,1);
+VALUES (1,3),(1,1),(4,1);
 INSERT INTO FavouriteQuestionToUser (idUser, idQuestion)
 VALUES (2,2),(4,1),(4,2),(5,4);

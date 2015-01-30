@@ -1,14 +1,19 @@
 package i5.las2peer.services.servicePackage.DTO;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 /**
  * Created by Marv on 05.11.2014.
  */
 public class UserDTO extends  AbstractDTO {
+    @Expose
     private long idUser;
+    @Expose
     private int elo;
-    private String image, contact,email;
+    private String image;
+    private String contact;
+    private String email;
 
     public UserDTO(long idUser, int elo, String image, String contact, String email) {
         this.idUser = idUser;
