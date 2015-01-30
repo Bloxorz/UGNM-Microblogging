@@ -12,6 +12,7 @@ import java.util.List;
 public class QuestionDTO extends PostDTO {
 
     private List<HashtagDTO> hashtags;
+    private int favourCount;
 
     public QuestionDTO(long id, Date date, String text, long userId) {
         super(id, date, text, userId);
@@ -19,6 +20,10 @@ public class QuestionDTO extends PostDTO {
     public QuestionDTO(long id, Date date, String text, long userId, List<HashtagDTO> hashtags) {
         this(id, date, text, userId);
         this.hashtags = hashtags;
+    }
+    public QuestionDTO(long id, Date date, String text, long userId, List<HashtagDTO> hashtags, int favourCount) {
+        this(id, date, text, userId, hashtags);
+        this.favourCount = favourCount;
     }
 
     public QuestionDTO() {
@@ -31,5 +36,13 @@ public class QuestionDTO extends PostDTO {
 
     public void setHashtags(List<HashtagDTO> hashtags) {
         this.hashtags = hashtags;
+    }
+
+    public int getFavourCount() {
+        return favourCount;
+    }
+
+    public void setFavourCount(int favourCount) {
+        this.favourCount = favourCount;
     }
 }

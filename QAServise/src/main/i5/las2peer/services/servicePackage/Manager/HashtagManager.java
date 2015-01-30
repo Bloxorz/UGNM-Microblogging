@@ -22,34 +22,16 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 public class HashtagManager extends AbstractManager {
 
-	private QuestionManager qm = new QuestionManager();
+	private static QuestionManager qm = new QuestionManager();
 
-	public List<HashtagDTO> getHashtagCollection(Connection conn) throws SQLException {
-		
-		List<HashtagDTO> hashtag = new ArrayList<HashtagDTO>();		
-		
-		final String sql = "SELECT * FROM ugnm1415g2.Hashtag";
-		
-		
-		try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-
-            ResultSet rs = pstmt.executeQuery();
-            
-            
-            while(rs.next()) {
-            	
-            	HashtagDTO hashtagDTO = new HashtagDTO();
-            	hashtagDTO.setIdHashtag(rs.getLong("idHashtag"));
-            	hashtagDTO.setText(rs.getString("text"));
-            	
-            	hashtag.add(hashtagDTO);
-            	            	  
-            }
-        }
-		
-		
-		return hashtag;
-		
+	public List<HashtagDTO> getHashtagCollection(Connection conn) throws SQLException, CantFindException {
+		QueryRunner qr = new QueryRunner();
+		ResultSetHandler<List<HashtagDTO>> h = new BeanListHandler<HashtagDTO>(HashtagDTO.class);
+		List<HashtagDTO> hashtags = qr.query(conn, "SELECT * FROM Hashtag ORDER BY idHashtag", h);
+		if (hashtags.size() == 0) {
+			throw new CantFindException("Can't find any hashtags.");
+		}
+		return hashtags;
 	}
 	
 	public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException, CantFindException {

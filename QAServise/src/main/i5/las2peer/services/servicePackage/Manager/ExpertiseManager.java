@@ -26,7 +26,7 @@ public class ExpertiseManager extends  AbstractManager {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<ExpertiseDTO>> h = new BeanListHandler<ExpertiseDTO>(ExpertiseDTO.class);
         List<ExpertiseDTO> expertises = qr.query(conn, "SELECT idExpertise, text FROM Expertise ORDER BY idExpertise", h);
-        if(expertises == null)
+        if(expertises.size() == 0)
             throw new CantFindException("Can not find any expertises.");
         return expertises;
     }

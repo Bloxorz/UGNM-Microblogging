@@ -14,27 +14,15 @@ import java.sql.Connection;
 
 import static org.junit.Assert.*;
 
-public class ExpertiseManagerTest {
+public class ExpertiseManagerTest extends AbstractManagerTest {
 
     private static ExpertiseManager manager;
     private static ExpertiseDTO[] testDTOs;
-
-    private Connection conn;
 
     @BeforeClass
     public static void initClass() {
         manager = new ExpertiseManager();
         testDTOs = DatabaseManagerTest.getTestExpertises();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        conn = DatabaseManagerTest.getTestTable();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        conn.close();
     }
 
     @Test

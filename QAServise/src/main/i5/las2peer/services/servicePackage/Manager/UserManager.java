@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class UserManager {
 
-    private QuestionManager qm = new QuestionManager();
+    private static QuestionManager qm = new QuestionManager();
 
     /*public List<UserDTO> getUserList(Connection conn) throws SQLException {
         final String sql = "SELECT idUser as userId, rating as rat, image as img, contact as con, " +
@@ -102,17 +102,12 @@ public class UserManager {
         int rowsAffected = qr.update(conn, "UPDATE User SET image=?, contact=?, email=? WHERE idUser=?", data.getImage(), data.getContact(), data.getEmail(), userId);
         if(rowsAffected == 0)
             throw new CantUpdateException("0 rows affected.");
-
     }
     public List<QuestionDTO>  getUserQuestions(Connection conn, long userId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<QuestionDTO>> hq = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
         List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, idUser FROM Post JOIN Question ON idQuestion=idPost WHERE idUser=? ORDER BY idPost", hq, userId);
-        if(res == null) return new LinkedList<>();
-
-        for(QuestionDTO question : res) {
-            question.setHashtags( qm.getHashtagsToQuestion(conn, question.getIdPost()) );
-        }
+        qm.fillOutHashtagsAndFavourCount(conn, res);
         return res;
     }
     public List<QuestionDTO>  getExpertQuestions(Connection conn, long userId) throws SQLException {
@@ -120,11 +115,7 @@ public class UserManager {
         ResultSetHandler<List<QuestionDTO>> hq = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
         // following SQL-query: Post JOIN Question JOIN Question-Hashtag JOIN Hashtag-Epertise JOIN Expertise-User WHERE idUser=?
         List<QuestionDTO> res = qr.query(conn, "SELECT idPost, Post.idUser, Post.text, timestamp FROM Post JOIN Question ON idPost=idQuestion JOIN QuestionToHashtag ON Question.idQuestion=QuestionToHashtag.idQuestion JOIN HashtagToExpertise ON QuestionToHashtag.idHashtag=HashtagToExpertise.idHashtag JOIN UserToExpertise ON HashtagToExpertise.idExpertise=UserToExpertise.idExpertise WHERE UserToExpertise.idUser=? GROUP BY idPost ORDER BY idPost", hq, userId);
-        if(res == null) return new LinkedList<>();
-
-        for(QuestionDTO question : res) {
-            question.setHashtags( qm.getHashtagsToQuestion(conn, question.getIdPost()) );
-        }
+        qm.fillOutHashtagsAndFavourCount(conn, res);
         return res;
     }
 
@@ -138,12 +129,8 @@ public class UserManager {
     public List<QuestionDTO>  bookmarkedQuestions(Connection conn, long userId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<QuestionDTO>> hq = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
-        List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, Post.idUser FROM Post JOIN Question ON idQuestion=idPost JOIN FavoriteQuestionsToUser ON Question.idQuestion=FavoriteQuestionsToUser.idQuestion WHERE FavoriteQuestionsToUser.idUser=? ORDER BY idPost", hq, userId);
-        if(res == null) return new LinkedList<>();
-
-        for(QuestionDTO question : res) {
-            question.setHashtags( qm.getHashtagsToQuestion(conn, question.getIdPost()) );
-        }
+        List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, Post.idUser FROM Post JOIN Question ON idQuestion=idPost JOIN FavouriteQuestionToUser ON Question.idQuestion=FavouriteQuestionToUser.idQuestion WHERE FavouriteQuestionToUser.idUser=? ORDER BY idPost", hq, userId);
+        qm.fillOutHashtagsAndFavourCount(conn, res);
         return res;
     }
 
@@ -155,10 +142,18 @@ public class UserManager {
      * @throws SQLException unknown Server Error, see msg for further detail
      * @throws CantInsertException zero rows effected
      */
-    public void bookmark(Connection conn, long userId,long questionId) throws SQLException {
+    public void bookmark(Connection conn, long userId,long questionId) throws SQLException, CantInsertException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<Map<String, Object>> h = new MapHandler();
-        qr.insert(conn, "INSERT INTO FavoriteQuestionsToUser (idUser, idQuestion) VALUES (?,?)", h, userId, questionId);
+        if (hasBookmarkedQuestion(conn, userId, questionId)) {
+            throw new CantInsertException("This question is already bookmarked!");
+        }
+        qr.insert(conn, "INSERT INTO FavouriteQuestionToUser (idUser, idQuestion) VALUES (?,?)", h, userId, questionId);
+    }
+    public boolean hasBookmarkedQuestion(Connection conn, long userId,long questionId) throws SQLException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> h = new MapHandler();
+        return null != qr.query(conn, "SELECT idFavouriteQuestionToUser FROM FavouriteQuestionToUser WHERE idUser=? AND idQuestion=?", h, userId, questionId);
     }
 
     // returns true if the user has an entry in the User-table after this functioncall, else false
@@ -168,11 +163,34 @@ public class UserManager {
         boolean userHasNoEntry = null == qr.query(conn, "SELECT * FROM User WHERE idUser=?", h, userDTO.getIdUser());
         if(userHasNoEntry) {
             try {
-                qr.insert(conn, "INSERT INTO User (idUser, rating, image, contact, email) VALUES (?,?,?,?,?)", h, userDTO.getIdUser(), userDTO.getElo(), userDTO.getImage(), userDTO.getContact(), userDTO.getEmail());
+                qr.insert(conn, "INSERT INTO User (idUser, elo, image, contact, email) VALUES (?,?,?,?,?)", h, userDTO.getIdUser(), userDTO.getElo(), userDTO.getImage(), userDTO.getContact(), userDTO.getEmail());
             } catch(SQLException e) {
                 throw new CantInsertException(e.toString());
             }
         }
         return true;
+    }
+
+    public void increaseElo(Connection conn, long userId) throws SQLException, CantUpdateException, CantFindException {
+        int elo = (int) Math.min((long) getElo(conn,userId) + 1, (long) Integer.MAX_VALUE);
+        QueryRunner qr = new QueryRunner();
+        int rowsAffected = qr.update(conn, "UPDATE User SET elo=? WHERE idUser=?", elo, userId);
+        if(rowsAffected == 0)
+            throw new CantUpdateException("0 rows affected.");
+    }
+    public void decreaseElo(Connection conn, long userId) throws SQLException, CantUpdateException, CantFindException {
+        int elo = Math.max(getElo(conn,userId)-1, 0);
+        QueryRunner qr = new QueryRunner();
+        int rowsAffected = qr.update(conn, "UPDATE User SET elo=? WHERE idUser=?", elo, userId);
+        if(rowsAffected == 0)
+            throw new CantUpdateException("0 rows affected.");
+    }
+    public int getElo(Connection conn, long userId) throws SQLException, CantFindException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> h = new MapHandler();
+        Map<String, Object> result = qr.query(conn, "SELECT elo FROM User WHERE idUser=?", h, userId);
+        if( result == null )
+            throw new CantFindException("Can't find user with id:" + userId);
+        return (int) result.get("elo");
     }
 }

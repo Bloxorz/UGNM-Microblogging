@@ -24,6 +24,8 @@ import java.util.Map;
  */
 public class QuestionManager extends AbstractManager{
 
+    private static UserManager um = new UserManager();
+
     /**
      * Returns a Collection of all Questions stored in the Databse
      * @param conn the connection
@@ -34,39 +36,46 @@ public class QuestionManager extends AbstractManager{
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<QuestionDTO>> h = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
         List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, idUser, idQuestion FROM Post JOIN Question ON idPost=idQuestion", h);
-        if(res == null)
+        if(res.size() == 0)
             throw new SQLException("No questions were found in database.");
-
-        for(QuestionDTO question : res) {
-            question.setHashtags( getHashtagsToQuestion(conn, question.getIdPost() ) );
-        }
+        fillOutHashtagsAndFavourCount(conn, res);
         return res;
     }
 
 
     // Attention, following function only considers the fields "text" from hashtags, not their id. This way is easier to implement at frontend.
-    public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
+    public long addQuestion(Connection conn, QuestionDTO question) throws SQLException, CantInsertException, CantFindException, CantUpdateException {
+
+        // check elo
+        if (um.getElo(conn, question.getIdUser()) <= 0) {
+            throw new CantInsertException("Your elo is too low!");
+        }
+
+        // insert into Post
         QueryRunner qr = new QueryRunner();
-        ResultSetHandler<Map<String,Object>> h = new MapHandler();
-        Map<String,Object> result = qr.insert(conn, "INSERT INTO Post (text,idUser) VALUES (?,?)", h, question.getText(), question.getIdUser());
+        ResultSetHandler<Map<String, Object>> h = new MapHandler();
+        Map<String, Object> result = qr.insert(conn, "INSERT INTO Post (text,idUser) VALUES (?,?)", h, question.getText(), question.getIdUser());
         long generatedId;
-        if(result == null)
+        if (result == null)
             throw new CantInsertException("Could not Insert into Post table");
         else
-            generatedId = (Long)result.get("GENERATED_KEY");
+            generatedId = (Long) result.get("GENERATED_KEY");
 
-        //insert question reference
+        // insert into Question
         int rowsAffected = qr.update(conn, "INSERT INTO Question (idQuestion) VALUES (?)", generatedId);
-        if(rowsAffected == 0)
+        if (rowsAffected == 0)
             throw new CantInsertException("Could not Insert into Question table");
-
         question.setIdPost(generatedId);
 
+        // insert hashtags
         ResultSetHandler<HashtagDTO> hh = new BeanHandler<HashtagDTO>(HashtagDTO.class);
         for (int i = 0; i < question.getHashtags().size(); i++) {
             HashtagDTO hashtag = qr.query(conn, "SELECT idHashtag FROM Hashtag WHERE text = ?", hh, question.getHashtags().get(i).getText());
             rowsAffected = qr.update(conn, "INSERT INTO QuestionToHashtag (idQuestion, idHashtag) VALUES (?,?)", generatedId, hashtag.getIdHashtag());
         }
+
+        // update elo
+        um.decreaseElo(conn, question.getIdUser());
 
         return generatedId;
     }
@@ -87,6 +96,7 @@ public class QuestionManager extends AbstractManager{
 
         ResultSetHandler<List<HashtagDTO>> h = new BeanListHandler<HashtagDTO>(HashtagDTO.class);
         question.setHashtags( qr.query(conn, "SELECT Hashtag.idHashtag, Hashtag.text FROM Hashtag JOIN QuestionToHashtag WHERE Hashtag.idHashtag = QuestionToHashtag.idHashtag AND idQuestion = ? ORDER BY idHashtag", h, questionId) );
+        question.setFavourCount( getBookmarkCount(conn, questionId ));
 
         return question;
     }
@@ -184,29 +194,15 @@ public class QuestionManager extends AbstractManager{
         return generatedId;
     }
 
-    /*public List<UserDTO> getBookmarkUsersToQuestion(Connection conn, long questionId) throws SQLException {
-        List<UserDTO> users = new ArrayList<UserDTO>();
+    public List<UserDTO> getBookmarkUsersToQuestion(Connection conn, long questionId) throws SQLException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<List<UserDTO>> h = new BeanListHandler<UserDTO>(UserDTO.class);
+        return qr.query(conn, "SELECT User.idUser,elo,image,contact,email FROM User JOIN FavouriteQuestionToUser ON User.idUser=FavouriteQuestionToUser.idUser WHERE idQuestion=? ORDER BY User.idUser", h, questionId);
+    }
 
-        final String sql = "SELECT u.idUser as userId, rating as elo, image as img, contact as contact, email as email, " +
-                "pass as pass FROM User u right join UserToQuestion q on u.idUser = q.idUser WHERE q.idQuestion = ?";
-
-        try(PreparedStatement pstmt = conn.prepareStatement(sql); ) {
-            pstmt.setLong(1,questionId);
-
-            ResultSet rs = pstmt.executeQuery();
-            while(rs.next()) {
-                UserDTO user = new UserDTO();
-                user.setIdUser(rs.getLong("userId"));
-                user.setElo(rs.getInt("elo"));
-                user.setImagePath(rs.getString("img"));
-                user.setContactInfo(rs.getString("contact"));
-                user.setEmail(rs.getString("email"));
-
-                users.add(user);
-            }
-        }
-        return users;
-    }*/
+    public int getBookmarkCount(Connection conn, long questionId) throws SQLException {
+        return getBookmarkUsersToQuestion(conn, questionId).size();
+    }
 
     public List<HashtagDTO> getHashtagsToQuestion(Connection conn, long questionId) throws SQLException {
         QueryRunner qr = new QueryRunner();
@@ -214,4 +210,10 @@ public class QuestionManager extends AbstractManager{
         return qr.query(conn, "SELECT * FROM Hashtag JOIN QuestionToHashtag ON Hashtag.idHashtag=QuestionToHashtag.idHashtag WHERE idQuestion=? ORDER BY Hashtag.idHashtag", hh, questionId);
     }
 
+    void fillOutHashtagsAndFavourCount(Connection conn, List<QuestionDTO> questions) throws SQLException {
+        for(QuestionDTO question : questions) {
+            question.setHashtags( getHashtagsToQuestion(conn, question.getIdPost() ) );
+            question.setFavourCount(getBookmarkCount(conn, question.getIdPost()));
+        }
+    }
 }

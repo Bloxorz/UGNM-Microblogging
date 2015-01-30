@@ -91,7 +91,7 @@ public class ManagerFacade {
         expertiseManager.deleteExpertise(conn, expertiseId);
     }
         ////// hashtagManager //////
-    public List<HashtagDTO> getHashtagCollection( Connection conn) throws SQLException {
+    public List<HashtagDTO> getHashtagCollection( Connection conn) throws SQLException, CantFindException {
         return hashtagManager.getHashtagCollection(conn);
     }
     public HashtagDTO getHashtag(Connection conn, long hashtagId) throws SQLException, CantFindException {
@@ -133,7 +133,7 @@ public class ManagerFacade {
     public List<QuestionDTO> getQuestionList( Connection conn) throws SQLException {
         return questionManager.getQuestionList(conn);
     }
-    public long addQuestion( Connection conn, QuestionDTO question) throws SQLException, CantInsertException {
+    public long addQuestion( Connection conn, QuestionDTO question) throws SQLException, CantInsertException, CantFindException, CantUpdateException {
         return questionManager.addQuestion(conn, question);
     }
     public QuestionDTO getQuestion( Connection conn, long questionId) throws SQLException, CantFindException {
@@ -158,15 +158,15 @@ public class ManagerFacade {
         return questionManager.getQuestionWithAnswers(conn, questionId);
     }
     ////// answerManager //////
-    public AnswerDTO getAnswer( Connection conn, long answerId) throws SQLException {
+    /*public AnswerDTO getAnswer( Connection conn, long answerId) throws SQLException {
         return answerManager.getAnswer(conn, answerId);
-    }
-    public void editAnswer( Connection conn, long answerId, String answerText, int rating) throws SQLException, CantUpdateException {
+    }*/
+    /*public void editAnswer( Connection conn, long answerId, String answerText, int rating) throws SQLException, CantUpdateException {
         answerManager.editAnswer(conn, answerId, answerText, rating);
-    }
-    public void deleteAnswer( Connection conn, long answerId) throws SQLException, CantDeleteException {
+    }*/
+    /*public void deleteAnswer( Connection conn, long answerId) throws SQLException, CantDeleteException {
         answerManager.deleteAnswer(conn, answerId);
-    }
+    }*/
 
     public boolean registerUser(Connection conn, UserDTO userDTO) throws SQLException, CantInsertException {
         return userManager.registerUser(conn, userDTO);

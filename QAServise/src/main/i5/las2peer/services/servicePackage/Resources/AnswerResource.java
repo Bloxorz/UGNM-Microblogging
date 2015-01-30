@@ -18,7 +18,7 @@ public class AnswerResource extends AbstractResource {
 		super(conn);
 	}
 
-	public HttpResponse getAnswer(long answerID) {
+	/*public HttpResponse getAnswer(long answerID) {
         HttpResponse response = new HttpResponse("");
         try {
             AnswerDTO answers = ManagerFacade.getInstance().getAnswer(conn, answerID);
@@ -31,9 +31,9 @@ public class AnswerResource extends AbstractResource {
             response.setStatus(500);
         }
         return response;
-	}
+	}*/
 
-	public HttpResponse deleteAnswer(long answerID) {
+	/*public HttpResponse deleteAnswer(long answerID) {
         HttpResponse response = new HttpResponse("");
         try {
             ManagerFacade.getInstance().deleteAnswer(conn, answerID);
@@ -46,9 +46,9 @@ public class AnswerResource extends AbstractResource {
             response.setStatus(500);
         }
         return response;
-	}
+	}*/
 
-	public HttpResponse editAnswer(long answerID, String content) {
+	/*public HttpResponse editAnswer(long answerID, String content) {
         HttpResponse response = new HttpResponse("");
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
@@ -64,6 +64,6 @@ public class AnswerResource extends AbstractResource {
             response.setStatus(500);
         }
         return response;
-	}
+	}*/
 
 }

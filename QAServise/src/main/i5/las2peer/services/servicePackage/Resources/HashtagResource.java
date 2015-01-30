@@ -25,21 +25,14 @@ public class HashtagResource extends AbstractResource {
     //TODO in der serviceclass wrappen
 	
     public HttpResponse getHashtagCollection() {
-    	
-    	HttpResponse response = new HttpResponse("");
         try {
-            List<HashtagDTO> hashtag = ManagerFacade.getInstance().getHashtagCollection(conn);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(hashtag);
-            response = new HttpResponse(json);
-            response.setStatus(200);
-
+            List<HashtagDTO> hashtags = ManagerFacade.getInstance().getHashtagCollection(conn);
+            return new HttpResponse(new Gson().toJson(hashtags));
         } catch (SQLException e) {
-           response.setStatus(500);
+           return new HttpResponse(e.toString(), 500);
+        } catch (CantFindException e) {
+            return new HttpResponse(e.toString(), 404);
         }
-        return response;
-
     }
     
     public HttpResponse addNewHashtag(String text) {

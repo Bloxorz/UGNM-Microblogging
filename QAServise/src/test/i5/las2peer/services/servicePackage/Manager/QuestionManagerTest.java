@@ -7,6 +7,7 @@ import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.PostDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
+import i5.las2peer.services.servicePackage.Exceptions.CantInsertException;
 import i5.las2peer.services.servicePackage.General.Rating;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import i5.las2peer.services.servicePackage.database.DatabaseManagerTest;
@@ -20,33 +21,22 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class QuestionManagerTest {
+public class QuestionManagerTest extends AbstractManagerTest {
 
     private static QuestionManager manager;
     private static QuestionDTO[] testDTOs;
-
-    private Connection conn;
 
     @BeforeClass
     public static void initClass() throws ParseException {
         manager = new QuestionManager();
         testDTOs = DatabaseManagerTest.getTestQuestions();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        conn = DatabaseManagerTest.getTestTable();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        conn.close();
     }
 
     @Test
@@ -57,18 +47,21 @@ public class QuestionManagerTest {
 
     @Test
     public void testAddQuestion() throws Exception {
-        List<HashtagDTO> hashtags = new LinkedList<HashtagDTO>();
-        hashtags.add(DatabaseManagerTest.getTestHashtags()[2]);
-        hashtags.add(DatabaseManagerTest.getTestHashtags()[3]);
-        QuestionDTO dto = new QuestionDTO(0, null, "How are you?", 1, hashtags);
+        QuestionDTO dto = new QuestionDTO(0, DatabaseManagerTest.getDummyDate(), "How are you?", 1, Arrays.asList(DatabaseManagerTest.getTestHashtags(2,3)));
         long newId = manager.addQuestion(conn, dto);
         assertEquals(newId, 9);
         QuestionDTO getDto = manager.getQuestion(conn, 9);
-        System.out.println(getDto);
-        assertEquals( getDto.getIdPost(), dto.getIdPost() );
-        assertEquals(getDto.getText(), dto.getText());
-        assertEquals( getDto.getIdUser(), dto.getIdUser() );
-        assertArrayEquals( getDto.getHashtags().toArray(), dto.getHashtags().toArray() );
+        assertEquals(dto, getDto);
+        assertEquals( new UserManager().getElo(conn, 1), 9 );
+        for( int i=1; i<10; i++)
+            manager.addQuestion(conn, dto);
+        try {
+            manager.addQuestion(conn, dto);
+            fail("Should throw exception when elo is too low to ask a question.");
+        } catch (CantInsertException e) {
+            // OK
+        }
+        assertEquals( new UserManager().getElo(conn, 1), 0 );
     }
 
 
@@ -117,8 +110,6 @@ public class QuestionManagerTest {
         manager.addAnswerToQuestion(conn, dto);
         Object[] result = manager.getAnswersToQuestion(conn, 1).toArray();
         AnswerDTO[] expected = new AnswerDTO[] {dto};
-        System.out.println(expected[0]);
-        System.out.println(result[0]);
         assertArrayEquals( expected, result );
     }
 
@@ -128,5 +119,18 @@ public class QuestionManagerTest {
                 DatabaseManagerTest.getTestHashtags(0,2),
                 manager.getHashtagsToQuestion(conn, 1).toArray()
         );
+    }
+
+    @Test
+    public void testGetBookmarkUsersToQuestion() throws Exception {
+        assertArrayEquals(
+                DatabaseManagerTest.getTestUsers(1,3),
+                manager.getBookmarkUsersToQuestion(conn, 2).toArray()
+        );
+    }
+
+    @Test
+    public void testGetBookmarkCount() throws Exception {
+        assertEquals(2, manager.getBookmarkCount(conn, 2));
     }
 }

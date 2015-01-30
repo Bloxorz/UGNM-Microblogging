@@ -98,9 +98,9 @@ public class DatabaseManagerTest {
 
     public static QuestionDTO[] getTestQuestions(int... indices) throws ParseException {
         return (QuestionDTO[]) subArray( new QuestionDTO[] {
-                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(getTestHashtags(0,2))), // #For-Loop #Java
-                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, Arrays.asList(getTestHashtags(3))), // #All
-                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(getTestHashtags(0))) // #Java
+                new QuestionDTO(1, getDummyDate(), "How do I write a for-loop?", 1, Arrays.asList(getTestHashtags(0,2)), 1), // #For-Loop #Java
+                new QuestionDTO(2, getDummyDate(), "Where can I find the toilet?", 4, Arrays.asList(getTestHashtags(3)), 2), // #All
+                new QuestionDTO(4, getDummyDate(), "How does the JFrame-constructor work?", 2, Arrays.asList(getTestHashtags(0)), 1) // #Java
         }, indices);
     }
 
@@ -116,11 +116,11 @@ public class DatabaseManagerTest {
 
     public static UserDTO[] getTestUsers(int... indices) {
         return (UserDTO[]) subArray( new UserDTO[] {
-                new UserDTO(1, 0, "http://link/to/frank/celler.jpg", "http://mathe.de/frank/celler.html", "f.celler@gmail.com"),
-                new UserDTO(2, 0, "http://link/to/mike/leblanche.png", "http://mathe.de/micky/conta.html", "micky.l@web.de"),
-                new UserDTO(3, 0, "http://imagebank/4d6age6/es.jpg", "http://progra.com/how/jelly.html", "howDickson@gmail.com"),
-                new UserDTO(4, 0, "http://dome.com/celler.jpg", "http://student.org/isoe/random.html", "my.M.a.i.l@rwth-aachen.de"),
-                new UserDTO(5, 0, "http://wow/it/is/houston.svg", "http://alleskoenner.de/whp/huhu.html", "another.adresse@web.com")
+                new UserDTO(1, 10, "http://link/to/frank/celler.jpg", "http://mathe.de/frank/celler.html", "f.celler@gmail.com"),
+                new UserDTO(2, 10, "http://link/to/mike/leblanche.png", "http://mathe.de/micky/conta.html", "micky.l@web.de"),
+                new UserDTO(3, 10, "http://imagebank/4d6age6/es.jpg", "http://progra.com/how/jelly.html", "howDickson@gmail.com"),
+                new UserDTO(4, 10, "http://dome.com/celler.jpg", "http://student.org/isoe/random.html", "my.M.a.i.l@rwth-aachen.de"),
+                new UserDTO(5, 10, "http://wow/it/is/houston.svg", "http://alleskoenner.de/whp/huhu.html", "another.adresse@web.com")
         }, indices);
     }
 

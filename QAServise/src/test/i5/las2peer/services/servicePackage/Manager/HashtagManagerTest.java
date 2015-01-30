@@ -16,12 +16,10 @@ import java.sql.Connection;
 
 import static org.junit.Assert.*;
 
-public class HashtagManagerTest {
+public class HashtagManagerTest extends AbstractManagerTest {
 
     private static HashtagManager manager;
     private static HashtagDTO[] testDTOs;
-
-    private Connection conn;
 
     @BeforeClass
     public static void initClass() {
@@ -29,19 +27,12 @@ public class HashtagManagerTest {
         testDTOs = DatabaseManagerTest.getTestHashtags();
     }
 
-    @Before
-    public void setUp() throws Exception {
-        conn = DatabaseManagerTest.getTestTable();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        conn.close();
-    }
-
     @Test
     public void testGetHashtagCollection() throws Exception {
-        assertArrayEquals(manager.getHashtagCollection(conn).toArray(), testDTOs);
+        assertArrayEquals(
+                DatabaseManagerTest.getTestHashtags(),
+                manager.getHashtagCollection(conn).toArray()
+        );
     }
 
     @Test
@@ -78,16 +69,6 @@ public class HashtagManagerTest {
     }
 
     @Test
-    public void testGetAllQuestionsToHashtag() throws Exception {
-        Object[] result = manager.getAllQuestionsToHashtag(conn, 1).toArray();
-        QuestionDTO[] expected = new QuestionDTO[] {
-                DatabaseManagerTest.getTestQuestions()[0],
-                DatabaseManagerTest.getTestQuestions()[2]
-        };
-        assertArrayEquals( expected, result );
-    }
-
-    @Test
     public void testGetAllExpertiseToHashtag() throws Exception {
         Object[] result = manager.getAllExpertiseToHashtag(conn, 1).toArray();
         ExpertiseDTO[] expected = new ExpertiseDTO[] {
@@ -104,7 +85,7 @@ public class HashtagManagerTest {
     }
 
     @Test
-    public void testGetAllQuestionsToHashtag1() throws Exception {
+    public void testGetAllQuestionsToHashtag() throws Exception {
         assertArrayEquals(
                 DatabaseManagerTest.getTestQuestions(0,2),
                 manager.getAllQuestionsToHashtag(conn, 1).toArray()

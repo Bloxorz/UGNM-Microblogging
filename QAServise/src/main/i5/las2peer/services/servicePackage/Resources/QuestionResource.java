@@ -46,29 +46,24 @@ public class QuestionResource extends AbstractResource {
     }
 
     public HttpResponse addQuestion(String content, long userId) {
-        HttpResponse res;
         if(userId == 0) {
-            res = new HttpResponse("Your login is not valid!");
-            res.setStatus(401);
+            return new HttpResponse("You have to be logged in to add a question!", 401);
         } else {
             try {
                 QuestionDTO question = new Gson().fromJson(content, QuestionDTO.class);
                 question.setIdUser(userId);
-                Long generatedId = ManagerFacade.getInstance().addQuestion(conn, question);
-
-                res = new HttpResponse(generatedId.toString());
-                res.setStatus(201);
-                return res;
+                ManagerFacade.getInstance().addQuestion(conn, question);
+                return new HttpResponse("Question succesfully posted!", 201);
             } catch (SQLException e) {
-                res = new HttpResponse(e.toString());
-                res.setStatus(500);
+                return new HttpResponse(e.toString(), 500);
             } catch (CantInsertException e) {
-                res = new HttpResponse(e.getMessage());
-                res.setStatus(500);
+                return new HttpResponse(e.toString(), 500);
+            } catch (CantUpdateException e) {
+                return new HttpResponse(e.toString(), 500);
+            } catch (CantFindException e) {
+                return new HttpResponse(e.toString(), 404);
             }
         }
-
-        return res;
     }
 
     public HttpResponse getQuestion(long questionId) {
@@ -158,12 +153,10 @@ public class QuestionResource extends AbstractResource {
         HttpResponse res;
         try {
             AnswerDTO answer = (AnswerDTO) new Gson().fromJson(content, AnswerDTO.class);
-            System.out.println(answer);
             answer.setIdQuestion(questionId);
             answer.setIdUser(userId);
-            Long generatedId = ManagerFacade.getInstance().addAnswerToQuestion(conn, answer);
-
-            return new HttpResponse(generatedId.toString(), 201);
+            ManagerFacade.getInstance().addAnswerToQuestion(conn, answer);
+            return new HttpResponse("Answer successfully posted.", 201);
         } catch (JsonParseException e) {
             return new HttpResponse(e.toString(), 400);
         } catch (SQLException e) {

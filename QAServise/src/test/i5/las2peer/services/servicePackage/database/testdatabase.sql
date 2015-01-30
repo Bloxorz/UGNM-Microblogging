@@ -4,7 +4,7 @@ USE ugnm1415g2;
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS User, Post, Question, Answer, Hashtag, Expertise,
 					QuestionToHashtag, HashtagToExpertise, UserToExpertise,
-					UserToQuestion, FavoriteQuestionsToUser;
+					UserToRatedAnswer, FavouriteQuestionToUser;
 SET FOREIGN_KEY_CHECKS=1;
 
 -- entities
@@ -59,14 +59,14 @@ CREATE TABLE Expertise
 
 -- n/m-relationships
 
-CREATE TABLE UserToQuestion
+CREATE TABLE UserToRatedAnswer
 (
-	idUserToQuestion int NOT NULL AUTO_INCREMENT,
+	idUserToRatedAnswer int NOT NULL AUTO_INCREMENT,
 	idUser bigint NOT NULL,
-	idQuestion int NOT NULL,
-	PRIMARY KEY (idUserToQuestion),
+	idAnswer int NOT NULL,
+	PRIMARY KEY (idUserToRatedAnswer),
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE
+	FOREIGN KEY (idAnswer) REFERENCES Answer(idAnswer) ON DELETE CASCADE
 );
 CREATE TABLE UserToExpertise
 (
@@ -94,11 +94,11 @@ CREATE TABLE QuestionToHashtag (
 	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
 	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE
 );
-CREATE TABLE FavoriteQuestionsToUser (
-	idFavoriteQuestionToUser int NOT NULL AUTO_INCREMENT,
+CREATE TABLE FavouriteQuestionToUser (
+	idFavouriteQuestionToUser int NOT NULL AUTO_INCREMENT,
 	idQuestion int NOT NULL,
 	idUser bigint NOT NULL,
-	PRIMARY KEY (idFavoriteQuestionToUser),
+	PRIMARY KEY (idFavouriteQuestionToUser),
 	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE
 );
@@ -113,11 +113,11 @@ CREATE TABLE FavoriteQuestionsToUser (
 
 INSERT INTO User (idUser, elo, image, contact, email)
 VALUES
-	(1, 0, 'http://link/to/frank/celler.jpg', 'http://mathe.de/frank/celler.html', 'f.celler@gmail.com'),
-	(2, 0, 'http://link/to/mike/leblanche.png', 'http://mathe.de/micky/conta.html', 'micky.l@web.de'),
-	(3, 0, 'http://imagebank/4d6age6/es.jpg', 'http://progra.com/how/jelly.html', 'howDickson@gmail.com'),
-	(4, 0, 'http://dome.com/celler.jpg', 'http://student.org/isoe/random.html', 'my.M.a.i.l@rwth-aachen.de'),
-	(5, 0, 'http://wow/it/is/houston.svg', 'http://alleskoenner.de/whp/huhu.html', 'another.adresse@web.com');
+	(1, 10, 'http://link/to/frank/celler.jpg', 'http://mathe.de/frank/celler.html', 'f.celler@gmail.com'),
+	(2, 10, 'http://link/to/mike/leblanche.png', 'http://mathe.de/micky/conta.html', 'micky.l@web.de'),
+	(3, 10, 'http://imagebank/4d6age6/es.jpg', 'http://progra.com/how/jelly.html', 'howDickson@gmail.com'),
+	(4, 10, 'http://dome.com/celler.jpg', 'http://student.org/isoe/random.html', 'my.M.a.i.l@rwth-aachen.de'),
+	(5, 10, 'http://wow/it/is/houston.svg', 'http://alleskoenner.de/whp/huhu.html', 'another.adresse@web.com');
 
 INSERT INTO Hashtag (text)
 VALUES ('Java'),('Assembler'),('For-Loop'),('All'),('Analysis'),('Polynome');
@@ -148,5 +148,5 @@ INSERT INTO Answer (idAnswer, rating, idQuestion)
 VALUES (3,100,2),(5,0,2),(6,0,4),(7,0,4),(8,0,4);
 INSERT INTO QuestionToHashtag (idQuestion, idHashtag)
 VALUES (1,3),(1,1),(2,4),(4,1);
-INSERT INTO UserToQuestion (idUser, idQuestion)
-VALUES (4,1),(4,2),(5,4);
+INSERT INTO FavouriteQuestionToUser (idUser, idQuestion)
+VALUES (2,2),(4,1),(4,2),(5,4);
