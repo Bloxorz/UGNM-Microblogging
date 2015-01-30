@@ -210,10 +210,14 @@ public class QuestionManager extends AbstractManager{
         return qr.query(conn, "SELECT * FROM Hashtag JOIN QuestionToHashtag ON Hashtag.idHashtag=QuestionToHashtag.idHashtag WHERE idQuestion=? ORDER BY Hashtag.idHashtag", hh, questionId);
     }
 
-    void fillOutHashtagsAndFavourCount(Connection conn, List<QuestionDTO> questions) throws SQLException {
-        for(QuestionDTO question : questions) {
-            question.setHashtags( getHashtagsToQuestion(conn, question.getIdPost() ) );
+    void fillOutHashtagsAndFavourCountAndIsFavourite(Connection conn, List<QuestionDTO> questions/*, long userToCheckForFavourite*/) throws SQLException {
+        QueryRunner qr = new QueryRunner();
+        ResultSetHandler<Map<String, Object>> mapHandler = new MapHandler();
+
+        for (QuestionDTO question : questions) {
+            question.setHashtags(getHashtagsToQuestion(conn, question.getIdPost()));
             question.setFavourCount(getBookmarkCount(conn, question.getIdPost()));
+            question.setFavourite(null != qr.query(conn, "SELECT idFavouriteQuestionToUser FROM FavouriteQuestionToUser WHERE idQuestion=? AND idUser=?", mapHandler, question.getIdPost(), userToCheckForFavourite));
         }
     }
 }

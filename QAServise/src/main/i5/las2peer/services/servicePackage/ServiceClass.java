@@ -71,7 +71,7 @@ public class ServiceClass extends Service {
 		if(isAnonymous()) {
 			return new HttpResponse("User is anonymous", 200);
 		} else  {
-			return use.registerUser(new UserDTO(getActiveAgent().getId(), 0, null, null, null));
+			return use.registerUser(new UserDTO(getActiveAgent().getId(), 10, null, null, null));
 		}
 	}
 

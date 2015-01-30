@@ -13,9 +13,11 @@ public class QuestionDTO extends PostDTO {
 
     private List<HashtagDTO> hashtags;
     private int favourCount;
+    private boolean isFavourite;
 
     public QuestionDTO(long id, Date date, String text, long userId) {
         super(id, date, text, userId);
+        isFavourite = false;
     }
     public QuestionDTO(long id, Date date, String text, long userId, List<HashtagDTO> hashtags) {
         this(id, date, text, userId);
@@ -44,5 +46,13 @@ public class QuestionDTO extends PostDTO {
 
     public void setFavourCount(int favourCount) {
         this.favourCount = favourCount;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean isFavourite) {
+        this.isFavourite = isFavourite;
     }
 }
