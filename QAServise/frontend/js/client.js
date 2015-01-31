@@ -41,12 +41,23 @@ function ServiceClient(endpointUrl) {
 	}
 };
 
+ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
+	this.sendRequest("GET",
+		"ugnmMicro/questions/",
+		"",
+		"application/json",
+		{},
+		successCallback,
+		errorCallback
+	);
+};
+
 /**
 * An example function demonstrating a GET request on resource <endpointUrl>/example/validate
 */
 ServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 	this.sendRequest("GET",
-		"api/validate",
+		"example/validate",
 		"",
 		"application/json",
 		{},
@@ -60,7 +71,7 @@ ServiceClient.prototype.getMethod = function(successCallback, errorCallback) {
 */
 ServiceClient.prototype.postMethod = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
-		"api/myMethodPath/" + input,
+		"example/myMethodPath/" + input,
 		"",
 		"application/json",
 		{},
@@ -72,7 +83,7 @@ ServiceClient.prototype.postMethod = function(input, successCallback, errorCallb
 
 ServiceClient.prototype.addQuestion = function(input, successCallback, errorCallback) {
 	this.sendRequest("POST",
-		"api/question/",
+		"ugnmMicro/question/",
 		input,
 		"application/json",
 		{},
@@ -81,38 +92,6 @@ ServiceClient.prototype.addQuestion = function(input, successCallback, errorCall
 	);
 };
 
-ServiceClient.prototype.getAllQuestions = function(successCallback, errorCallback) {
-	this.sendRequest("GET",
-		"api/questions/",
-		"",
-		"application/json",
-		{},
-		successCallback,
-		errorCallback
-	);
-};
-
-ServiceClient.prototype.getAnswersToQuestion = function(id, successCallback, errorCallback) {
-	this.sendRequest("GET",
-		"api/answers/question/" + id,
-		"",
-		"application/json",
-		{},
-		successCallback,
-		errorCallback
-	);
-};
-
-ServiceClient.prototype.getHashtags = function(successCallback, errorCallback) {
-	this.sendRequest("GET",
-		"api/hashtag/",
-		"",
-		"application/json",
-		{},
-		successCallback,
-		errorCallback
-	);
-};
 
 /**
 * sends an AJAX request to a resource.
@@ -136,7 +115,7 @@ ServiceClient.prototype.sendRequest = function(method, relativePath, content, mi
 	
 	if(!this.isAnonymous()){
 		console.log("Authenticated request");
-		if(rurl.indexOf("\?") > 0){
+		if(rurl.indexOf("\?") > 0){	
 			rurl += "&access_token=" + window.localStorage["access_token"];
 		} else {
 			rurl += "?access_token=" + window.localStorage["access_token"];

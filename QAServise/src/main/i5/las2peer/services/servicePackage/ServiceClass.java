@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
@@ -90,8 +91,6 @@ public class ServiceClass extends Service {
 		res.setStatus(200);
 		return res;
 	}
-
-
 
 	
 	@GET
@@ -191,6 +190,12 @@ public class ServiceClass extends Service {
 		HttpResponse registerResponse = registerUser();
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return qr.addAnswerToQuestion(questionId, content, isAnonymous() ? 0 : getActiveAgent().getId());
+	}
+
+	@POST
+	@Path("answers/{answerId}")
+	public HttpResponse upvoteAnswer(@PathParam("answerId") long questionId) {
+		//TODO
 	}
 
     private Connection getConnection() {
