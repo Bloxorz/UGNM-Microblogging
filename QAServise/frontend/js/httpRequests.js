@@ -95,15 +95,15 @@ function answerQuestion($http, answer, reloadCB) {
         });
 }
 
-function upvoteAnswer(answerId) {
-  var buildUrl = "api/answers/" + answerId + "?access_token="+ localStorage.access_token;
+function upvoteAnswer($http, answerId) {
+  var buildUrl = "api/user/upvote/" + answerId + "?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
   $http({method: "POST", url: buildUrl, headers: {
         'Content-Type': 'application/json'}});
 }
 
-function favourQuestion(questionId) {
+function favourQuestion($http, questionId) {
   var buildUrl = "api/user/bookmark/" + questionId + "?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
     buildUrl = localFrontendURL + buildUrl;

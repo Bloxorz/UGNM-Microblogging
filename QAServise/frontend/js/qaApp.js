@@ -102,6 +102,14 @@ questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeP
         $route.reload();
       });
   }
+
+  $scope.favour = function() {
+      favourQuestion($http, $scope.question.idPost);
+  }
+
+  $scope.like = function(answerId) {
+    upvoteAnswer($http, answerId);
+  }
 });
 questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
   $rootScope.page = {
