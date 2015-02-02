@@ -33,9 +33,6 @@ questionAnswerApp.config(function($routeProvider) {
 });
 
 questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
-    if(!angular.equals({},$routeParams) && $routeParams.accessToken.indexOf("access_token=") > -1) {
-      alert(JSON.stringify($routeParams));
-    }
 
     $rootScope.page = {
         title: "Dashboard",
@@ -62,8 +59,10 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
       favourQuestion(questionId);
     }
 
-    $scope.userExpertises = function() {
-      return getUserExpertises($http);
+    $scope.userExpertises = function(field) {
+      getUserExpertises($http, function(data) {
+        field = data;
+      });
     }
 
     $scope.getQuestionHeadline = function(text) {
@@ -99,8 +98,9 @@ questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeP
   });
 
   $scope.postAnswer = function() {
-      alert(JSON.stringify($scope.answer));
-      answerQuestion($http, $scope.answer);
+      answerQuestion($http, $scope.answer, function() {
+        $route.reload();
+      });
   }
 });
 questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
@@ -111,11 +111,11 @@ questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $ro
       askQuestionActive: "active"
   };
   $scope.question = {};
-  $scope.answers = {};
-  getAnswers($http,$routeParams.questionId, function(data) {
-    $scope.question = data.question;
-    $scope.answers = data.answers;
-  });
+  $scope.post = function () {
+    askQuestion(question, function(questionId) {
+        $route.reload();
+    });
+  }
 });
 
 //usefull helper functions here

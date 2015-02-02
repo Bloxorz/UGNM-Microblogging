@@ -49,17 +49,15 @@ function getUser($http, setUserCallback) {
           });
 }
 
-function getUserExpertises($http) {
+function getUserExpertises($http, cb) {
   var buildUrl = "api/user?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
-  return $http({method: "GET", url: buildUrl, headers: {
+  $http({method: "GET", url: buildUrl, headers: {
         'Content-Type': 'application/json'}})
           .then(function(result) {
-              alert(JSON.stringify(result));
-              return result.data.expertises;
+              cb(result.data.hashtags);
           });
-
 }
 
 function getAnswers($http, questionId, cb) {
@@ -75,20 +73,26 @@ function getAnswers($http, questionId, cb) {
 }
 
 //POST
-function askQuestion(question) {
+function askQuestion($http, question, redirectCallback) {
   var buildUrl = "api/question?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
   $http({method: "POST", url: buildUrl, headers: {
-        'Content-Type': 'application/json'}, data : question});
+        'Content-Type': 'application/json'}, data : question.text})
+        .then(function(result) {
+          redirectCallback(result.data);
+        });
 }
 
-function answerQuestion($http, answer) {
-var buildUrl = "api/answers/question/{questionId}" + answer.idPost + "?access_token="+ localStorage.access_token;
-if(useLocalFrontendServer)
-    buildUrl = localFrontendURL + buildUrl;
-$http({method: "POST", url: buildUrl, headers: {
-      'Content-Type': 'application/json'}, data : answer.text});
+function answerQuestion($http, answer, reloadCB) {
+  var buildUrl = "api/answers/question/" + answer.idPost + "?access_token="+ localStorage.access_token;
+  if(useLocalFrontendServer)
+      buildUrl = localFrontendURL + buildUrl;
+  $http({method: "POST", url: buildUrl, headers: {
+        'Content-Type': 'application/json'}, data : {text:answer.text}})
+        .then(function(result) {
+          reloadCB();
+        });
 }
 
 function upvoteAnswer(answerId) {
