@@ -162,12 +162,9 @@ a.anchor {
 }
 
 .btn-filter {
-	background-color: #15AF5c;
-	padding: 5px;
+	background-color: #2C6547;
 	margin: 5px;
 	color: #eee;
-	border: 1px solid #2c8455;
-	border-radius: 4px;
 }
 
 textarea { resize:vertical; }

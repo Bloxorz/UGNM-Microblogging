@@ -20,9 +20,9 @@
     </div>
     <h3>Post new answer</h3>
     <form role="form" method="post">
-      <textarea class="form-control input-small col-mn-9" name="name" placeholder="Enter your text here" rows="5" id="comment"></textarea>
+      <textarea class="form-control input-small col-mn-9" name="name" placeholder="Enter your text here" rows="5" id="comment" ng-model="answer.text"></textarea>
       <br/>
-      <button type="submit" class="btn btn-primary pull-left"><span class="glyphicon glyphicon-plus"></span> Post answer</button>
+      <button type="submit" class="btn btn-primary pull-left" ng-click="postAnswer()"><span class="glyphicon glyphicon-plus"></span> Post answer</button>
     </form>
   </div>
   <br>

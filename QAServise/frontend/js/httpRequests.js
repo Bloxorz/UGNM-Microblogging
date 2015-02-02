@@ -83,8 +83,8 @@ function askQuestion(question) {
         'Content-Type': 'application/json'}, data : question});
 }
 
-function answerQuestion(answer) {
-var buildUrl = "api/answers/question/{questionId}" + answer.id + "?access_token="+ localStorage.access_token;
+function answerQuestion($http, answer) {
+var buildUrl = "api/answers/question/{questionId}" + answer.idPost + "?access_token="+ localStorage.access_token;
 if(useLocalFrontendServer)
     buildUrl = localFrontendURL + buildUrl;
 $http({method: "POST", url: buildUrl, headers: {

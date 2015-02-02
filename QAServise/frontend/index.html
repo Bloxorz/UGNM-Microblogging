@@ -40,7 +40,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li class="{{page.preferencesActive}}"><a href="#preferences"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Profile</a></li>
 					<li><span id="signinButton">
-							<span class="oidc-signin navbar-btn btn-primary-signin"
+							<span class="oidc-signin navbar-btn btn-primary"
 								data-callback="signinCallback"
 								data-name="OpenID Connect"
 								data-logo="logo.png"
@@ -120,6 +120,7 @@
 				$("#uname").html(oidc_userinfo.name);
 				$(".authenticated").removeClass("hidden");
 			} else {
+					alert(JSON.stringify(result));
 				// anonymous
 			}
 		}

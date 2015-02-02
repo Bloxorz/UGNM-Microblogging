@@ -21,17 +21,22 @@ questionAnswerApp.config(function($routeProvider) {
             templateUrl: 'answers.html',
             controller: 'AnswersCtrl'
         })
-        .otherwise({
-            redirectTo: '/'
-        });
+        .when('/:accessToken?', {
+            templateUrl: 'dashboard.html',
+            controller: 'DashboardCtrl'
+        })
+        ;
 
 
     //routing DOESN'T work without html5Mode
     //$tagsProvider.html5Mode(true);
-
 });
 
 questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
+    if(!angular.equals({},$routeParams) && $routeParams.accessToken.indexOf("access_token=") > -1) {
+      alert(JSON.stringify($routeParams));
+    }
+
     $rootScope.page = {
         title: "Dashboard",
         dashboardActive: "active",
@@ -85,10 +90,18 @@ questionAnswerApp.controller('PreferencesCtrl', function($rootScope, $scope, $ro
 questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
   $scope.question = {};
   $scope.answers = {};
+  $scope.answer = {};
+
   getAnswers($http,$routeParams.questionId, function(data) {
     $scope.question = data.question;
     $scope.answers = data.answers;
+    $scope.answer.idPost = data.question.idPost;
   });
+
+  $scope.postAnswer = function() {
+      alert(JSON.stringify($scope.answer));
+      answerQuestion($http, $scope.answer);
+  }
 });
 questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
   $rootScope.page = {
@@ -104,9 +117,6 @@ questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $ro
     $scope.answers = data.answers;
   });
 });
-
-
-
 
 //usefull helper functions here
 questionAnswerApp.filter('filterByTags', function() {
