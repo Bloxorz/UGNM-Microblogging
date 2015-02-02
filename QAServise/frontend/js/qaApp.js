@@ -35,7 +35,7 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
     };
 
     $scope.questions = [{hashtags:[{text:"Java"},{text:"Programmierung"}], favourcount:2,timestamp:"30.01.2014 23:26:14", text:"How to write a for-loop in Java", idPost:1, isFavourite:true},
-    {hashtags:[{text:"Javascript"},{text:"AngularJs"}, {text:"Frontend"}, {text:"ng-view"}], favourcount:4,timestamp:"28.01.2014 12:14:14", text:"Javascript AngularJs ng-view Problem", idPost:2, isFavourite:true}];
+    {hashtags:[{text:"Javascript"},{text:"AngularJs"}, {text:"Frontend"}, {text:"ng-view"}], favourcount:4,timestamp:"1.02.2015 23:20:14", text:"Javascript AngularJs ng-view Problem", idPost:2, isFavourite:true}];
 
     //set questions async
     allQuestions($http,function(data) {
@@ -102,3 +102,30 @@ questionAnswerApp.filter('filterByTags', function() {
         return filtered;
     };
 });
+
+questionAnswerApp.filter('setdate', function($filter) {
+    return function(date) {
+        var dArr = date.split(/[.\s:]/), t;
+        if(dArr.length === 6) {
+            
+            var msAgo = new Date(dArr[2], dArr[1] - 1, dArr[0], dArr[3], dArr[4], dArr[5]) .getTime();
+
+            var msNow = Date.now();
+
+            var minutes = Math.floor((msNow - msAgo) / 60000);
+            var hours = Math.floor(minutes / 60);
+            var days = Math.floor(hours / 60);
+
+            t = days > 60 
+                ? $filter('date')(new Date(msAgo), 'd MMM yyyy')
+                : hours > 23 
+                    ? $filter('date')(new Date(msAgo), 'd MMM')
+                    : minutes > 59 
+                        ? hours + ' hours ago'
+                        : minutes + ' minutes ago';
+
+        }
+        return t;
+    };
+});
+
