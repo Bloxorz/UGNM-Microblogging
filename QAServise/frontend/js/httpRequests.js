@@ -95,15 +95,26 @@ function answerQuestion($http, answer, reloadCB) {
         });
 }
 
-function upvoteAnswer(answerId) {
-  var buildUrl = "api/answers/" + answerId + "?access_token="+ localStorage.access_token;
+function upvoteAnswer($http, answerId, refreshCB) {
+  var buildUrl = "api/user/upvote/" + answerId + "?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
   $http({method: "POST", url: buildUrl, headers: {
-        'Content-Type': 'application/json'}});
+        'Content-Type': 'application/json'}})
+        .error(function(data, status, headers, config) {
+          var errorMsg = JSON.stringify(data);
+          if(errorMsg.indexOf("already") > -1) {
+            alert("You already upvoted this answer");
+          } else if(errorMsg.indexOf("User can't upvote") > -1) {
+            alert("You can not upvote your own answer");
+          }
+        })
+        .then(function(response) {
+          refreshCB();
+        });
 }
 
-function favourQuestion(questionId) {
+function favourQuestion($http, questionId) {
   var buildUrl = "api/user/bookmark/" + questionId + "?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
     buildUrl = localFrontendURL + buildUrl;
