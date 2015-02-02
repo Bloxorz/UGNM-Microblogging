@@ -26,9 +26,8 @@ public class AnswerManager extends AbstractManager {
         Map<String, Object> queryMap;
         ResultSetHandler<Map<String, Object>> h = new MapHandler();
 
-        // get current rating
-        queryMap = qr.query(conn, "SELECT rating FROM Answer WHERE idAnswer=?", h, answerId);
-        if(queryMap == null)
+        // check answer exists
+        if( null == qr.query(conn, "SELECT idAnswer FROM Answer WHERE idAnswer=?", h, answerId) )
             throw new CantFindException("Can't find answer with id:" + answerId);
 
         // check user not rating himself
@@ -42,6 +41,9 @@ public class AnswerManager extends AbstractManager {
         if (queryMap != null) {
             throw new CantInsertException("User already rated this answer!");
         }
+
+        // get current rating
+        queryMap = qr.query(conn, "SELECT rating FROM Answer WHERE idAnswer=?", h, answerId);
 
         // uprate
         int newRating = (int) queryMap.get("rating") + 1;

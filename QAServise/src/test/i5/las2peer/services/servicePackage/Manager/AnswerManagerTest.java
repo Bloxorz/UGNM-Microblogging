@@ -27,16 +27,16 @@ public class AnswerManagerTest extends AbstractManagerTest {
 
 
     @Test
-    public void testUprateAnswer() throws Exception {
-        manager.uprateAnswer(conn, 3, 3);
+    public void testUpvoteAnswer() throws Exception {
+        manager.upvoteAnswer(conn, 3, 3);
         try {
-            manager.uprateAnswer(conn, 3, 3);
+            manager.upvoteAnswer(conn, 3, 3);
             fail("Double rating should lead to an exception.");
         }
         catch (CantInsertException e) {
             // oK
         }
-        manager.uprateAnswer(conn, 3, 4);
+        manager.upvoteAnswer(conn, 3, 4);
         assertEquals(
                 DatabaseManagerTest.getTestUsers()[1].getElo() + 2,
                 new UserManager().getElo(conn, 2)
