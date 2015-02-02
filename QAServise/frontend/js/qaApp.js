@@ -108,7 +108,9 @@ questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeP
   }
 
   $scope.like = function(answerId) {
-    upvoteAnswer($http, answerId);
+    upvoteAnswer($http, answerId, function() {
+      $route.reload();
+    });
   }
 });
 questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
