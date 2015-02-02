@@ -13,6 +13,10 @@ questionAnswerApp.config(function($routeProvider) {
             templateUrl: 'preferences.html',
             controller: 'PreferencesCtrl'
         })
+        .when('/question', {
+            templateUrl: 'askquestion.html',
+            controller: 'AskquestionCtrl'
+        })
         .when('/answers/:questionId?', {
             templateUrl: 'answers.html',
             controller: 'AnswersCtrl'
@@ -31,17 +35,17 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
     $rootScope.page = {
         title: "Dashboard",
         dashboardActive: "active",
-        preferencesActive: ""
+        preferencesActive: "",
+        askQuestionActive: ""
     };
 
     $scope.questions = [{hashtags:[{text:"Java"},{text:"Programmierung"}], favourcount:2,timestamp:"30.01.2014 23:26:14", text:"How to write a for-loop in Java", idPost:1, isFavourite:true},
-    {hashtags:[{text:"Javascript"},{text:"AngularJs"}, {text:"Frontend"}, {text:"ng-view"}], favourcount:4,timestamp:"1.02.2015 23:20:14", text:"Javascript AngularJs ng-view Problem", idPost:2, isFavourite:true}];
+    {hashtags:[{text:"Javascript"},{text:"AngularJs"}, {text:"Frontend"}, {text:"ng-view"}], favourcount:4,timestamp:"28.01.2014 12:14:14", text:"Javascript AngularJs ng-view Problem", idPost:2, isFavourite:true}];
 
     //set questions async
     allQuestions($http,function(data) {
         $scope.questions = data;
-        alert(JSON.stringify(data));
-    })
+    });
 
 
     //reqiures function
@@ -57,26 +61,52 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
       return getUserExpertises($http);
     }
 
+    $scope.getQuestionHeadline = function(text) {
+      var n = text.indexOf('?');
+      var maxLength = 60;
+      if(n > 0 && n <= maxLength) {
+        return text.substring(0,n);
+      } else {
+        return text.substring(0,maxLength) + "...";
+      }
+    }
+
 });
 
 questionAnswerApp.controller('PreferencesCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
     $rootScope.page = {
         title: "Preferences",
         dashboardActive: "",
-        preferencesActive: "active"
+        preferencesActive: "active",
+        askQuestionActive: ""
     };
 });
 
 questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
-  alert($routeParams.questionId);
-
   $scope.question = {};
   $scope.answers = {};
-  getAnswers($http, function(data) {
+  getAnswers($http,$routeParams.questionId, function(data) {
     $scope.question = data.question;
     $scope.answers = data.answers;
   });
 });
+questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
+  $rootScope.page = {
+      title: "Ask",
+      dashboardActive: "",
+      preferencesActive: "",
+      askQuestionActive: "active"
+  };
+  $scope.question = {};
+  $scope.answers = {};
+  getAnswers($http,$routeParams.questionId, function(data) {
+    $scope.question = data.question;
+    $scope.answers = data.answers;
+  });
+});
+
+
+
 
 //usefull helper functions here
 questionAnswerApp.filter('filterByTags', function() {
@@ -103,11 +133,29 @@ questionAnswerApp.filter('filterByTags', function() {
     };
 });
 
+questionAnswerApp.filter('orderObjectBy', function(){
+ return function(input, attribute) {
+    if (!angular.isObject(input)) return input;
+
+    var array = [];
+    for(var objectKey in input) {
+        array.push(input[objectKey]);
+    }
+
+    array.sort(function(a, b){
+        a = parseInt(a[attribute]);
+        b = parseInt(b[attribute]);
+        return b - a;
+    });
+    return array;
+ }
+});
+/*
 questionAnswerApp.filter('setdate', function($filter) {
     return function(date) {
         var dArr = date.split(/[.\s:]/), t;
         if(dArr.length === 6) {
-            
+
             var msAgo = new Date(dArr[2], dArr[1] - 1, dArr[0], dArr[3], dArr[4], dArr[5]) .getTime();
 
             var msNow = Date.now();
@@ -116,16 +164,16 @@ questionAnswerApp.filter('setdate', function($filter) {
             var hours = Math.floor(minutes / 60);
             var days = Math.floor(hours / 60);
 
-            t = days > 60 
+            t = days > 60
                 ? $filter('date')(new Date(msAgo), 'd MMM yyyy')
-                : hours > 23 
+                : hours > 23
                     ? $filter('date')(new Date(msAgo), 'd MMM')
-                    : minutes > 59 
-                        ? hours + ' hours ago'
-                        : minutes + ' minutes ago';
+                    : minutes > 59
+                        ? hours  ' hours ago'
+                        : minutes  ' minutes ago';
 
         }
         return t;
     };
 });
-
+*/

@@ -1,14 +1,9 @@
-<div>
-  <hr />
-
-  <h3>Ask new Question</h3>
-  <form class="form-inline" role="form" method="post" action="edit.html">
-    <input type="text" class="form-control col-sm-9" name="name" placeholder="Question text" />
-    <tags-input  class="col-sm-6" type="text" ng-model="addtag" placeholder="tags">
-      <!-- note: insert tag of user in controller -->
-      <auto-complete source="alltags()"></auto-complete>
-    </tags-input>
-    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add group</button>
+<div class="container">
+  <hr>
+  <h3>Ask new question</h3>
+  <form role="form" method="post">
+  <textarea class="form-control input-small col-mn-9" name="name" placeholder="Enter your text here" rows="5" id="comment"></textarea>
+  <br/>
+  <button type="submit" class="btn btn-primary pull-left"><span class="glyphicon glyphicon-plus"></span> Post question</button>
   </form>
-
 </div>

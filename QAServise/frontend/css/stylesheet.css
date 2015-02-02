@@ -95,6 +95,11 @@ a.anchor {
 	font-size: 1.5em;
 }
 
+.question > h4  {
+	color: #688198;
+	font-size: 1.5em;
+}
+
 
 /*question timestamp*/
 .question > div > span {
@@ -121,6 +126,12 @@ a.anchor {
 	text-decoration: none;
 	border-radius: 3px;
 	padding: 3px 7px;
+}
+
+
+.answer > h4  {
+	color: #222;
+	font-size: 1.5em;
 }
 
 @media (max-width: 767px) {
@@ -158,3 +169,5 @@ a.anchor {
 	border: 1px solid #2c8455;
 	border-radius: 4px;
 }
+
+textarea { resize:vertical; }
