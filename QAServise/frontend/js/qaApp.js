@@ -84,6 +84,16 @@ questionAnswerApp.controller('PreferencesCtrl', function($rootScope, $scope, $ro
         preferencesActive: "active",
         askQuestionActive: ""
     };
+
+    //$scope.expertises = {};
+
+    $scope.saveUser = function() {
+        updateUser($http, $scope.expertises);
+    }
+
+    $scope.allTags = function() {
+      return hashtagCollection($http);
+    }
 });
 
 questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeParams, $route, $http) {

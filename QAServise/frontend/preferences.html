@@ -1,20 +1,11 @@
 <div class="container">
-	<hr />
-	<h1>Edit Profile</h1>
-	<h3>Please keep your information up to date</h3>
-	<form class="form-horizontal" action="profile.html" method="post" role="form">
-		<div class="form-group">
-			<label class="col-lg-3 control-label">My Expertises:</label>
-			<div class="col-lg-8">
-				<tags-input ng-model="competences" type="text" placeholder="Competences">
-					<auto-complete source="allCompetences()"></auto-complete>
-				</tags-input>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-lg-9 col-lg-offset-3">
-				<button class="btn btn-primary" type="Submit"><span class="glyphicon glyphicon-save"></span> Save Changes</button>
-			</div>
-		</div>
+	<hr>
+	<h3>Edit Profile</h3>
+	<form role="form" method="post">
+		<tags-input ng-model="expertises" type="text" placeholder="Tags">
+		<auto-complete source="allTags()"></auto-complete>
+		</tags-input>
+		<br>
+		<button type="submit" class="btn btn-primary pull-left" ng-click="saveUser()"><span class="glyphicon glyphicon-plus"></span> Save changes</button>
 	</form>
 </div>

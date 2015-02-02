@@ -124,9 +124,10 @@ function favourQuestion($http, questionId) {
 
 //PUT
 function updateUser($http, hashtags) {
+  alert(JSON.stringify(hashtags));
   var buildUrl = "api/user?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
   $http({method: "PUT", url: buildUrl, headers: {
-        'Content-Type': 'application/json'}, data : hashtags});
+        'Content-Type': 'application/json'}, data : {hashtags: hashtags}});
 }
