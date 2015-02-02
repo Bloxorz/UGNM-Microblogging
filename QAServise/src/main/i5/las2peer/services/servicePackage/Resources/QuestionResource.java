@@ -33,8 +33,8 @@ public class QuestionResource extends AbstractResource {
         try {
             List<QuestionDTO> questions = ManagerFacade.getInstance().getQuestionList(conn, userThatAsksId);
 
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            return new HttpResponse(gson.toJson(questions), 200);
+            //Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            return new HttpResponse(getDefaultGson().toJson(questions), 200);
         } catch (SQLException e) {
            return new HttpResponse(e.toString(), 500);
         }
@@ -106,9 +106,8 @@ public class QuestionResource extends AbstractResource {
         HttpResponse res;
         try {
             Map<String, Object> result = ManagerFacade.getInstance().getQuestionWithAnswers(conn, questionId, userThatAsksId);
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-            return new HttpResponse(gson.toJson(result), 200);
+            return new HttpResponse(getDefaultGson().toJson(result), 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
         } catch (CantFindException e) {

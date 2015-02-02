@@ -29,8 +29,7 @@ public class UserResource extends AbstractResource {
             return new HttpResponse("You have to be logged in to retrieve your profile.", 401);
         try {
             UserDTO user = ManagerFacade.getInstance().getUser(conn, userId);
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            return new HttpResponse(gson.toJson(user), 200);
+            return new HttpResponse(getDefaultGson().toJson(user), 200);
         } catch (SQLException e) {
            return new HttpResponse(e.toString(), 500);
         } catch (CantFindException e) {
@@ -56,8 +55,7 @@ public class UserResource extends AbstractResource {
         if(userId == 0)
            return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String json = gson.toJson(ManagerFacade.getInstance().bookmarkedQuestions(conn, userId));
+            String json = getDefaultGson().toJson(ManagerFacade.getInstance().bookmarkedQuestions(conn, userId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
@@ -68,8 +66,7 @@ public class UserResource extends AbstractResource {
         if(userId == 0)
             return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String json = gson.toJson(ManagerFacade.getInstance().getExpertiseQuestions(conn, userId));
+            String json = getDefaultGson().toJson(ManagerFacade.getInstance().getExpertiseQuestions(conn, userId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);

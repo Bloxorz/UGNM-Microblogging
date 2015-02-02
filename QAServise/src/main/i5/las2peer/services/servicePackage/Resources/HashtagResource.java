@@ -25,8 +25,7 @@ public class HashtagResource extends AbstractResource {
     public HttpResponse getHashtagCollection() {
         try {
             List<HashtagDTO> hashtags = ManagerFacade.getInstance().getHashtagCollection(conn);
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            return new HttpResponse(gson.toJson(hashtags), 200);
+            return new HttpResponse(getDefaultGson().toJson(hashtags), 200);
         } catch (SQLException e) {
            return new HttpResponse(e.toString(), 500);
         } catch (CantFindException e) {
@@ -36,8 +35,7 @@ public class HashtagResource extends AbstractResource {
     
     public HttpResponse getAllQuestionsToHashtag(long hashtagId, long userThatAsksId) {
         try {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String json = gson.toJson(ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId, userThatAsksId));
+            String json = getDefaultGson().toJson(ManagerFacade.getInstance().getAllQuestionsToHashtag(conn, hashtagId, userThatAsksId));
             return new HttpResponse(json, 200);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
