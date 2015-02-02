@@ -78,7 +78,7 @@ function askQuestion($http, question, redirectCallback) {
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
   $http({method: "POST", url: buildUrl, headers: {
-        'Content-Type': 'application/json'}, data : question.text})
+        'Content-Type': 'application/json'}, data : {text:question.text, hashtags:question.hashtags}})
         .then(function(result) {
           redirectCallback(result.data);
         });

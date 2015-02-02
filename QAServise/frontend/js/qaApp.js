@@ -111,10 +111,16 @@ questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $ro
       askQuestionActive: "active"
   };
   $scope.question = {};
-  $scope.post = function () {
-    askQuestion(question, function(questionId) {
-        $route.reload();
+
+  $scope.postQuestion = function () {
+    askQuestion($http, $scope.question, function(questionId) {
+      alert("question sent");
+      //  $route.reload();
     });
+  }
+
+  $scope.allTags = function() {
+    return hashtagCollection($http);
   }
 });
 
