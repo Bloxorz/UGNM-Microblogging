@@ -14,6 +14,7 @@ import i5.las2peer.services.servicePackage.Manager.ManagerFacade;
 import i5.las2peer.restMapper.HttpResponse;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,8 +47,11 @@ public class QuestionResource extends AbstractResource {
             try {
                 QuestionDTO question = new Gson().fromJson(content, QuestionDTO.class);
                 question.setIdUser(userId);
-                ManagerFacade.getInstance().addQuestion(conn, question);
-                return new HttpResponse("Question succesfully posted!", 201);
+                Map<String, Object> resultmap = new HashMap<String, Object>();
+                resultmap.put("idQuestion", ManagerFacade.getInstance().addQuestion(conn, question));
+                HttpResponse response = new HttpResponse("Question succesfully posted!", 201);
+                response.setResult(new Gson().toJson(resultmap));
+                return response;
             } catch (SQLException e) {
                 return new HttpResponse(e.toString(), 500);
             } catch (CantInsertException e) {
