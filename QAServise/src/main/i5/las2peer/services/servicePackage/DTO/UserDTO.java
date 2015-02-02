@@ -3,28 +3,28 @@ package i5.las2peer.services.servicePackage.DTO;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 /**
  * Created by Marv on 05.11.2014.
  */
 public class UserDTO extends  AbstractDTO {
     @Expose
+    private List<HashtagDTO> hashtags;
     private long idUser;
     @Expose
     private int elo;
-    private String image;
-    private String contact;
-    private String email;
-
-    public UserDTO(long idUser, int elo, String image, String contact, String email) {
-        this.idUser = idUser;
-        this.elo = elo;
-        this.image = image;
-        this.contact = contact;
-        this.email = email;
-    }
 
     public UserDTO() {
-        this(0, 0, null, null, null);
+
+    }
+    public UserDTO(long idUser, int elo) {
+        this(idUser, elo, null);
+    }
+    public UserDTO(long idUser, int elo, List<HashtagDTO> hashtags) {
+        this.idUser = idUser;
+        this.elo = elo;
+        this.hashtags = hashtags;
     }
 
     public int getElo() {
@@ -35,14 +35,6 @@ public class UserDTO extends  AbstractDTO {
         this.elo = elo;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public long getIdUser() {
         return idUser;
     }
@@ -51,19 +43,11 @@ public class UserDTO extends  AbstractDTO {
         this.idUser = idUser;
     }
 
-    public String getContact() {
-        return contact;
+    public List<HashtagDTO> getHashtags() {
+        return hashtags;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
+    public void setHashtags(List<HashtagDTO> hashtags) {
+        this.hashtags = hashtags;
     }
 }

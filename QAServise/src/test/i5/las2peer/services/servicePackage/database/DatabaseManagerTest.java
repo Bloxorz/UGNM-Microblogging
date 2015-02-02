@@ -30,6 +30,8 @@ public class DatabaseManagerTest {
             //System.out.println(executeSqlCommand);
 
             ProcessBuilder ps=new ProcessBuilder("mysql","--host=127.0.0.1","--port=3306","--user=root","--password=","ugnm1415g2");
+            //ProcessBuilder ps=new ProcessBuilder("mysql","--host=buche.informatik.rwth-aachen.de","--port=3306","--user=ugnm1415g2","--password=bf3244PRAN","ugnm1415g2");
+            //ProcessBuilder ps=new ProcessBuilder("ls", "-l", "./src/test/i5/las2peer/services/servicePackage/database");
 
             ps.redirectErrorStream(true);
             ps.redirectInput(new File("./src/test/i5/las2peer/services/servicePackage/database/testdatabase.sql"));
@@ -106,11 +108,11 @@ public class DatabaseManagerTest {
 
     public static UserDTO[] getTestUsers(int... indices) {
         return (UserDTO[]) subArray( new UserDTO[] {
-                new UserDTO(1, 10, "http://link/to/frank/celler.jpg", "http://mathe.de/frank/celler.html", "f.celler@gmail.com"),
-                new UserDTO(2, 10, "http://link/to/mike/leblanche.png", "http://mathe.de/micky/conta.html", "micky.l@web.de"),
-                new UserDTO(3, 10, "http://imagebank/4d6age6/es.jpg", "http://progra.com/how/jelly.html", "howDickson@gmail.com"),
-                new UserDTO(4, 10, "http://dome.com/celler.jpg", "http://student.org/isoe/random.html", "my.M.a.i.l@rwth-aachen.de"),
-                new UserDTO(5, 10, "http://wow/it/is/houston.svg", "http://alleskoenner.de/whp/huhu.html", "another.adresse@web.com")
+                new UserDTO(1, 10, Arrays.asList(getTestHashtags(3, 4, 5))),
+                new UserDTO(2, 10, Arrays.asList(getTestHashtags(3,4,5))),
+                new UserDTO(3, 10, Arrays.asList(getTestHashtags(0,1,2))),
+                new UserDTO(4, 10, Arrays.asList(getTestHashtags(0,2))),
+                new UserDTO(5, 10, Arrays.asList(getTestHashtags(0,1,2,3,4,5)))
         }, indices);
     }
 
@@ -119,9 +121,15 @@ public class DatabaseManagerTest {
             dataSource = new BasicDataSource();
             dataSource.setDefaultAutoCommit(true);
             dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+/*
+            dataSource.setUsername("ugnm1415g2");
+            dataSource.setPassword("bf3244PRAN");
+            dataSource.setUrl("jdbc:mysql://buche.informatik.rwth-aachen.de:3306/ugnm1415g2");
+*/
             dataSource.setUsername("root");
             dataSource.setPassword("");
             dataSource.setUrl("jdbc:mysql://localhost:3306/ugnm1415g2");
+
             dataSource.setValidationQuery("SELECT 1");
             dataSource.setDefaultQueryTimeout(1000);
             dataSource.setMaxConnLifetimeMillis(100000);
@@ -132,11 +140,9 @@ public class DatabaseManagerTest {
         return dataSource.getConnection();
     }
 
-
     @Test
     public void connectionToLocalDatabase() throws Exception {
-        System.out.println(new Gson().toJson(new Boolean(true)));
-        //Connection conn = getTestTable();
+        Connection conn = getTestTable();
     }
 
     @Test

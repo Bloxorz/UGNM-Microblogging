@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +28,7 @@ public class UserManagerTest extends AbstractManagerTest {
 
     @Test
     public void testRegisterUser() throws Exception {
-        assertTrue( manager.registerUser(conn, new UserDTO(6,0,null,null,null)) );
+        assertTrue( manager.registerUser(conn, new UserDTO(6,0,new LinkedList<HashtagDTO>())) );
     }
 
     @Test
@@ -66,9 +69,9 @@ public class UserManagerTest extends AbstractManagerTest {
 
     @Test
     public void testEditUser() throws Exception {
-        UserDTO expected = new UserDTO(4, 777, "image.com", "contact.de", "email.org");
+        UserDTO expected = new UserDTO(4, 777, Arrays.asList(DatabaseManagerTest.getTestHashtags(0,2,4)));
         manager.editUser(conn, 4, expected);
-        expected.setElo( DatabaseManagerTest.getTestUsers()[3].getElo() );
+        expected.setElo(DatabaseManagerTest.getTestUsers()[3].getElo());
         assertEquals(
                 expected,
                 manager.getUser(conn, 4)

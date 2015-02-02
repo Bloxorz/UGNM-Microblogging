@@ -31,4 +31,10 @@ public class HashtagManagerTest extends AbstractManagerTest {
                 manager.getAllQuestionsToHashtag(conn, 1, 0).toArray()
         );
     }
+
+    @Test
+    public void testCreateHashtagIfNotExists() throws Exception {
+        assertEquals(4, manager.createHashtagIfNotExists(conn, "Analysis"));
+        assertEquals(7, manager.createHashtagIfNotExists(conn, "NeuesHashtag"));
+    }
 }

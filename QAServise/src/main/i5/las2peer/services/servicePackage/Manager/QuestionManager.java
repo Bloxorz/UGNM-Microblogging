@@ -95,6 +95,7 @@ public class QuestionManager extends AbstractManager{
     public List<AnswerDTO> getAnswersToQuestion(Connection conn, long questionId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<AnswerDTO>> h = new BeanListHandler<AnswerDTO>(AnswerDTO.class);
+        //return
         return qr.query(conn, "SELECT idPost, idQuestion, timestamp, text, idUser, rating FROM Post JOIN Answer ON idPost=idAnswer WHERE idQuestion = ? ORDER BY rating DESC", h, questionId);
     }
 
@@ -122,14 +123,12 @@ public class QuestionManager extends AbstractManager{
         return generatedId;
     }
 
-    public List<UserDTO> getBookmarkUsersToQuestion(Connection conn, long questionId) throws SQLException {
+    public int getBookmarkCount(Connection conn, long questionId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<UserDTO>> h = new BeanListHandler<UserDTO>(UserDTO.class);
-        return qr.query(conn, "SELECT User.idUser,elo,image,contact,email FROM User JOIN FavouriteQuestionToUser ON User.idUser=FavouriteQuestionToUser.idUser WHERE idQuestion=? ORDER BY User.idUser", h, questionId);
-    }
+        List<UserDTO> userList = qr.query(conn, "SELECT User.idUser,elo FROM User JOIN FavouriteQuestionToUser ON User.idUser=FavouriteQuestionToUser.idUser WHERE idQuestion=? ORDER BY User.idUser", h, questionId);
 
-    public int getBookmarkCount(Connection conn, long questionId) throws SQLException {
-        return getBookmarkUsersToQuestion(conn, questionId).size();
+        return userList.size();
     }
 
     public List<HashtagDTO> getHashtagsToQuestion(Connection conn, long questionId) throws SQLException {

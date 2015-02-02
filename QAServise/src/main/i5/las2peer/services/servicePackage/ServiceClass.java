@@ -1,6 +1,6 @@
 package i5.las2peer.services.servicePackage;
 
-import com.sun.xml.internal.bind.v2.TODO;
+
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
@@ -9,6 +9,7 @@ import i5.las2peer.restMapper.tools.ValidationResult;
 import i5.las2peer.restMapper.tools.XMLCheck;
 import i5.las2peer.security.Context;
 import i5.las2peer.security.UserAgent;
+import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Resources.*;
@@ -21,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 /**
  * LAS2peer Service
@@ -44,6 +46,7 @@ public class ServiceClass extends Service {
 	private QuestionResource qr;
     private HashtagResource hr;
     private UserResource use;
+	private AnswerResource ar;
 
 	public ServiceClass() {
 		// read and set properties values
@@ -57,6 +60,7 @@ public class ServiceClass extends Service {
 			qr = new QuestionResource(conn);
             hr = new HashtagResource(conn);
             use = new UserResource(conn);
+			ar = new AnswerResource(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -70,7 +74,7 @@ public class ServiceClass extends Service {
 		if(isAnonymous()) {
 			return new HttpResponse("User is anonymous", 200);
 		} else  {
-			return use.registerUser(new UserDTO(getActiveAgent().getId(), 10, null, null, null));
+			return use.registerUser(new UserDTO(getActiveAgent().getId(), 10, new LinkedList<HashtagDTO>()));
 		}
 	}
 
@@ -108,6 +112,7 @@ public class ServiceClass extends Service {
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return use.editUser(isAnonymous() ? 0 : getActiveAgent().getId(), content);
 	}
+	//e.g. {"hashtags":[{"text":"Java"},{"text":"Assembler"}]}
 
 	@POST
 	@Path("user/bookmark/{questionId}")
@@ -171,6 +176,7 @@ public class ServiceClass extends Service {
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return qr.addQuestion(content, isAnonymous() ? 0 : getActiveAgent().getId());
 	}
+	//e.g. {"hashtags":[{"text":"Java"},{"text":"Assembler"}],"text":"How to integrate Assemblercode into Java?"}
 
 	@GET
 	@Path("answers/question/{questionId}")
@@ -191,11 +197,14 @@ public class ServiceClass extends Service {
 		if(registerResponse.getStatus() != 200) return registerResponse;
 		return qr.addAnswerToQuestion(questionId, content, isAnonymous() ? 0 : getActiveAgent().getId());
 	}
+	//e.g. {"text":"Das ist eine tolle Antwort"}
 
 	@POST
-	@Path("answers/{answerId}")
-	public HttpResponse upvoteAnswer(@PathParam("answerId") long questionId) {
-		//TODO
+	@Path("user/upvote/{answerId}")
+	public HttpResponse upvoteAnswer(@PathParam("answerId") long answerId) {
+		HttpResponse registerResponse = registerUser();
+		if(registerResponse.getStatus() != 200) return registerResponse;
+		return ar.upvoteAnswer(answerId, isAnonymous() ? 0 : getActiveAgent().getId());
 	}
 
     private Connection getConnection() {

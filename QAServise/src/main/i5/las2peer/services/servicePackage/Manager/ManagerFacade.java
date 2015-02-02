@@ -84,5 +84,9 @@ public class ManagerFacade {
     public List<QuestionDTO> getExpertiseQuestions(Connection conn, long userId) throws SQLException {
         return userManager.getExpertQuestions(conn, userId);
     }
+
+    public void upvoteAnswer(Connection conn, long userId, long answerId) throws SQLException, CantFindException, CantInsertException, CantUpdateException {
+        answerManager.upvoteAnswer(conn, answerId, userId);
+    }
 }
 

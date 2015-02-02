@@ -20,22 +20,28 @@ public class AnswerManager extends AbstractManager {
 
     private static UserManager um = new UserManager();
 
-    public void uprateAnswer(Connection conn, long answerId, long userId) throws SQLException, CantUpdateException, CantFindException, CantInsertException {
+    public void upvoteAnswer(Connection conn, long answerId, long userId) throws SQLException, CantUpdateException, CantFindException, CantInsertException {
 
         QueryRunner qr = new QueryRunner();
         Map<String, Object> queryMap;
         ResultSetHandler<Map<String, Object>> h = new MapHandler();
+
+        // get current rating
+        queryMap = qr.query(conn, "SELECT rating FROM Answer WHERE idAnswer=?", h, answerId);
+        if(queryMap == null)
+            throw new CantFindException("Can't find answer with id:" + answerId);
+
+        // check user not rating himself
+        queryMap = qr.query(conn, "SELECT idUser FROM Post JOIN Answer ON idPost=idAnswer WHERE idAnswer=?", h, answerId);
+        if ((Long)queryMap.get("idUser") == userId) {
+            throw new CantInsertException("User can't upvote hisself!");
+        }
 
         // check already rated
         queryMap = qr.query(conn, "SELECT idUserToRatedAnswer FROM UserToRatedAnswer WHERE idUser=? AND idAnswer=?", h, userId, answerId);
         if (queryMap != null) {
             throw new CantInsertException("User already rated this answer!");
         }
-
-        // get current rating
-        queryMap = qr.query(conn, "SELECT rating FROM Answer WHERE idAnswer=?", h, answerId);
-        if(queryMap == null)
-            throw new CantFindException("Can't find answer with id:" + answerId);
 
         // uprate
         int newRating = (int) queryMap.get("rating") + 1;

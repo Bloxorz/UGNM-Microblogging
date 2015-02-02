@@ -1,5 +1,6 @@
 package i5.las2peer.services.servicePackage.Manager;
 
+import com.google.gson.annotations.Expose;
 import com.sun.mail.util.logging.MailHandler;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
@@ -24,20 +25,28 @@ import java.util.*;
 public class UserManager {
 
     private static QuestionManager qm = new QuestionManager();
+    private static HashtagManager hm = new HashtagManager();
 
     public UserDTO getUser(Connection conn, long userId) throws SQLException, CantFindException {
         QueryRunner qr = new QueryRunner();
+
         ResultSetHandler<UserDTO> h = new BeanHandler<UserDTO>(UserDTO.class);
-        UserDTO user = qr.query(conn, "SELECT idUser, elo, image, contact, email FROM User WHERE idUser=?", h, userId);
+        UserDTO user = qr.query(conn, "SELECT idUser,elo FROM User WHERE idUser=?", h, userId);
+
         if(user == null)
             throw new CantFindException("Can not find user with id:"+userId);
+        ResultSetHandler<List<HashtagDTO>> hashtagHandler = new BeanListHandler<HashtagDTO>(HashtagDTO.class);
+        user.setHashtags(qr.query(conn, "SELECT Hashtag.idHashtag, text FROM User JOIN UserToHashtag ON User.idUser=UserToHashtag.idUser JOIN Hashtag ON UserToHashtag.idHashtag=Hashtag.idHashtag WHERE User.idUser=? GROUP BY idHashtag", hashtagHandler, userId));
         return user;
     }
     public void editUser(Connection conn, long userId, UserDTO data) throws SQLException, CantUpdateException {
         QueryRunner qr = new QueryRunner();
-        int rowsAffected = qr.update(conn, "UPDATE User SET image=?, contact=?, email=? WHERE idUser=?", data.getImage(), data.getContact(), data.getEmail(), userId);
-        if(rowsAffected == 0)
-            throw new CantUpdateException("0 rows affected.");
+        ResultSetHandler<Map<String, Object>> mapHandler = new MapHandler();
+        qr.update(conn, "DELETE FROM UserToHashtag WHERE idUser=?", userId);
+        for (HashtagDTO h : data.getHashtags()) {
+            long hashtagId = hm.createHashtagIfNotExists(conn, h.getText());
+            qr.insert(conn, "INSERT INTO UserToHashtag (idUser,idHashtag) VALUES (?,?)", mapHandler, userId, hashtagId);
+        }
     }
     public List<QuestionDTO>  getUserQuestions(Connection conn, long userId) throws SQLException {
         QueryRunner qr = new QueryRunner();
@@ -81,7 +90,7 @@ public class UserManager {
         boolean userHasNoEntry = null == qr.query(conn, "SELECT * FROM User WHERE idUser=?", h, userDTO.getIdUser());
         if(userHasNoEntry) {
             try {
-                qr.insert(conn, "INSERT INTO User (idUser, elo, image, contact, email) VALUES (?,?,?,?,?)", h, userDTO.getIdUser(), userDTO.getElo(), userDTO.getImage(), userDTO.getContact(), userDTO.getEmail());
+                qr.insert(conn, "INSERT INTO User (idUser, elo) VALUES (?,?)", h, userDTO.getIdUser(), userDTO.getElo());
             } catch(SQLException e) {
                 throw new CantInsertException(e.toString());
             }

@@ -11,9 +11,6 @@ CREATE TABLE User
 (
 	idUser bigint NOT NULL,
 	elo int NOT NULL,
-	image varchar(255),
-	contact varchar(255),
-	email varchar(255),
 	PRIMARY KEY (idUser)
 );
 CREATE TABLE Post
@@ -95,13 +92,13 @@ CREATE TABLE FavouriteQuestionToUser (
 
 
 
-INSERT INTO User (idUser, elo, image, contact, email)
+INSERT INTO User (idUser, elo)
 VALUES
-	(1, 10, 'http://link/to/frank/celler.jpg', 'http://mathe.de/frank/celler.html', 'f.celler@gmail.com'),
-	(2, 10, 'http://link/to/mike/leblanche.png', 'http://mathe.de/micky/conta.html', 'micky.l@web.de'),
-	(3, 10, 'http://imagebank/4d6age6/es.jpg', 'http://progra.com/how/jelly.html', 'howDickson@gmail.com'),
-	(4, 10, 'http://dome.com/celler.jpg', 'http://student.org/isoe/random.html', 'my.M.a.i.l@rwth-aachen.de'),
-	(5, 10, 'http://wow/it/is/houston.svg', 'http://alleskoenner.de/whp/huhu.html', 'another.adresse@web.com');
+	(1, 10),
+	(2, 10),
+	(3, 10),
+	(4, 10),
+	(5, 10);
 
 INSERT INTO Hashtag (text)
 VALUES ('Java'),('Assembler'),('For-Loop'),('Analysis'),('Polynome'),('Lagrange-Restglied');

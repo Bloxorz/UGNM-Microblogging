@@ -20,10 +20,7 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -87,16 +84,21 @@ public class QuestionManagerTest extends AbstractManagerTest {
         jo.add("question", g.toJsonTree(DatabaseManagerTest.getTestQuestions()[2]));
         jo.add("answers", g.toJsonTree(DatabaseManagerTest.getTestAnswers(2,3,4)));
 
-        assertEquals(jo.toString(), manager.getQuestionWithAnswers(conn, 4, 0).toString());
+        assertEquals(
+                new Gson().toJson(jo), // attention: jo.toString() will not escape apostrophies
+                new Gson().toJson(manager.getQuestionWithAnswers(conn, 4, 0))
+        );
     }
 
     @Test
     public void testAddAnswerToQuestion() throws Exception {
         AnswerDTO dto = new AnswerDTO(-1, DatabaseManagerTest.getDummyDate(), "Geh in den Vorkurs!", 5, 0, 1);
         manager.addAnswerToQuestion(conn, dto);
-        Object[] result = manager.getAnswersToQuestion(conn, 1).toArray();
         AnswerDTO[] expected = new AnswerDTO[] {dto};
-        assertArrayEquals( expected, result );
+        assertArrayEquals(
+                expected,
+                manager.getAnswersToQuestion(conn, 1).toArray()
+        );
     }
 
     @Test
@@ -104,14 +106,6 @@ public class QuestionManagerTest extends AbstractManagerTest {
         assertArrayEquals(
                 DatabaseManagerTest.getTestHashtags(0,2),
                 manager.getHashtagsToQuestion(conn, 1).toArray()
-        );
-    }
-
-    @Test
-    public void testGetBookmarkUsersToQuestion() throws Exception {
-        assertArrayEquals(
-                DatabaseManagerTest.getTestUsers(1,3),
-                manager.getBookmarkUsersToQuestion(conn, 2).toArray()
         );
     }
 
