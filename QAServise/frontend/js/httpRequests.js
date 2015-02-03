@@ -15,7 +15,12 @@ var localFrontendURL = "http://localhost:" + backendPort + "/";
 
 //GET
 function allQuestions($http, setQuestionsCallback) {
-  var buildUrl = "api/questions";
+
+  var buildUrl;
+  if(localStorage.getItem("access_token") === null)
+    buildUrl = "api/questions";
+  else
+    buildUrl = "api/questions?access_token=" + localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
   $http({method: "GET", url: buildUrl, headers: {
@@ -53,7 +58,7 @@ function getUserExpertises($http, cb) {
   var buildUrl = "api/user?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
-  $http({method: "GET", url: buildUrl, headers: {
+   $http({method: "GET", url: buildUrl, headers: {
         'Content-Type': 'application/json'}})
           .then(function(result) {
               cb(result.data.hashtags);
@@ -124,7 +129,6 @@ function favourQuestion($http, questionId) {
 
 //PUT
 function updateUser($http, hashtags) {
-  alert(JSON.stringify(hashtags));
   var buildUrl = "api/user?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;

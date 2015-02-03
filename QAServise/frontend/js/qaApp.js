@@ -25,6 +25,10 @@ questionAnswerApp.config(function($routeProvider) {
             templateUrl: 'dashboard.html',
             controller: 'DashboardCtrl'
         })
+        .when('/', {
+            templateUrl: 'dashboard.html',
+            controller: 'DashboardCtrl'
+        })
         ;
 
 
@@ -59,10 +63,25 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
       favourQuestion(questionId);
     }
 
-    $scope.userExpertises = function(field) {
-      getUserExpertises($http, function(data) {
-        field = data;
-      });
+    $scope.usertags = {};
+
+    $scope.isLoggedIn = function() {
+      var val = !(localStorage.getItem("access_token") === null);
+      return val;
+    }
+
+    getUserExpertises($http, function(data) {
+      $scope.usertags = data;
+    });
+
+    $scope.userExpertises = function() {
+      if(localStorage.getItem("access_token") === null) {
+        alert("You must be logged in to use this feature");
+        return [];
+      } else {
+      	 return $scope.usertags;
+      }
+
     }
 
     $scope.getQuestionHeadline = function(text) {
@@ -94,6 +113,12 @@ questionAnswerApp.controller('PreferencesCtrl', function($rootScope, $scope, $ro
     $scope.allTags = function() {
       return hashtagCollection($http);
     }
+
+    getUserExpertises($http, function(data) {
+      $scope.expertises = data;
+    });
+
+
 });
 
 questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeParams, $route, $http) {
@@ -114,10 +139,18 @@ questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeP
   }
 
   $scope.favour = function() {
+    if(localStorage.getItem("access_token") === null) {
+      alert("You must be logged in to use this feature");
+      return;
+    }
       favourQuestion($http, $scope.question.idPost);
   }
 
   $scope.like = function(answerId) {
+    if(localStorage.getItem("access_token") === null) {
+      alert("You must be logged in to use this feature");
+      return;
+    }
     upvoteAnswer($http, answerId, function() {
       $route.reload();
     });
@@ -131,10 +164,16 @@ questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $ro
       askQuestionActive: "active"
   };
   $scope.question = {};
-  $scope.post = function () {
-    askQuestion(question, function(questionId) {
-        $route.reload();
+
+  $scope.postQuestion = function () {
+    askQuestion($http, $scope.question, function(questionId) {
+      alert("question sent");
+      //  $route.reload();
     });
+  }
+
+  $scope.allTags = function() {
+    return hashtagCollection($http);
   }
 });
 
@@ -180,23 +219,30 @@ questionAnswerApp.filter('orderObjectBy', function(){
     return array;
  }
 });
+/*
 questionAnswerApp.filter('setdate', function($filter) {
-    return function(msAgo) {
+    return function(date) {
+        var dArr = date.split(/[.\s:]/), t;
+        if(dArr.length === 6) {
 
-        var msNow = Date.now();
+            var msAgo = new Date(dArr[2], dArr[1] - 1, dArr[0], dArr[3], dArr[4], dArr[5]) .getTime();
 
-        var minutes = Math.floor((msNow - msAgo) / 60000);
-        var hours = Math.floor(minutes / 60);
-        var days = Math.floor(hours / 60);
+            var msNow = Date.now();
 
-        t = days > 60
-            ? $filter('date')(new Date(msAgo), 'd MMM yyyy') 
-            : hours > 23 
-                ? $filter('date')(new Date(msAgo), 'd MMM') 
-                : minutes > 59 
-                    ? hours + ' hours ago' 
-                    : minutes + ' minutes ago';
+            var minutes = Math.floor((msNow - msAgo) / 60000);
+            var hours = Math.floor(minutes / 60);
+            var days = Math.floor(hours / 60);
 
+            t = days > 60
+                ? $filter('date')(new Date(msAgo), 'd MMM yyyy')
+                : hours > 23
+                    ? $filter('date')(new Date(msAgo), 'd MMM')
+                    : minutes > 59
+                        ? hours  ' hours ago'
+                        : minutes  ' minutes ago';
+
+        }
         return t;
     };
 });
+*/

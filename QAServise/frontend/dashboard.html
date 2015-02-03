@@ -8,7 +8,7 @@
 
 </tags-input>
 	<hr>
-<button class="btn btn-sm btn-filter pull-left" ng-click="searchTags=userExpertises(searchTags)"> Questions for me</button>
+ <button class="btn btn-sm btn-filter pull-left" ng-click="searchTags=userExpertises()" > Questions for me</button>
  <button class="btn btn-sm btn-filter glyphicon glyphicon-remove-circle" ng-click="searchTags=[]"> Reset filter</button>
 
 <br />
@@ -26,17 +26,22 @@
 			<a class="btn btn-sm btn-favour"  ng-repeat="tag in question.hashtags">{{tag.text}} </a>
 		</p>
     <div>
-      <span class="pull-left">{{question.timestamp | setdate}}</span>
-      <span class="pull-right">{{question.favourcount}}x favorisiert</span>
+      <span class="pull-left">{{question.timestamp }}</span>
+      <span class="pull-right">{{question.favourcount}} x favorisiert</span>
       <div class="clearfix"></div>
 
 			<span class="pull-right">
-				<button class="btn btn-sm btn-favour" ng-click="favour()"><span class="glyphicon glyphicon-heart"></span> Favour</button>
+				<div ng-if="isLoggedIn()">
 
+					<div ng-switch on="{{question.isFavourite}}">
+							<button ng-switch-when="false" class="btn btn-sm btn-favour" ng-click="favour()" ><span class="glyphicon glyphicon-heart"></span> Favour</button>
+							<button ng-switch-when="true" class="btn btn-sm btn-favoured"><span class="glyphicon glyphicon-certificate"></span></button>
+					</div>
+
+		  	</div>
 			</span>
 
 		</div>
 	</div>
-
 </div>
 </div>

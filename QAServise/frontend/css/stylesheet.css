@@ -161,6 +161,15 @@ a.anchor {
 	border-radius: 4px;
 }
 
+.btn-favoured {
+	background-color: #235B79;
+	padding: 5px;
+	margin: 5px;
+	color: #eee;
+	border: 1px solid #357ebd;
+	border-radius: 4px;
+}
+
 .btn-filter {
 	background-color: #2C6547;
 	margin: 5px;
