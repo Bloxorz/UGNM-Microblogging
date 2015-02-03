@@ -19,7 +19,7 @@ function allQuestions($http, setQuestionsCallback) {
   var buildUrl;
   if(localStorage.getItem("access_token") === null)
     buildUrl = "api/questions";
-  else
+  else 
     buildUrl = "api/questions?access_token=" + localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;

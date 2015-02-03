@@ -107,6 +107,10 @@ questionAnswerApp.controller('PreferencesCtrl', function($rootScope, $scope, $ro
     //$scope.expertises = {};
 
     $scope.saveUser = function() {
+      if(localStorage.getItem("access_token") === null) {
+        alert("You must be logged in to use this feature");
+        return;
+      }
         updateUser($http, $scope.expertises);
     }
 
@@ -133,6 +137,10 @@ questionAnswerApp.controller('AnswersCtrl', function($rootScope, $scope, $routeP
   });
 
   $scope.postAnswer = function() {
+    if(localStorage.getItem("access_token") === null) {
+      alert("You must be logged in to use this feature");
+      return;
+    }
       answerQuestion($http, $scope.answer, function() {
         $route.reload();
       });
@@ -166,6 +174,10 @@ questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $ro
   $scope.question = {};
 
   $scope.postQuestion = function () {
+    if(localStorage.getItem("access_token") === null) {
+      alert("You must be logged in to use this feature");
+      return;
+    }
     askQuestion($http, $scope.question, function(questionId) {
       alert("question sent");
       //  $route.reload();
@@ -218,6 +230,27 @@ questionAnswerApp.filter('orderObjectBy', function(){
     });
     return array;
  }
+});
+
+questionAnswerApp.filter('setdate', function($filter) {
+    return function(msAgo) {
+
+        var msNow = Date.now();
+
+        var minutes = Math.floor((msNow - msAgo) / 60000);
+        var hours = Math.floor(minutes / 60);
+        var days = Math.floor(hours / 60);
+
+        t = days > 60
+            ? $filter('date')(new Date(msAgo), 'd MMM yyyy')
+            : hours > 23
+                ? $filter('date')(new Date(msAgo), 'd MMM')
+                : minutes > 59
+                    ? hours + ' hours ago'
+                    : minutes + ' minutes ago';
+
+        return t;
+    };
 });
 /*
 questionAnswerApp.filter('setdate', function($filter) {
