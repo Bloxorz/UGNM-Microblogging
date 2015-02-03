@@ -27,7 +27,7 @@ public class QuestionManager extends AbstractManager{
     public List<QuestionDTO> getQuestionList(Connection conn, long userWhoAsksId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<QuestionDTO>> h = new BeanListHandler<QuestionDTO>(QuestionDTO.class);
-        List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, idUser, idQuestion FROM Post JOIN Question ON idPost=idQuestion", h);
+        List<QuestionDTO> res = qr.query(conn, "SELECT idPost, timestamp, text, idUser, idQuestion FROM Post JOIN Question ON idPost=idQuestion ORDER BY idPost DESC", h);
         if(res.size() == 0)
             throw new SQLException("No questions were found in database.");
         fillOutHashtagsAndFavourCountAndIsFavourite(conn, res, userWhoAsksId);

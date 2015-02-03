@@ -36,7 +36,7 @@ public class QuestionManagerTest extends AbstractManagerTest {
     @Test
     public void testGetQuestionList() throws Exception {;
         assertArrayEquals(
-                DatabaseManagerTest.getTestQuestions(),
+                DatabaseManagerTest.getTestQuestions(2,1,0),
                 manager.getQuestionList(conn, 0).toArray()
         );
     }
