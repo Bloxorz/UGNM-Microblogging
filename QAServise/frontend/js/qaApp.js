@@ -45,9 +45,7 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
         askQuestionActive: ""
     };
 
-    $scope.questions = [{hashtags:[{text:"Java"},{text:"Programmierung"}], favourcount:2,timestamp:"30.01.2014 23:26:14", text:"How to write a for-loop in Java", idPost:1, isFavourite:true},
-    {hashtags:[{text:"Javascript"},{text:"AngularJs"}, {text:"Frontend"}, {text:"ng-view"}], favourcount:4,timestamp:"28.01.2014 12:14:14", text:"Javascript AngularJs ng-view Problem", idPost:2, isFavourite:true}];
-
+    $scope.questions = [];
     //set questions async
     allQuestions($http,function(data) {
         $scope.questions = data;
@@ -60,7 +58,9 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
     }
 
     $scope.favour = function(questionId) {
-      favourQuestion(questionId);
+      favourQuestion($http, questionId, function() {
+        $route.reload();
+      });
     }
 
     $scope.usertags = {};

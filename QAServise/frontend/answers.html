@@ -9,13 +9,9 @@
         <a class="btn btn-sm btn-favour"  ng-repeat="tag in question.hashtags">{{tag.text}} </a>
       </p>
       <div>
-        <span class="pull-left">{{question.timestamp}}</span>
-        <span class="pull-right">{{question.favourcount}}x favorisiert</span>
+        <span class="pull-left">{{question.timestamp | setdate}}</span>
         <div class="clearfix"></div>
 
-        <span class="pull-right">
-          <button class="btn btn-sm btn-favour" ng-click="favour()"><span class="glyphicon glyphicon-heart"></span> Favour</button>
-        </span>
       </div>
     </div>
     <h3>Post new answer</h3>
@@ -35,7 +31,7 @@
 
       </h4>
       <div>
-        <span class="pull-left">{{answer.timestamp}}</span>
+        <span class="pull-left">{{answer.timestamp | setdate}}</span>
         <span class="pull-right">{{answer.rating}}</span>
         <div class="clearfix"></div>
 

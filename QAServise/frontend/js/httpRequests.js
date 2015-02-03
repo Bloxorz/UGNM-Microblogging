@@ -19,7 +19,7 @@ function allQuestions($http, setQuestionsCallback) {
   var buildUrl;
   if(localStorage.getItem("access_token") === null)
     buildUrl = "api/questions";
-  else 
+  else
     buildUrl = "api/questions?access_token=" + localStorage.access_token;
   if(useLocalFrontendServer)
       buildUrl = localFrontendURL + buildUrl;
@@ -119,12 +119,18 @@ function upvoteAnswer($http, answerId, refreshCB) {
         });
 }
 
-function favourQuestion($http, questionId) {
+function favourQuestion($http, questionId, cb) {
   var buildUrl = "api/user/bookmark/" + questionId + "?access_token="+ localStorage.access_token;
   if(useLocalFrontendServer)
     buildUrl = localFrontendURL + buildUrl;
   $http({method: "POST", url: buildUrl, headers: {
-        'Content-Type': 'application/json'}});
+        'Content-Type': 'application/json'}})
+        .error(function(data, status, headers, config) {
+          alert( JSON.stringify(data));
+        })
+        .then(function(result) {
+          cb();
+        });
 }
 
 //PUT

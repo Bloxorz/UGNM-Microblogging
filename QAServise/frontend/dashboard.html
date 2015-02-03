@@ -34,7 +34,7 @@
 				<div ng-if="isLoggedIn()">
 
 					<div ng-switch on="{{question.isFavourite}}">
-							<button ng-switch-when="false" class="btn btn-sm btn-favour" ng-click="favour()" ><span class="glyphicon glyphicon-heart"></span> Favour</button>
+							<button ng-switch-when="false" class="btn btn-sm btn-favour" ng-click="favour(question.idPost)" ><span class="glyphicon glyphicon-heart"></span> Favour</button>
 							<button ng-switch-when="true" class="btn btn-sm btn-favoured"><span class="glyphicon glyphicon-certificate"></span></button>
 					</div>
 
