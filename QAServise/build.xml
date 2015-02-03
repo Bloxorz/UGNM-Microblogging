@@ -82,7 +82,7 @@
         <mkdir dir="${log}" />
     </target>
 	
-    <target name="init_compile" depends="init_genera, get_depsl">
+    <target name="init_compile" depends="init_general, get_deps">
         <mkdir dir="${tmp.classes}" />
         <mkdir dir="${tmp.junit}" />
     </target>
@@ -185,7 +185,7 @@
     </target>
 	
     <target name="junit_tests" depends="init_junit, compile_all">
-        <junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="yes">
+        <junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr">
             <classpath>
                 <pathelement path="${tmp.classes}" />
                 <pathelement path="${tmp.junit}" />
