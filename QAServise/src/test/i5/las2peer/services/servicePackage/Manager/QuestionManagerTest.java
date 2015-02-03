@@ -1,7 +1,10 @@
 package i5.las2peer.services.servicePackage.Manager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import i5.las2peer.services.servicePackage.DTO.AnswerDTO;
 import i5.las2peer.services.servicePackage.DTO.HashtagDTO;
 import i5.las2peer.services.servicePackage.DTO.PostDTO;
@@ -13,11 +16,15 @@ import i5.las2peer.services.servicePackage.database.DatabaseManagerTest;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.util.*;
@@ -79,14 +86,13 @@ public class QuestionManagerTest extends AbstractManagerTest {
 
     @Test
     public void testGetQuestionWithAnswers() throws Exception {
-        Gson g = new Gson();
-        JsonObject jo = new JsonObject();
-        jo.add("question", g.toJsonTree(DatabaseManagerTest.getTestQuestions()[2]));
-        jo.add("answers", g.toJsonTree(DatabaseManagerTest.getTestAnswers(2,3,4)));
+        Map<String, Object> map = new HashMap<>();
+        map.put("question", DatabaseManagerTest.getTestQuestions()[2]);
+        map.put("answers", DatabaseManagerTest.getTestAnswers(2, 3, 4));
 
         assertEquals(
-                new Gson().toJson(jo), // attention: jo.toString() will not escape apostrophies
-                new Gson().toJson(manager.getQuestionWithAnswers(conn, 4, 0))
+                normalize(map),
+                normalize(manager.getQuestionWithAnswers(conn, 4, 0))
         );
     }
 

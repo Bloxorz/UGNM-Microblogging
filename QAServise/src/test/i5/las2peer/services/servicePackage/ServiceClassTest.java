@@ -1,11 +1,7 @@
 package i5.las2peer.services.servicePackage;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import i5.las2peer.api.Service;
 import i5.las2peer.communication.Message;
 import i5.las2peer.communication.MessageException;
 import i5.las2peer.p2p.*;
@@ -15,23 +11,19 @@ import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.security.*;
 import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import i5.las2peer.services.servicePackage.database.DatabaseManagerTest;
-import i5.las2peer.webConnector.WebConnector;
-import i5.las2peer.webConnector.WebConnectorRequestHandler;
-import jdk.nashorn.internal.parser.JSONParser;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.security.KeyPair;
 import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -101,8 +93,12 @@ public class ServiceClassTest {
         scLoggedIn.setDatabase(mockDatabase);
     }
 
-    private static String gsoned(String input) {
-        return new Gson().toJson(new JsonParser().parse(input));
+    private static String normalize(String input) throws IOException {
+        input = input.replace('`', '"');
+        ObjectMapper om = new ObjectMapper();
+        om.configure(SerializationConfig.Feature.SORT_PROPERTIES_ALPHABETICALLY, true);
+        return om.writeValueAsString(om.readValue(input, Object.class));
+        //return new Gson().toJson(new JsonParser().parse(input));
     }
 
     @Test
@@ -119,20 +115,20 @@ public class ServiceClassTest {
         HttpResponse response = scLoggedIn.getUser();
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("{'hashtags':[{'text':'Analysis'},{'text':'Polynome'},{'text':'Lagrange-Restglied'}],'elo':10}"),
-                gsoned(response.getResult())
+                normalize("{`hashtags`:[{`text`:`Analysis`},{`text`:`Polynome`},{`text`:`Lagrange-Restglied`}],`elo`:10}"),
+                normalize(response.getResult())
         );
     }
 
     @Test
     public void testEditUser() throws Exception {
         assertEquals(400, scLoggedIn.editUser("{InvalidJson}").getStatus());
-        assertEquals(401, scAnonymous.editUser(gsoned("{'hashtags':[{'text':'Java'},{'text':'Assembler'}]}")).getStatus());
-        HttpResponse response = scLoggedIn.editUser(gsoned("{'hashtags':[{'text':'Java'},{'text':'Assembler'}]}"));
+        assertEquals(401, scAnonymous.editUser(normalize("{`hashtags`:[{`text`:`Java`},{`text`:`Assembler`}]}")).getStatus());
+        HttpResponse response = scLoggedIn.editUser(normalize("{`hashtags`:[{`text`:`Java`},{`text`:`Assembler`}]}"));
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("{'hashtags':[{'text':'Java'},{'text':'Assembler'}],'elo':10}"),
-                gsoned(scLoggedIn.getUser().getResult())
+                normalize("{`hashtags`:[{`text`:`Java`},{`text`:`Assembler`}],`elo`:10}"),
+                normalize(scLoggedIn.getUser().getResult())
         );
     }
 
@@ -142,7 +138,7 @@ public class ServiceClassTest {
         assertEquals(404, scLoggedIn.bookmark(3).getStatus());
         assertEquals(200, scLoggedIn.bookmark(1).getStatus());
         assertEquals(
-                gsoned("[{'hashtags':[{'text':'Java'},{'text':'For-Loop'}],'favourCount':2,'isFavourite':true,'timestamp':946681200000,'text':'How do I write a for-loop?','idPost':1},{'hashtags':[],'favourCount':2,'isFavourite':true,'timestamp':946681200000,'text':'Where can I find the toilet?','idPost':2}]"),
+                normalize("[{`hashtags`:[{`text`:`Java`},{`text`:`For-Loop`}],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`How do I write a for-loop?`,`idPost`:1},{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2}]"),
                 scLoggedIn.getBookmarkedQuestions().getResult()
         );
     }
@@ -153,8 +149,8 @@ public class ServiceClassTest {
         HttpResponse response = scLoggedIn.getBookmarkedQuestions();
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("[{'hashtags':[],'favourCount':2,'isFavourite':true,'timestamp':946681200000,'text':'Where can I find the toilet?','idPost':2}]"),
-                gsoned(response.getResult())
+                normalize("[{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2}]"),
+                normalize(response.getResult())
         );
     }
 
@@ -168,8 +164,8 @@ public class ServiceClassTest {
         HttpResponse response = scAnonymous.getHashtags();
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("[{'text':'Java'},{'text':'Assembler'},{'text':'For-Loop'},{'text':'Analysis'},{'text':'Polynome'},{'text':'Lagrange-Restglied'}]"),
-                gsoned(response.getResult())
+                normalize("[{`text`:`Java`},{`text`:`Assembler`},{`text`:`For-Loop`},{`text`:`Analysis`},{`text`:`Polynome`},{`text`:`Lagrange-Restglied`}]"),
+                normalize(response.getResult())
         );
     }
 
@@ -184,20 +180,20 @@ public class ServiceClassTest {
         HttpResponse response = scLoggedIn.getQuestions();
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("[{'hashtags':[{'text':'Java'}],'favourCount':1,'isFavourite':false,'timestamp':946681200000,'text':'How does the JFrame-constructor work?','idPost':4},{'hashtags':[],'favourCount':2,'isFavourite':true,'timestamp':946681200000,'text':'Where can I find the toilet?','idPost':2},{'hashtags':[{'text':'Java'},{'text':'For-Loop'}],'favourCount':1,'isFavourite':false,'timestamp':946681200000,'text':'How do I write a for-loop?','idPost':1}]"),
-                gsoned(response.getResult())
+                normalize("[{`hashtags`:[{`text`:`Java`}],`favourCount`:1,`isFavourite`:false,`timestamp`:946681200000,`text`:`How does the JFrame-constructor work?`,`idPost`:4},{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2},{`hashtags`:[{`text`:`Java`},{`text`:`For-Loop`}],`favourCount`:1,`isFavourite`:false,`timestamp`:946681200000,`text`:`How do I write a for-loop?`,`idPost`:1}]"),
+                normalize(response.getResult())
         );
     }
 
     @Test
     public void testAddQuestion() throws Exception {
         assertEquals(400, scLoggedIn.addQuestion("{InvalidJson}").getStatus());
-        assertEquals(401, scAnonymous.addQuestion(gsoned("{'hashtags':[{'text':'Java'},{'text':'NeuesHashtag'}],'text':'How to use JUnit?'}")).getStatus());
-        HttpResponse response = scLoggedIn.addQuestion(gsoned("{'hashtags':[{'text':'Java'},{'text':'NeuesHashtag'}],'text':'How to use JUnit?'}"));
+        assertEquals(401, scAnonymous.addQuestion(normalize("{`hashtags`:[{`text`:`Java`},{`text`:`NeuesHashtag`}],`text`:`How to use JUnit?`}")).getStatus());
+        HttpResponse response = scLoggedIn.addQuestion(normalize("{`hashtags`:[{`text`:`Java`},{`text`:`NeuesHashtag`}],`text`:`How to use JUnit?`}"));
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("{'idQuestion':9}"),
-                gsoned(response.getResult())
+                normalize("{`idQuestion`:9}"),
+                normalize(response.getResult())
         );
     }
 
@@ -208,20 +204,20 @@ public class ServiceClassTest {
         HttpResponse response = scLoggedIn.getQuestionAndAnswers(2);
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("{'question':{'hashtags':[],'favourCount':2,'isFavourite':true,'timestamp':946681200000,'text':'Where can I find the toilet?','idPost':2},'answers':[{'rating':100,'idQuestion':2,'timestamp':946681200000,'text':'In the building E2, first floor.','idPost':3},{'rating':0,'idQuestion':2,'timestamp':946681200000,'text':'I think he is right','idPost':5}]}"),
-                gsoned(response.getResult())
+                normalize("{`question`:{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2},`answers`:[{`rating`:100,`idQuestion`:2,`timestamp`:946681200000,`text`:`In the building E2, first floor.`,`idPost`:3},{`rating`:0,`idQuestion`:2,`timestamp`:946681200000,`text`:`I think he is right`,`idPost`:5}]}"),
+                normalize(response.getResult())
         );
     }
 
     @Test
     public void testAddAnswerToQuestion() throws Exception {
         assertEquals(400, scLoggedIn.addAnswerToQuestion(2, "{InvalidJson}").getStatus());
-        assertEquals(200, scLoggedIn.addAnswerToQuestion(2, gsoned("{'text':'Meine Antwort.'}")).getStatus());
+        assertEquals(200, scLoggedIn.addAnswerToQuestion(2, normalize("{`text`:`Meine Antwort.`}")).getStatus());
         HttpResponse response = scLoggedIn.getQuestionAndAnswers(2);
         assertEquals(200, response.getStatus());
         assertEquals(
-                gsoned("{'question':{'hashtags':[],'favourCount':2,'isFavourite':true,'timestamp':946681200000,'text':'Where can I find the toilet?','idPost':2},'answers':[{'rating':100,'idQuestion':2,'timestamp':946681200000,'text':'In the building E2, first floor.','idPost':3},{'rating':0,'idQuestion':2,'timestamp':946681200000,'text':'I think he is right','idPost':5},{'rating':0,'idQuestion':2,'timestamp':946681200000,'text':'Meine Antwort.','idPost':9}]}"),
-                gsoned(response.getResult())
+                normalize("{`question`:{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2},`answers`:[{`rating`:100,`idQuestion`:2,`timestamp`:946681200000,`text`:`In the building E2, first floor.`,`idPost`:3},{`rating`:0,`idQuestion`:2,`timestamp`:946681200000,`text`:`I think he is right`,`idPost`:5},{`rating`:0,`idQuestion`:2,`timestamp`:946681200000,`text`:`Meine Antwort.`,`idPost`:9}]}"),
+                normalize(response.getResult())
         );
     }
 
