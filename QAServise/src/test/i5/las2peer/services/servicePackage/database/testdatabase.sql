@@ -19,7 +19,7 @@ CREATE TABLE Post
 	-- not timestamp for tests
 	-- original: "timestamp timestamp NOT NULL,"
 	timestamp timestamp NOT NULL DEFAULT '2000-01-01 00:00:00',
-	text varchar(255) NOT NULL,
+	text varchar(512) NOT NULL,
 	idUser bigint NOT NULL,
 	PRIMARY KEY (idPost),
 	FOREIGN KEY (idUser) REFERENCES User(idUser)

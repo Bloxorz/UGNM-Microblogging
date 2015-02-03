@@ -37,9 +37,17 @@ public class AbstractManagerTest {
 
     }
 
+    // From Jackson javadoc-documentation: "used for POJO fields (note: does not apply to Map serialization!)"
     protected String normalize(Object serializable) throws IOException {
         ObjectMapper om = new ObjectMapper();
         om.configure(SerializationConfig.Feature.SORT_PROPERTIES_ALPHABETICALLY, true);
+        if (serializable instanceof String) {
+            // In JSON-format
+            serializable = om.readValue((String)serializable, Object.class);
+        }
+        if ((serializable instanceof Map) && !(serializable instanceof TreeMap)) {
+            serializable = new TreeMap((Map) serializable);
+        }
         return om.writeValueAsString(serializable);
     }
 }

@@ -86,10 +86,12 @@ public class QuestionManagerTest extends AbstractManagerTest {
 
     @Test
     public void testGetQuestionWithAnswers() throws Exception {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new TreeMap<>();
         map.put("question", DatabaseManagerTest.getTestQuestions()[2]);
         map.put("answers", DatabaseManagerTest.getTestAnswers(2, 3, 4));
-
+        System.out.println(
+                normalize("{`question`:{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2},`answers`:[{`rating`:100,`idQuestion`:2,`timestamp`:946681200000,`text`:`In the building E2, first floor.`,`idPost`:3},{`rating`:0,`idQuestion`:2,`timestamp`:946681200000,`text`:`I think he is right`,`idPost`:5}]}".replace('`','"'))
+                );
         assertEquals(
                 normalize(map),
                 normalize(manager.getQuestionWithAnswers(conn, 4, 0))

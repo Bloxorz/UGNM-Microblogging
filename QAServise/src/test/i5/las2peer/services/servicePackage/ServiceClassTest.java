@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.Assert.*;
 
@@ -97,7 +99,13 @@ public class ServiceClassTest {
         input = input.replace('`', '"');
         ObjectMapper om = new ObjectMapper();
         om.configure(SerializationConfig.Feature.SORT_PROPERTIES_ALPHABETICALLY, true);
-        return om.writeValueAsString(om.readValue(input, Object.class));
+
+        Object serializable = om.readValue(input, Object.class);
+        if ((serializable instanceof Map) && !(serializable instanceof TreeMap)) {
+            serializable = new TreeMap((Map) serializable);
+        }
+
+        return om.writeValueAsString(serializable);
         //return new Gson().toJson(new JsonParser().parse(input));
     }
 
@@ -139,7 +147,7 @@ public class ServiceClassTest {
         assertEquals(200, scLoggedIn.bookmark(1).getStatus());
         assertEquals(
                 normalize("[{`hashtags`:[{`text`:`Java`},{`text`:`For-Loop`}],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`How do I write a for-loop?`,`idPost`:1},{`hashtags`:[],`favourCount`:2,`isFavourite`:true,`timestamp`:946681200000,`text`:`Where can I find the toilet?`,`idPost`:2}]"),
-                scLoggedIn.getBookmarkedQuestions().getResult()
+                normalize(scLoggedIn.getBookmarkedQuestions().getResult())
         );
     }
 
