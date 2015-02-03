@@ -180,8 +180,8 @@ questionAnswerApp.controller('AskquestionCtrl', function($rootScope, $scope, $ro
       return;
     }
     askQuestion($http, $scope.question, function(questionId) {
-      alert("question sent");
-      //  $route.reload();
+       document.location.href="/api/#";
+      $route.reload();
     });
   }
 
