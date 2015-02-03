@@ -23,7 +23,7 @@ public class AnswerResource extends AbstractResource {
 			return new HttpResponse("You have to be logged in to upvote an answer.", 401);
 		try {
 			ManagerFacade.getInstance().upvoteAnswer(conn, userId, answerId);
-			return new HttpResponse("Answer upvoted.", 201);
+			return new HttpResponse("Answer upvoted.", 200);
 		} catch (SQLException e) {
 			return new HttpResponse(e.toString(), 500);
 		} catch (CantInsertException e) {
@@ -31,7 +31,7 @@ public class AnswerResource extends AbstractResource {
 		} catch (CantUpdateException e) {
 			return new HttpResponse(e.toString(), 500);
 		} catch (CantFindException e) {
-			return new HttpResponse(e.toString(), 500);
+			return new HttpResponse(e.toString(), 404);
 		}
 	}
 }

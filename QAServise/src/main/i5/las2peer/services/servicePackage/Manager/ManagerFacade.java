@@ -51,7 +51,7 @@ public class ManagerFacade {
         return userManager.bookmarkedQuestions(conn, userId);
     }
 
-    public void bookmark( Connection conn, long userId, long questionId) throws SQLException, CantInsertException {
+    public void bookmark( Connection conn, long userId, long questionId) throws SQLException, CantInsertException, CantFindException {
         userManager.bookmark(conn, userId, questionId);
     }
 
@@ -77,6 +77,7 @@ public class ManagerFacade {
         return questionManager.getQuestionWithAnswers(conn, questionId, userThatAsksId);
     }
     public long addAnswerToQuestion(Connection conn, AnswerDTO answer) throws SQLException, CantInsertException {
+        // check question exists
         return questionManager.addAnswerToQuestion(conn, answer);
     }
 

@@ -1,6 +1,7 @@
 package i5.las2peer.services.servicePackage.Resources;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import i5.las2peer.services.servicePackage.DTO.QuestionDTO;
 import i5.las2peer.services.servicePackage.DTO.UserDTO;
 import i5.las2peer.services.servicePackage.Exceptions.CantFindException;
@@ -44,6 +45,8 @@ public class UserResource extends AbstractResource {
             UserDTO data = new Gson().fromJson(content, UserDTO.class);
             ManagerFacade.getInstance().editUser(conn, userId, data);
             return new HttpResponse("Profile successfully changed.", 200);
+        } catch (JsonParseException e) {
+            return new HttpResponse(e.toString(), 400);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
         } catch (CantUpdateException e) {
@@ -78,7 +81,9 @@ public class UserResource extends AbstractResource {
             return new HttpResponse("You have to be logged in to favour a question.", 401);
         try {
             ManagerFacade.getInstance().bookmark(conn, userId, questionId);
-            return new HttpResponse("Bookmark added.", 201);
+            return new HttpResponse("Bookmark added.", 200);
+        } catch (CantFindException e) {
+            return new HttpResponse(e.toString(), 404);
         } catch (SQLException e) {
             return new HttpResponse(e.toString(), 500);
         } catch (CantInsertException e) {

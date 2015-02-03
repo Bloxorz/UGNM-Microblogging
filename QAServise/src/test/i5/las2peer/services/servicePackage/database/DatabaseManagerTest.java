@@ -1,6 +1,7 @@
 package i5.las2peer.services.servicePackage.database;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import i5.las2peer.services.servicePackage.DTO.*;
 import i5.las2peer.services.servicePackage.ServiceClass;
 import org.apache.commons.dbcp2.BasicDataSource;

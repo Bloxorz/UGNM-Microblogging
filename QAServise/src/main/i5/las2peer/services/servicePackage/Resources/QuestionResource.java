@@ -49,9 +49,11 @@ public class QuestionResource extends AbstractResource {
                 question.setIdUser(userId);
                 Map<String, Object> resultmap = new HashMap<String, Object>();
                 resultmap.put("idQuestion", ManagerFacade.getInstance().addQuestion(conn, question));
-                HttpResponse response = new HttpResponse("Question succesfully posted!", 201);
+                HttpResponse response = new HttpResponse("Question succesfully posted!", 200);
                 response.setResult(new Gson().toJson(resultmap));
                 return response;
+            } catch (JsonParseException e) {
+                return new HttpResponse(e.toString(), 400);
             } catch (SQLException e) {
                 return new HttpResponse(e.toString(), 500);
             } catch (CantInsertException e) {
@@ -71,7 +73,7 @@ public class QuestionResource extends AbstractResource {
             answer.setIdQuestion(questionId);
             answer.setIdUser(userId);
             ManagerFacade.getInstance().addAnswerToQuestion(conn, answer);
-            return new HttpResponse("Answer successfully posted.", 201);
+            return new HttpResponse("Answer successfully posted.", 200);
         } catch (JsonParseException e) {
             return new HttpResponse(e.toString(), 400);
         } catch (SQLException e) {
@@ -81,27 +83,6 @@ public class QuestionResource extends AbstractResource {
         }
     }
 
-    /*public HttpResponse getAnswersToQuestion(long questionId) {
-        HttpResponse res;
-        try {
-            List<AnswerDTO> answers = ManagerFacade.getInstance().getAnswersToQuestion(conn, questionId);
-            if(answers == null) {
-                res = new HttpResponse("");
-                res.setStatus(404);
-                return res;
-            }
-            Gson gson = new Gson();
-
-            res = new HttpResponse(gson.toJson(answers));
-            res.setStatus(200);
-
-            return  res;
-        } catch (SQLException e) {
-            res = new HttpResponse("not found");
-            res.setStatus(500);
-            return  res;
-        }
-    }*/
     public HttpResponse getQuestionWithAnswers(long questionId, long userThatAsksId) {
         HttpResponse res;
         try {

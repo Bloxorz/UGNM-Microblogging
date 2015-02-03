@@ -95,7 +95,7 @@ public class QuestionManager extends AbstractManager{
     public List<AnswerDTO> getAnswersToQuestion(Connection conn, long questionId) throws SQLException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<List<AnswerDTO>> h = new BeanListHandler<AnswerDTO>(AnswerDTO.class);
-        //return
+
         return qr.query(conn, "SELECT idPost, idQuestion, timestamp, text, idUser, rating FROM Post JOIN Answer ON idPost=idAnswer WHERE idQuestion = ? ORDER BY rating DESC", h, questionId);
     }
 

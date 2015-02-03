@@ -69,7 +69,7 @@ public class UserManager {
         qm.fillOutHashtagsAndFavourCountAndIsFavourite(conn, res, userId);
         return res;
     }
-    public void bookmark(Connection conn, long userId,long questionId) throws SQLException, CantInsertException {
+    public void bookmark(Connection conn, long userId,long questionId) throws SQLException, CantInsertException, CantFindException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<Map<String, Object>> h = new MapHandler();
         if (hasBookmarkedQuestion(conn, userId, questionId)) {
@@ -77,9 +77,12 @@ public class UserManager {
         }
         qr.insert(conn, "INSERT INTO FavouriteQuestionToUser (idUser, idQuestion) VALUES (?,?)", h, userId, questionId);
     }
-    public boolean hasBookmarkedQuestion(Connection conn, long userId,long questionId) throws SQLException {
+    public boolean hasBookmarkedQuestion(Connection conn, long userId,long questionId) throws SQLException, CantFindException {
         QueryRunner qr = new QueryRunner();
         ResultSetHandler<Map<String, Object>> h = new MapHandler();
+        // check Question exists
+        if(null == qr.query(conn, "SELECT idQuestion FROM Question WHERE idQuestion=?", h, questionId))
+            throw new CantFindException("The question with id " + questionId + " does not exist.");
         return null != qr.query(conn, "SELECT idFavouriteQuestionToUser FROM FavouriteQuestionToUser WHERE idUser=? AND idQuestion=?", h, userId, questionId);
     }
 

@@ -41,6 +41,7 @@ public class ServiceClass extends Service {
 	private String jdbcUrl;
 	private String jdbcSchema;
 	private DatabaseManager dbm;
+	private Connection currentConnection;
 
 	// resources
 	private QuestionResource qr;
@@ -53,14 +54,24 @@ public class ServiceClass extends Service {
 		// IF THE SERVICE CLASS NAME IS CHANGED, THE PROPERTIES FILE NAME NEED TO BE CHANGED TOO!
 		setFieldValues();
 		// instantiate a database manager to handle database connection pooling and credentials
-		dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema);
+		qr = new QuestionResource(null);
+		hr = new HashtagResource(null);
+		use = new UserResource(null);
+		ar = new AnswerResource(null);
+		setDatabase(new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema));
+	}
 
+	public void setDatabase(DatabaseManager dbm) {
+		this.dbm = dbm;
 		try {
-			Connection conn = dbm.getConnection();
-			qr = new QuestionResource(conn);
-            hr = new HashtagResource(conn);
-            use = new UserResource(conn);
-			ar = new AnswerResource(conn);
+			if (currentConnection != null) {
+				currentConnection.close();
+			}
+			currentConnection = dbm.getConnection();
+			qr.setConnection(currentConnection);
+			hr.setConnection(currentConnection);
+			use.setConnection(currentConnection);
+			ar.setConnection(currentConnection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
