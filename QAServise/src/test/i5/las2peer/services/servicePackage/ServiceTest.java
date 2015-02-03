@@ -1,27 +1,18 @@
 package i5.las2peer.services.servicePackage;
 
-import com.sun.nio.sctp.SctpSocketOption;
-import i5.las2peer.api.Configurable;
 import i5.las2peer.p2p.LocalNode;
 import i5.las2peer.security.ServiceAgent;
 import i5.las2peer.security.UserAgent;
-import i5.las2peer.services.servicePackage.database.DatabaseManager;
 import i5.las2peer.testing.MockAgentFactory;
 import i5.las2peer.webConnector.WebConnector;
 import i5.las2peer.webConnector.client.ClientResponse;
 import i5.las2peer.webConnector.client.MiniClient;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Hashtable;
-
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.junit.Assert.*;
 
