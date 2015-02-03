@@ -118,10 +118,11 @@ questionAnswerApp.controller('PreferencesCtrl', function($rootScope, $scope, $ro
       return hashtagCollection($http);
     }
 
-    getUserExpertises($http, function(data) {
-      $scope.expertises = data;
-    });
-
+    getUser($http, function(data) {
+      $scope.user.expertises = data.hashtags;
+      $scope.user.elo = data.elo;
+    })
+  
 
 });
 
