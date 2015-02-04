@@ -1,0 +1,46 @@
+<div class="container">
+<hr />
+<h3>Filter by Tags</h3>
+<tags-input ng-model="searchTags" type="text" placeholder="Search tags">
+
+	<auto-complete source="allTags()"></auto-complete>
+
+</tags-input>
+	<hr>
+ <button class="btn btn-sm btn-filter pull-left" ng-click="searchTags=userExpertises()" > Questions for me</button>
+ <button class="btn btn-sm btn-filter glyphicon glyphicon-remove-circle" ng-click="searchTags=[]"> Reset filter</button>
+
+<br />
+
+<h3>Questions</h3>
+<div class="col-sm-9" ng-repeat="question in (filteredQuestions = (questions | filterByTags:searchTags))">
+	<hr>
+	<div class="question">
+    <h4 id="question{{question.idPost}}">
+      <a href="#answers/{{question.idPost}}">
+      {{question.text | short}}
+			</a>
+    </h4>
+		<p>
+			<a class="btn btn-sm btn-favour"  ng-repeat="tag in question.hashtags">{{tag.text}} </a>
+		</p>
+    <div>
+      <span class="pull-left">{{question.timestamp | setdate}} </span>
+      <span class="pull-right">{{question.favourCount}}x favorisiert</span>
+      <div class="clearfix"></div>
+
+			<span class="pull-right">
+				<div ng-if="isLoggedIn()">
+
+					<div ng-switch on="{{question.isFavourite}}">
+							<button ng-switch-when="false" class="btn btn-sm btn-favour" ng-click="favour(question.idPost)" ><span class="glyphicon glyphicon-heart"></span> Favour</button>
+							<button ng-switch-when="true" class="btn btn-sm btn-favoured"><span class="glyphicon glyphicon-certificate"></span></button>
+					</div>
+
+		  	</div>
+			</span>
+
+		</div>
+	</div>
+</div>
+</div>

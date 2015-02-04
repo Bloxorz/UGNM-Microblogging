@@ -1,0 +1,44 @@
+<div class = "container">
+  <div>
+    <hr>
+    <div class="question">
+      <h4>
+          {{question.text}}
+      </h4>
+      <p>
+        <a class="btn btn-sm btn-favour"  ng-repeat="tag in question.hashtags">{{tag.text}} </a>
+      </p>
+      <div>
+        <span class="pull-left">{{question.timestamp | setdate}}</span>
+        <div class="clearfix"></div>
+
+      </div>
+    </div>
+    <h3>Post new answer</h3>
+    <form role="form" method="post">
+      <textarea class="form-control input-small col-mn-9" name="name" placeholder="Enter your text here" rows="5" id="comment" ng-model="answer.text"></textarea>
+      <br/>
+      <button type="submit" class="btn btn-primary pull-left" ng-click="postAnswer()"><span class="glyphicon glyphicon-plus"></span> Post answer</button>
+    </form>
+  </div>
+  <br>
+  <br>
+  <div class="col-sm-9" ng-repeat="answer in answers | orderObjectBy: 'rating'">
+    <hr>
+    <div class="answer">
+      <h4>
+        {{answer.text}}
+
+      </h4>
+      <div>
+        <span class="pull-left">{{answer.timestamp | setdate}}</span>
+        <span class="pull-right">{{answer.rating}}</span>
+        <div class="clearfix"></div>
+
+        <span class="pull-right">
+          <button class="btn btn-sm btn-favour" ng-click="like(answer.idPost)"><span class="glyphicon glyphicon-heart"></span> Like</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

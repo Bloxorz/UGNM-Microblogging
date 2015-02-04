@@ -1,0 +1,188 @@
+@media (min-width: 768px) {
+	.sidebar-nav .navbar .navbar-collapse {
+		padding: 0;
+		max-height: none;
+	}
+	.sidebar-nav .navbar ul {
+		float: none;
+	}
+	.sidebar-nav .navbar ul:not {
+		display: block;
+	}
+	.sidebar-nav .navbar li {
+		float: none;
+		display: block;
+	}
+	.sidebar-nav .navbar li a {
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+
+	.navbar {
+		position: fixed;
+		width: 190px;
+		height: 100%;
+		z-index: 2;
+	}
+	#signinButton {
+		padding-left: 15px;
+	}
+}
+
+@media (min-width: 992px) {
+	.navbar {
+		width: 200px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.navbar {
+		width: 262px;
+	}
+}
+
+.sidebar-nav .navbar-header { float: none; }
+
+.navbar-default, 
+.navbar-toggle,
+.my-btn {
+	border-radius: 0px;
+	border: 0px;
+}
+
+.navbar-default {
+	background-color: #424b5f;
+}
+
+.navbar-header .navbar-brand span {
+	font-weight: bold;
+	color: #fff 
+}
+
+.navbar-header {
+	background-color: #424b5f;
+}
+
+.navbar-collapse {
+	border-top: 1px solid #424b5f !important;
+	background-color: #424b5f;
+}
+
+.col-sm-3 {
+	padding: 0px;
+	margin: 0px;
+}
+
+.glyphicon-plus{
+	color: #a7b3cb;
+	font-size: 1.5em;
+
+}
+
+.navbar-toggle {
+	margin: 0px;
+	padding-top: 18px;
+	padding-bottom: 18px;
+	border-left: 1px solid #4f5a6e !important;
+
+}
+
+.my-btn {
+	background-color: transparent;
+	float: left;	
+	margin: 0px !important;
+	padding: 12px 11px;
+	border-right: 1px solid #4f5a6e;
+}
+
+.my-btn:hover,
+.my-btn:focus {
+	background-color: transparent !important;
+}
+
+.icon-bar {
+	background-color: #a7b3cb !important;
+}
+
+body {
+	background-color: #dee1e5;
+}
+
+.container {
+	background-color: #fff;
+}
+
+.add-question-btn {
+	position:absolute;
+	bottom: 0;
+	margin-left: 15px;
+	margin-bottom: 40px;
+}
+
+.badge {
+	margin-left: 5px;
+}
+
+.navbar-default .navbar-nav>li>a {
+	color: #a7b3cb;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #fff;
+  background-color: #4f5a6e;
+}
+
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+	background-color: transparent;
+}
+
+.active {
+	color: #fff;
+	background-color: #4f5a6e;
+	border-left: 4px solid #1ba8ed !important;
+}
+
+.my-header > hr {
+	border-top-color: #4f6173;
+}
+
+.my-header > h4 {
+	margin-top: 20px;
+	color: #4f6173;
+}
+
+.question > p > a {
+	color: #3572d9;
+}
+
+.question > a {
+	color: #688198;
+	font-size: 1.5em;
+}
+
+.question > div > span {
+	color: #a5acb3;
+}
+
+.question > div > span > a {
+	color: #369249;
+	border: 1px solid #369249;
+	background-color: #FFF;
+	text-decoration: none;
+	border-radius: 3px;
+	padding: 3px 7px;
+}
+
+.answer > div > span {
+	color: #a5acb3;
+}
+
+.answer > div > span > a {
+	color: #369249;
+	border: 1px solid #369249;
+	background-color: #FFF;
+	text-decoration: none;
+	border-radius: 3px;
+	padding: 3px 7px;
+}

@@ -1,0 +1,14 @@
+<div class="container">
+	<hr>
+	<h3>Edit Profile</h3>
+	<form role="form" method="post">
+		<tags-input ng-model="user.expertises" type="text" placeholder="Tags">
+		<auto-complete source="allTags()"></auto-complete>
+		</tags-input>
+		<br>
+		<h4>Your elo: </h4>
+		<p>{{user.elo}} </p>
+		<hr>
+		<button type="submit" class="btn btn-primary pull-left" ng-click="saveUser()"><span class="glyphicon glyphicon-plus"></span> Save changes</button>
+	</form>
+</div>
