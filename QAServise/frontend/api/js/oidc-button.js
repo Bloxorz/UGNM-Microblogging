@@ -184,7 +184,7 @@ function renderButton(signin){
 			$(".oidc-signin").removeClass("btn-default").addClass("btn-success")
 		};
 		$(".oidc-signin").html(
-			oidc_userinfo.preferred_username
+			oidc_userinfo.preferred_username + "<span id='elo_badge' class='badge'></span>"
 		);
 
 		$(".oidc-signin").click(function (e){

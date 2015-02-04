@@ -74,8 +74,9 @@ questionAnswerApp.controller('DashboardCtrl', function($rootScope, $scope, $rout
       return val;
     }
 
-    getUserExpertises($http, function(data) {
-      $scope.usertags = data;
+    getUser($http, function(data) {
+      $scope.usertags = data.hashtags;
+      document.getElementById("elo_badge").innerHTML = data.elo;
     });
 
     $scope.userExpertises = function() {
