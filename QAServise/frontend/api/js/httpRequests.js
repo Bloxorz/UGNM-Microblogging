@@ -10,7 +10,8 @@ var frontendPort = 80; //Port number of whatever frontend server you use (e.g. A
 var backendPort = 8080; //Port number of your local backend(start_network on native on Port 8080) or webserver service port!
 var useLocalFrontendServer = true; //If you test on localhost, set true.
 //Frontend & Backend Ports differ -> so absolute url is required!
-var localFrontendURL = "http://localhost:" + backendPort + "/";
+var localFrontendURL = "http://buche.informatik.rwth-aachen.de:" + backendPort + "/";
+//var localFrontendURL = "http://localhost:" + backendPort + "/";
 
 function isAnonymous() {
   if(localStorage.getItem("access_token") === null)

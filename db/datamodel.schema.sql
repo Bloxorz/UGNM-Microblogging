@@ -2,28 +2,23 @@ USE ugnm1415g2;
 
 -- delete all:
 SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS User, Post, Question, Answer, Hashtag, Expertise,
-					QuestionToHashtag, HashtagToExpertise, UserToExpertise,
-					UserToQuestion, FavoriteQuestionsToUser;
+DROP TABLE IF EXISTS User, Post, Question, Answer, Hashtag,
+					QuestionToHashtag, UserToHashtag, UserToRatedAnswer, FavouriteQuestionToUser;
 SET FOREIGN_KEY_CHECKS=1;
 
 -- entities
 CREATE TABLE User
 (
-	idUser int NOT NULL AUTO_INCREMENT,
-	rating int NOT NULL,
-	image varchar(255) NOT NULL,
-	contact varchar(255) NOT NULL,
-	email varchar(255) NOT NULL,
-	pass varchar(255) NOT NULL,
+	idUser bigint NOT NULL,
+	elo int NOT NULL,
 	PRIMARY KEY (idUser)
 );
 CREATE TABLE Post
 (
 	idPost int NOT NULL AUTO_INCREMENT,
 	timestamp timestamp NOT NULL,
-	text varchar(255) NOT NULL,
-	idUser int NOT NULL,
+	text varchar(512) NOT NULL,
+	idUser bigint NOT NULL,
 	PRIMARY KEY (idPost),
 	FOREIGN KEY (idUser) REFERENCES User(idUser)
 );
@@ -36,54 +31,39 @@ CREATE TABLE Question
 CREATE TABLE Answer
 (
 	idAnswer int NOT NULL,
-	rating int NOT NULL,
+	rating int NOT NULL DEFAULT 0,
 	idQuestion int NOT NULL,
 	PRIMARY KEY (idAnswer),
 	FOREIGN KEY (idAnswer) REFERENCES Post(idPost) ON DELETE CASCADE,
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) --no cascade: has to be deleted with deletion from Post
+	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE -- has to be deleted with deletion from Post
 );
-CREATE TABLE Hashtag 
+CREATE TABLE Hashtag
 (
 	idHashtag int NOT NULL AUTO_INCREMENT,
 	text varchar(45) NOT NULL UNIQUE,
 	PRIMARY KEY (idHashtag)
 );
-CREATE TABLE Expertise
-(
-	idExpertise int NOT NULL AUTO_INCREMENT,
-	text varchar(45) NOT NULL UNIQUE,
-	PRIMARY KEY (idExpertise)
-);
 
 
 -- n/m-relationships
 
-CREATE TABLE UserToQuestion
+CREATE TABLE UserToRatedAnswer
 (
-	idUserToQuestion int NOT NULL AUTO_INCREMENT,
-	idUser int NOT NULL,
-	idQuestion int NOT NULL,
-	PRIMARY KEY (idUserToQuestion),
+	idUserToRatedAnswer int NOT NULL AUTO_INCREMENT,
+	idUser bigint NOT NULL,
+	idAnswer int NOT NULL,
+	PRIMARY KEY (idUserToRatedAnswer),
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
-	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE
+	FOREIGN KEY (idAnswer) REFERENCES Answer(idAnswer) ON DELETE CASCADE
 );
-CREATE TABLE UserToExpertise
+CREATE TABLE UserToHashtag
 (
-	idUserToExpertise int NOT NULL AUTO_INCREMENT,
-	idUser int NOT NULL,
-	idExpertise int NOT NULL,
-	PRIMARY KEY (idUserToExpertise),
-	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
-	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise) ON DELETE CASCADE
-);
-CREATE TABLE HashtagToExpertise
-(
-	idHashtagΤοΕxpertise int NOT NULL AUTO_INCREMENT,
+	idUserToHashtag int NOT NULL AUTO_INCREMENT,
+	idUser bigint NOT NULL,
 	idHashtag int NOT NULL,
-	idExpertise int NOT NULL,
-	PRIMARY KEY (idHashtagΤοΕxpertise),
-	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE,
-	FOREIGN KEY (idExpertise) REFERENCES Expertise(idExpertise) ON DELETE CASCADE
+	PRIMARY KEY (idUserToHashtag),
+	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE,
+	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE
 );
 CREATE TABLE QuestionToHashtag (
 	idQuestionToHashtag int NOT NULL AUTO_INCREMENT,
@@ -93,10 +73,17 @@ CREATE TABLE QuestionToHashtag (
 	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
 	FOREIGN KEY (idHashtag) REFERENCES Hashtag(idHashtag) ON DELETE CASCADE
 );
-CREATE TABLE FavoriteQuestionsToUser (
+CREATE TABLE FavouriteQuestionToUser (
+	idFavouriteQuestionToUser int NOT NULL AUTO_INCREMENT,
 	idQuestion int NOT NULL,
-	idUser int NOT NULL,
+	idUser bigint NOT NULL,
+	PRIMARY KEY (idFavouriteQuestionToUser),
 	FOREIGN KEY (idQuestion) REFERENCES Question(idQuestion) ON DELETE CASCADE,
 	FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE
 );
+
+
+
+
+
 
